@@ -1,0 +1,71 @@
+@page "/links"
+@using WagsMediaRepository.Web.Handlers.Queries.Links
+
+<PageTitle>Links - Wags Media Repository</PageTitle>
+
+<main class="links-page">
+    <div class="table-title">
+        <h1>Links</h1>
+        <div class="actions">
+            <a href="/links/add" class="button-primary">Add Link</a>
+            <a href="/links/types" class="button-primary">Manage Types</a>
+            <a href="/links/categories" class="button-primary">Manage Categories</a>
+        </div>
+    </div>
+
+    <table class="data-table links-table">
+        <thead>
+        <tr>
+            <th class="title">Title</th>
+            <th class="author">Author</th>
+            <th class="date">Date</th>
+            <th class="issue">Issue #</th>
+            <th class="type">Type</th>
+            <th class="category">Category</th>
+            <th class="actions">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var link in _links)
+        {
+            <tr>
+                <td><a href="@link.Url" target="_blank" rel="noreferrer nofollow">@link.Title</a></td>
+                <td>@link.Author</td>
+                <td class="centered">@link.LinkDate.ToString("M/d/yyyy")</td>
+                <td class="centered">@link.ReadingLogIssueNumber</td>
+                <td class="centered">
+                    <span class="tag" style="background-color:@link.LinkType.ColorCode;">@link.LinkType.Name</span>
+                </td>
+                <td class="centered">
+                    <span class="tag" style="background-color:@link.LinkCategory.ColorCode;">@link.LinkCategory.Name</span>
+                </td>
+                <td class="centered actions">
+                    <a href="/links/edit/@link.LinkId">Edit</a>
+                    <button type="button" class="link-button">Delete</button>
+                </td>
+            </tr>
+        }
+        @if (_links.Count == 0)
+        {
+            <tr>
+                <td colspan="7" class="centered no-data"><em>No Links Available</em></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</main>
+
+@code {
+    private IReadOnlyCollection<LinkApiModel> _links = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await Mediator.Send(new GetAllLinks.Request());
+
+        if (result.IsSuccessful)
+        {
+            _links = result.Value ?? [];
+        }
+    }
+
+}

@@ -1,0 +1,79 @@
+@page "/links/types"
+
+@rendermode InteractiveServer
+
+@using WagsMediaRepository.Web.Handlers.Commands.Links
+@using WagsMediaRepository.Web.Handlers.Queries.Links
+
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Link Types - Wags Media Repository</PageTitle>
+
+<main class="link-types-page">
+    <div class="table-title">
+        <h1>Link Types</h1>
+        <div class="actions">
+            <a href="/links/types/add" class="button-primary">Add Link Type</a>
+        </div>
+    </div>
+
+    <table class="data-table link-types-table">
+        <thead>
+        <tr>
+            <th class="name">Name</th>
+            <th class="actions">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var linkType in _linkTypes)
+        {
+            <tr>
+                <td class="name">@linkType.Name</td>
+                <td class="centered actions">
+                    <a href="/links/types/edit/@linkType.LinkTypeId">Edit</a>
+                    <button type="button" class="link-button" @onclick="@(() => DeleteLinkType(linkType))">Delete</button>
+                </td>
+            </tr>
+        }
+        @if (_linkTypes.Count == 0)
+        {
+            <tr>
+                <td colspan="2" class="centered no-data"><em>No Link Types Available</em></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <div class="back-button">
+        <a href="/links">&larr; Back</a>
+    </div>
+</main>
+
+@code {
+    private IReadOnlyCollection<LinkTypeApiModel> _linkTypes = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadLinkTypes();
+    }
+
+    private async Task LoadLinkTypes()
+    {
+        var result = await Mediator.Send(new GetAllLinkTypes.Request());
+
+        if (result.IsSuccessful)
+        {
+            _linkTypes = result.Value ?? [];
+        }
+    }
+
+    private async Task DeleteLinkType(LinkTypeApiModel linkType)
+    {
+        if (!await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to delete the link type '{linkType.Name}'?"))
+            return;
+
+        await Mediator.Send(new DeleteLinkType.Request(linkType.LinkTypeId));
+
+        await LoadLinkTypes();
+    }
+}

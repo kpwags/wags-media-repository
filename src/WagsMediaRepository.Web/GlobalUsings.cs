@@ -1,0 +1,9 @@
+global using MediatR;
+global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Threading;
+global using System.Threading.Tasks;
+global using WagsMediaRepository.Application.Repositories;
+global using WagsMediaRepository.Domain.ApiModels;
+global using WagsMediaRepository.Web.Models;

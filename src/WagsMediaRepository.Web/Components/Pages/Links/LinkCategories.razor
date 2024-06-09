@@ -1,0 +1,79 @@
+@page "/links/categories"
+
+@rendermode InteractiveServer
+
+@using WagsMediaRepository.Web.Handlers.Commands.Links
+@using WagsMediaRepository.Web.Handlers.Queries.Links
+
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Link Categories - Wags Media Repository</PageTitle>
+
+<main class="link-types-page">
+    <div class="table-title">
+        <h1>Link Categories</h1>
+        <div class="actions">
+            <a href="/links/categories/add" class="button-primary">Add Link Category</a>
+        </div>
+    </div>
+
+    <table class="data-table link-types-table">
+        <thead>
+        <tr>
+            <th class="name">Name</th>
+            <th class="actions">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var linkCategory in _linkCategories)
+        {
+            <tr>
+                <td class="name">@linkCategory.Name</td>
+                <td class="centered actions">
+                    <a href="/links/categories/edit/@linkCategory.LinkCategoryId">Edit</a>
+                    <button type="button" class="link-button" @onclick="@(() => DeleteLinkCategory(linkCategory))">Delete</button>
+                </td>
+            </tr>
+        }
+        @if (_linkCategories.Count == 0)
+        {
+            <tr>
+                <td colspan="2" class="centered no-data"><em>No Link Types Available</em></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <div class="back-button">
+        <a href="/links">&larr; Back</a>
+    </div>
+</main>
+
+@code {
+    private IReadOnlyCollection<LinkCategoryApiModel> _linkCategories = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadLinkCategories();
+    }
+
+    private async Task LoadLinkCategories()
+    {
+        var result = await Mediator.Send(new GetAllLinkCategories.Request());
+
+        if (result.IsSuccessful)
+        {
+            _linkCategories = result.Value ?? [];
+        }
+    }
+
+    private async Task DeleteLinkCategory(LinkCategoryApiModel linkCategory)
+    {
+        if (!await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to delete the link category '{linkCategory.Name}'?"))
+            return;
+
+        await Mediator.Send(new DeleteLinkCategory.Request(linkCategory.LinkCategoryId));
+
+        await LoadLinkCategories();
+    }
+}
