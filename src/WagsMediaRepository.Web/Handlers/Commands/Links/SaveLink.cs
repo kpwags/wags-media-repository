@@ -21,10 +21,10 @@ public class SaveLink
         public string Title { get; set; } = string.Empty;
         
         [Required(ErrorMessage = "Author is required.")]
-        public string Url { get; set; } = string.Empty;
+        public string Author { get; set; } = string.Empty;
         
         [Required(ErrorMessage = "URL is required.")]
-        public string Author { get; set; } = string.Empty;
+        public string Url { get; set; } = string.Empty;
         
         [Required(ErrorMessage = "Date is required.")]
         public DateTime LinkDate { get; set; }

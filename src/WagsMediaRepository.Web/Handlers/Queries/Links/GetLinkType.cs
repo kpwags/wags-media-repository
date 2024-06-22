@@ -26,7 +26,7 @@ public class GetLinkType
 
                 if (linkType is null)
                 {
-                    throw new ObjectNotFoundException("Unable to find link type");
+                    return new OperationResultValue<LinkTypeApiModel>("Unable to find link type");
                 }
 
                 return new OperationResultValue<LinkTypeApiModel>(LinkTypeApiModel.FromDomainModel(linkType));

@@ -12,7 +12,7 @@ public class LinkRepository(IDbContextFactory<ApplicationDbContext> contextFacto
     #region "Link Types"
     public async Task<List<LinkType>> GetLinkTypesAsync()
     {
-        var dbContext = await contextFactory.CreateDbContextAsync();
+        await using var dbContext = await contextFactory.CreateDbContextAsync();
 
         var linkTypes = await dbContext.LinkTypes
             .Include(l => l.Links)
@@ -26,7 +26,7 @@ public class LinkRepository(IDbContextFactory<ApplicationDbContext> contextFacto
 
     public async Task<LinkType?> GetLinkTypeByIdAsync(int linkTypeId)
     {
-        var dbContext = await contextFactory.CreateDbContextAsync();
+        await using var dbContext = await contextFactory.CreateDbContextAsync();
 
         var linkType = await dbContext.LinkTypes.FindAsync(linkTypeId);
 
@@ -35,7 +35,7 @@ public class LinkRepository(IDbContextFactory<ApplicationDbContext> contextFacto
 
     public async Task<LinkType> AddLinkTypeAsync(LinkType linkType)
     {
-        var dbContext = await contextFactory.CreateDbContextAsync();
+        await using var dbContext = await contextFactory.CreateDbContextAsync();
 
         var newLinkType = new LinkTypeDto
         {
@@ -52,7 +52,7 @@ public class LinkRepository(IDbContextFactory<ApplicationDbContext> contextFacto
 
     public async Task<LinkType> UpdateLinkTypeAsync(LinkType linkType)
     {
-        var dbContext = await contextFactory.CreateDbContextAsync();
+        await using var dbContext = await contextFactory.CreateDbContextAsync();
 
         var type = await dbContext.LinkTypes.FindAsync(linkType.LinkTypeId);
 
@@ -73,7 +73,7 @@ public class LinkRepository(IDbContextFactory<ApplicationDbContext> contextFacto
 
     public async Task DeleteLinkTypeAsync(int linkTypeId)
     {
-        var dbContext = await contextFactory.CreateDbContextAsync();
+        await using var dbContext = await contextFactory.CreateDbContextAsync();
         
         await dbContext.LinkTypes.Where(lt => lt.LinkTypeId == linkTypeId).ExecuteDeleteAsync();
 
@@ -84,7 +84,7 @@ public class LinkRepository(IDbContextFactory<ApplicationDbContext> contextFacto
     #region "Link Categories"
     public async Task<List<LinkCategory>> GetLinkCategoriesAsync()
     {
-        var dbContext = await contextFactory.CreateDbContextAsync();
+        await using var dbContext = await contextFactory.CreateDbContextAsync();
 
         var linkCategories = await dbContext.LinkCategories.ToListAsync();
 
@@ -96,7 +96,7 @@ public class LinkRepository(IDbContextFactory<ApplicationDbContext> contextFacto
 
     public async Task<LinkCategory?> GetLinkCategoryByIdAsync(int linkCategoryId)
     {
-        var dbContext = await contextFactory.CreateDbContextAsync();
+        await using var dbContext = await contextFactory.CreateDbContextAsync();
 
         var linkCategory = await dbContext.LinkCategories.FindAsync(linkCategoryId);
 
@@ -105,7 +105,7 @@ public class LinkRepository(IDbContextFactory<ApplicationDbContext> contextFacto
 
     public async Task<LinkCategory> AddLinkCategoryAsync(LinkCategory linkCategory)
     {
-        var dbContext = await contextFactory.CreateDbContextAsync();
+        await using var dbContext = await contextFactory.CreateDbContextAsync();
         
         var newLinkCategory = new LinkCategoryDto()
         {
@@ -122,7 +122,7 @@ public class LinkRepository(IDbContextFactory<ApplicationDbContext> contextFacto
 
     public async Task<LinkCategory> UpdateLinkCategoryAsync(LinkCategory linkCategory)
     {
-        var dbContext = await contextFactory.CreateDbContextAsync();
+        await using var dbContext = await contextFactory.CreateDbContextAsync();
         
         var category = await dbContext.LinkCategories.FindAsync(linkCategory.LinkCategoryId);
 
@@ -143,7 +143,7 @@ public class LinkRepository(IDbContextFactory<ApplicationDbContext> contextFacto
 
     public async Task DeleteLinkCategoryAsync(int linkCategoryId)
     {
-        var dbContext = await contextFactory.CreateDbContextAsync();
+        await using var dbContext = await contextFactory.CreateDbContextAsync();
         
         await dbContext.LinkCategories.Where(lc => lc.LinkCategoryId == linkCategoryId).ExecuteDeleteAsync();
 
@@ -154,7 +154,7 @@ public class LinkRepository(IDbContextFactory<ApplicationDbContext> contextFacto
     #region "Links"
     public async Task<List<Link>> GetLinksAsync()
     {
-        var dbContext = await contextFactory.CreateDbContextAsync();
+        await using var dbContext = await contextFactory.CreateDbContextAsync();
 
         var links = await dbContext.Links
             .Include(l => l.LinkCategory)
@@ -169,7 +169,7 @@ public class LinkRepository(IDbContextFactory<ApplicationDbContext> contextFacto
 
     public async Task<Link?> GetLinkByIdAsync(int linkId)
     {
-        var dbContext = await contextFactory.CreateDbContextAsync();
+        await using var dbContext = await contextFactory.CreateDbContextAsync();
 
         var link = await dbContext.Links.FindAsync(linkId);
 
@@ -178,7 +178,7 @@ public class LinkRepository(IDbContextFactory<ApplicationDbContext> contextFacto
 
     public async Task<Link> AddLinkAsync(Link link)
     {
-        var dbContext = await contextFactory.CreateDbContextAsync();
+        await using var dbContext = await contextFactory.CreateDbContextAsync();
 
         var linkType = await dbContext.LinkTypes.FindAsync(link.LinkTypeId);
         
@@ -214,7 +214,7 @@ public class LinkRepository(IDbContextFactory<ApplicationDbContext> contextFacto
 
     public async Task<Link> UpdateLinkAsync(Link link)
     {
-        var dbContext = await contextFactory.CreateDbContextAsync();
+        await using var dbContext = await contextFactory.CreateDbContextAsync();
         
         var updatedLink = await dbContext.Links.FindAsync(link.LinkId);
 
@@ -254,7 +254,7 @@ public class LinkRepository(IDbContextFactory<ApplicationDbContext> contextFacto
 
     public async Task DeleteLinkAsync(int linkId)
     {
-        var dbContext = await contextFactory.CreateDbContextAsync();
+        await using var dbContext = await contextFactory.CreateDbContextAsync();
         
         await dbContext.Links.Where(l => l.LinkId == linkId).ExecuteDeleteAsync();
 

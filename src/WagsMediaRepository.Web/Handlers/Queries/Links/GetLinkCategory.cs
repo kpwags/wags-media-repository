@@ -26,7 +26,7 @@ public class GetLinkCategory
 
                 if (linkCategory is null)
                 {
-                    throw new ObjectNotFoundException("Unable to find link category");
+                    return new OperationResultValue<LinkCategoryApiModel>("Unable to find link category");
                 }
 
                 return new OperationResultValue<LinkCategoryApiModel>(LinkCategoryApiModel.FromDomainModel(linkCategory));

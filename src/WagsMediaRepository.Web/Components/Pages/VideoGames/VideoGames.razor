@@ -1,0 +1,58 @@
+@page "/video-games"
+
+@using WagsMediaRepository.Web.Components.VideoGames
+@using WagsMediaRepository.Domain
+@using WagsMediaRepository.Web.Handlers.Queries.VideoGames
+
+<PageTitle>Video Games - Wags Media Repository</PageTitle>
+
+<main class="video-games-page">
+    <div class="table-title">
+        <h1>Video Games</h1>
+        <div class="actions">
+            <a href="/video-games/add" class="button-primary">Add Game</a>
+            <a href="/video-games/genres" class="button-primary">Manage Genres</a>
+            <a href="/video-games/systems" class="button-primary">Manage Systems</a>
+        </div>
+    </div>
+    
+    <InProgressTable VideoGames="_inProgressVideoGames" />
+
+    <ToPlayTable VideoGames="_toPlayVideoGames" />
+
+    <CompletedTable VideoGames="_completedVideoGames" />
+</main>
+
+@code {
+    private IReadOnlyCollection<VideoGameApiModel> _videoGames = [];
+    private IReadOnlyCollection<VideoGameApiModel> _inProgressVideoGames = [];
+    private IReadOnlyCollection<VideoGameApiModel> _toPlayVideoGames = [];
+    private IReadOnlyCollection<VideoGameApiModel> _completedVideoGames = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await Mediator.Send(new GetAllVideoGames.Request());
+
+        if (result.IsSuccessful)
+        {
+            _videoGames = result.Value ?? [];
+            
+            _inProgressVideoGames = _videoGames
+                .Where(v => v.Status == Constants.VideoGameStatus.InProgress)
+                .OrderBy(v => v.SortOrder)
+                .ToList();
+            
+            _toPlayVideoGames = _videoGames
+                .Where(v => v.Status == Constants.VideoGameStatus.ToPlay)
+                .OrderBy(v => v.SortOrder ?? int.MaxValue)
+                .ToList();
+            
+            _completedVideoGames = _videoGames
+                .Where(v => v.Status == Constants.VideoGameStatus.Completed)
+                .OrderByDescending(v => v.DateCompleted)
+                .ThenBy(v => v.SortOrder)
+                .ToList();
+        }
+    }
+
+}

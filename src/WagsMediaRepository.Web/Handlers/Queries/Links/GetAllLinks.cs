@@ -1,6 +1,3 @@
-
-using WagsMediaRepository.Web.Models;
-
 namespace WagsMediaRepository.Web.Handlers.Queries.Links;
 
 public class GetAllLinks

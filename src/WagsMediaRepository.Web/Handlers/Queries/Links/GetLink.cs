@@ -26,7 +26,7 @@ public class GetLink
 
                 if (link is null)
                 {
-                    throw new ObjectNotFoundException("Unable to find link");
+                    return new OperationResultValue<LinkApiModel>("Unable to find link");
                 }
 
                 return new OperationResultValue<LinkApiModel>(LinkApiModel.FromDomainModel(link));

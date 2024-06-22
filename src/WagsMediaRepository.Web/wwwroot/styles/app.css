@@ -153,6 +153,7 @@ header {
 main {
     width: 1280px;
     margin: 16px auto;
+    max-width: calc(100dvw - 40px);
 
     @media (max-width: 1312px) {
         width: 1024px;
@@ -282,6 +283,10 @@ section.menu {
                 border-right: none;
             }
             
+            &.sort {
+                width: 40px;
+            }
+            
             &.actions {
                 width: 150px;
             }
@@ -292,7 +297,7 @@ section.menu {
         td {
             border-bottom: 1px solid var(--text-color);
             text-align: left;
-            padding: 4px 8px;
+            padding: 8px;
             border-right: 1px solid var(--text-color);
 
             &.actions {
@@ -300,6 +305,16 @@ section.menu {
                 button {
                     display: inline-block;
                     margin: 0 8px;
+                }
+            }
+            
+            div.tag-cell {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                
+                &.centered {
+                    justify-content: center;
                 }
             }
         }
@@ -349,14 +364,73 @@ main.links-page {
     }
 }
 
-main.link-types-page {
+main.link-types-page,
+main.video-games-systems-page {
     width: 555px;
     margin: 0 auto;
 }
 
-.link-types-table {
+.link-types-table,
+.video-games-systems-table {
     th.name {
         width: 404px;
+    }
+}
+
+main.video-games-page {
+    width: 1186px;
+    margin: 0 auto;
+}
+
+.video-games-table {
+    &.in-progress {
+        th.title {
+            width: 586px;
+        }
+
+        th.system {
+            width: 200px;
+        }
+
+        th.date {
+            width: 200px;
+        }
+
+        th.actions {
+            width: 200px;
+        }
+    }
+    
+    &.to-play {
+        th.title {
+            width: 745px;
+        }
+
+        th.system {
+            width: 200px;
+        }
+        
+        th.actions {
+            width: 200px;
+        }
+    }
+    
+    &.completed {
+        th.title {
+            width: 500px;
+        }
+
+        th.system {
+            width: 200px;
+        }
+
+        th.date {
+            width: 135px;
+        }
+
+        th.rating {
+            width: 200px;
+        }
     }
 }
 
@@ -438,11 +512,29 @@ fieldset {
         border: 1px solid var(--black-1);
         font-weight: normal;
         display: block;
+    }
+    
+    select[multiple="false"] {
         background-color: transparent;
         background-repeat: no-repeat;
         background-position-x: 100%;
         background-position-y: 50%;
         background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+    }
+
+    select[multiple] option {
+        padding: 4px 0;
+    }
+    
+    textarea {
+        display: block;
+        width: 100%;
+        height: 200px;
+        font-family: var(--font-face);
+        margin: 4px 0;
+        padding: 12px;
+        font-weight: normal;
+        font-size: 0.875rem;
     }
 
     .validation-message {
@@ -480,6 +572,24 @@ fieldset {
     &.black {
         color: var(--black-1);
     }
+}
+
+.star {
+    display: inline-block;
+    fill: var(--primary-color-1);
+    stroke: var(--primary-color-1);
+    margin: 0;
+    width: 20px;
+    height: 20px;
+}
+
+.empty-star {
+    display: inline-block;
+    fill: none;
+    stroke: var(--primary-color-1);
+    margin: 0;
+    width: 20px;
+    height: 20px;
 }
 
 .loading-indicator {

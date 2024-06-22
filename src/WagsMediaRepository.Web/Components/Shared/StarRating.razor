@@ -1,0 +1,16 @@
+@for (var i = 0; i < Rating; i += 1)
+{
+    <FilledStar />
+}
+
+@if (Rating < 5)
+{
+    for (var i = Rating; i < 5; i += 1)
+    {
+        <EmptyStar />
+    }
+}
+
+@code {
+    [Parameter, EditorRequired] public int Rating { get; set; }
+}
