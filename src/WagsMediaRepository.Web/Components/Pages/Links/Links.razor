@@ -1,5 +1,9 @@
 @page "/links"
+
+@using WagsMediaRepository.Web.Handlers.Commands.Links
 @using WagsMediaRepository.Web.Handlers.Queries.Links
+
+@inject IJSRuntime JSRuntime
 
 <PageTitle>Links - Wags Media Repository</PageTitle>
 
@@ -12,6 +16,13 @@
             <a href="/links/categories" class="button-primary">Manage Categories</a>
         </div>
     </div>
+
+    @if (!string.IsNullOrWhiteSpace(_pageError))
+    {
+        <div class="alert error">
+            @_pageError
+        </div>
+    }
 
     <table class="data-table links-table">
         <thead>
@@ -41,7 +52,7 @@
                 </td>
                 <td class="centered actions">
                     <a href="/links/edit/@link.LinkId">Edit</a>
-                    <button type="button" class="link-button">Delete</button>
+                    <button type="button" class="link-button" @onclick="@(() => DeleteLink(link))">Delete</button>
                 </td>
             </tr>
         }
@@ -56,16 +67,34 @@
 </main>
 
 @code {
+    private string _pageError = string.Empty;
     private IReadOnlyCollection<LinkApiModel> _links = [];
 
     protected override async Task OnInitializedAsync()
     {
-        var result = await Mediator.Send(new GetAllLinks.Request());
-
-        if (result.IsSuccessful)
-        {
-            _links = result.Value ?? [];
-        }
+        await LoadLinks();
     }
 
+    private async Task LoadLinks()
+    {
+        var result = await Mediator.Send(new GetAllLinks.Request());
+
+        if (!result.IsSuccessful)
+        {
+            _pageError = result.ErrorMessage;
+            return;
+        }
+
+        _links = result.Value ?? [];
+    }
+
+    private async Task DeleteLink(LinkApiModel link)
+    {
+        if (!await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete this link"))
+            return;
+
+        await Mediator.Send(new DeleteLink.Request(link.LinkId));
+
+        await LoadLinks();
+    }
 }

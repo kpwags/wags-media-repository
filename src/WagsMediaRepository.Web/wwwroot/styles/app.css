@@ -124,7 +124,7 @@ button.button-ghost {
 }
 
 header {
-    margin:32px 0;
+    padding:32px 0;
     font-size: 4rem;
     text-align: center;
     
@@ -365,13 +365,15 @@ main.links-page {
 }
 
 main.link-types-page,
-main.video-games-systems-page {
+main.video-games-systems-page,
+main.podcast-categories-page {
     width: 555px;
     margin: 0 auto;
 }
 
 .link-types-table,
-.video-games-systems-table {
+.video-games-systems-table,
+.podcast-categories-table {
     th.name {
         width: 404px;
     }
@@ -431,6 +433,21 @@ main.video-games-page {
         th.rating {
             width: 200px;
         }
+    }
+}
+
+main.podcasts-page {
+    width: 800px;
+    margin: 0 auto;
+}
+
+.podcasts-table {
+    th.name {
+        width: 450px;
+    }
+
+    th.category {
+        width: 200px;
     }
 }
 

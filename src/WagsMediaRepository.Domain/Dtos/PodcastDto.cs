@@ -2,7 +2,7 @@ namespace WagsMediaRepository.Domain.Dtos;
 
 public class PodcastDto
 {
-    public Guid PodcastId { get; set; } = Guid.NewGuid();
+    public int PodcastId { get; set; }
     
     public int PodcastCategoryId { get; set; }
 
