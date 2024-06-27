@@ -10,7 +10,9 @@ public class MovieDto
 
     public string ImdbLink { get; set; } = string.Empty;
     
-    public DateTime DateWatched { get; set; }
+    public DateTime? DateWatched { get; set; }
+    
+    public int? SortOrder { get; set; }
     
     public int Rating { get; set; }
 
@@ -21,4 +23,6 @@ public class MovieDto
     public MovieStatusDto MovieStatus { get; set; } = new();
     
     public List<MovieToMovieGenreDto> MovieToMovieGenres { get; set; } = [];
+    
+    public List<MovieToMovieServiceDto> MovieToMovieServices { get; set; } = [];
 }

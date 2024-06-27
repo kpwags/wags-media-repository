@@ -2,7 +2,7 @@
 @using WagsMediaRepository.Web.Handlers.Commands.VideoGames
 @using WagsMediaRepository.Web.Handlers.Queries.VideoGames
 
-<EditForm EditContext="_editContext" OnSubmit="@SubmitForm" FormName="link-form">
+<EditForm EditContext="_editContext" OnSubmit="@SubmitForm" FormName="video-game-form">
     <DataAnnotationsValidator/>
 
     @if (!string.IsNullOrWhiteSpace(_pageError))

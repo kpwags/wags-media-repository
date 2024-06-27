@@ -6,6 +6,8 @@ namespace WagsMediaRepository.Infrastructure.Database;
 
 public class ApplicationDbContext(IConfiguration configuration) : DbContext
 {
+    #region "DB Sets"
+    
     public DbSet<BookDto> Books { get; set; }
     
     public DbSet<BookFormatDto> BookFormats { get; set; }
@@ -35,6 +37,10 @@ public class ApplicationDbContext(IConfiguration configuration) : DbContext
     public DbSet<MovieStatusDto> MovieStatuses { get; set; }
     
     public DbSet<MovieToMovieGenreDto> MovieToMovieGenres { get; set; }
+    
+    public DbSet<MovieServiceDto> MovieServices { get; set; }
+    
+    public DbSet<MovieToMovieServiceDto> MovieToMovieServicess { get; set; }
     
     public DbSet<MusicAlbumDto> MusicAlbums { get; set; }
     
@@ -77,6 +83,8 @@ public class ApplicationDbContext(IConfiguration configuration) : DbContext
     public DbSet<VideoGameToVideoGameGenreDto> VideoGameToVideoGameGenres { get; set; }
     
     public DbSet<VideoGameToVideoGameSystemDto> VideoGameToVideoGameSystems { get; set; }
+    
+    #endregion "DB Sets"
     
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
@@ -450,6 +458,25 @@ public class ApplicationDbContext(IConfiguration configuration) : DbContext
             .HasDefaultValue("");
         #endregion "MovieGenre"
         
+        #region "MovieService"
+        builder.Entity<MovieServiceDto>()
+            .ToTable("MovieService", schema: "movie");
+        
+        builder.Entity<MovieServiceDto>()
+            .HasKey(ms => ms.MovieServiceId)
+            .HasName("PK_Movie_MovieService");
+        
+        builder.Entity<MovieServiceDto>()
+            .Property(ms => ms.Name)
+            .HasMaxLength(25)
+            .IsRequired();
+        
+        builder.Entity<MovieServiceDto>()
+            .Property(ms => ms.ColorCode)
+            .HasMaxLength(25)
+            .HasDefaultValue("");
+        #endregion "MovieService"
+        
         #region "MovieStatus"
         builder.Entity<MovieStatusDto>()
             .ToTable("MovieStatus", schema: "movie");
@@ -494,6 +521,32 @@ public class ApplicationDbContext(IConfiguration configuration) : DbContext
             .HasForeignKey(mg => mg.MovieGenreId)
             .OnDelete(DeleteBehavior.Restrict);
         #endregion "MovieToMovieGenre"
+        
+        #region "MovieToMovieService"
+        builder.Entity<MovieToMovieServiceDto>()
+            .ToTable("MovieToMovieService", schema: "movie");
+        
+        builder.Entity<MovieToMovieServiceDto>()
+            .HasKey(ms => ms.MovieToMovieServicId)
+            .HasName("PK_Movie_MovieToMovieService");
+        
+        builder.Entity<MovieToMovieServiceDto>()
+            .HasIndex(ms => new { ms.MovieId, ms.MovieServiceId })
+            .HasDatabaseName("UQ_Movie_MovieToMovieService_MovieId_MovieServiceId")
+            .IsUnique();
+        
+        builder.Entity<MovieToMovieServiceDto>()
+            .HasOne(ms => ms.Movie)
+            .WithMany(m => m.MovieToMovieServices)
+            .HasForeignKey(ms => ms.MovieId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<MovieToMovieServiceDto>()
+            .HasOne(ms => ms.MovieService)
+            .WithMany(s => s.MovieToMovieService)
+            .HasForeignKey(ms => ms.MovieServiceId)
+            .OnDelete(DeleteBehavior.Restrict);
+        #endregion "MovieToMovieService"
 
         #endregion "Movies"
         

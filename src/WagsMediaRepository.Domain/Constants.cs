@@ -15,4 +15,12 @@ public static class Constants
         Yes = 2,
         No = 3,
     }
+    
+    public enum MovieStatus
+    {
+        PersonalToWatch = 1,
+        JointWatch = 2,
+        Watched = 3,
+        CouldNotFinish = 4,
+    }
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WagsMediaRepository.Infrastructure.Database;
 
@@ -10,9 +11,11 @@ using WagsMediaRepository.Infrastructure.Database;
 namespace WagsMediaRepository.Web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240626224754_MakeMovieDateWatchedOptional")]
+    partial class MakeMovieDateWatchedOptional
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -394,9 +397,6 @@ namespace WagsMediaRepository.Web.Migrations
                         .HasColumnType("INTEGER")
                         .HasDefaultValue(0);
 
-                    b.Property<int?>("SortOrder")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Thoughts")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
@@ -439,30 +439,6 @@ namespace WagsMediaRepository.Web.Migrations
                         .HasName("PK_Movie_MovieGenre");
 
                     b.ToTable("MovieGenre", "movie");
-                });
-
-            modelBuilder.Entity("WagsMediaRepository.Domain.Dtos.MovieServiceDto", b =>
-                {
-                    b.Property<int>("MovieServiceId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ColorCode")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(25)
-                        .HasColumnType("TEXT")
-                        .HasDefaultValue("");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("MovieServiceId")
-                        .HasName("PK_Movie_MovieService");
-
-                    b.ToTable("MovieService", "movie");
                 });
 
             modelBuilder.Entity("WagsMediaRepository.Domain.Dtos.MovieStatusDto", b =>
@@ -511,30 +487,6 @@ namespace WagsMediaRepository.Web.Migrations
                         .HasDatabaseName("UQ_Movie_MovieToMovieGenre_MovieId_MovieGenreId");
 
                     b.ToTable("MovieToMovieGenre", "movie");
-                });
-
-            modelBuilder.Entity("WagsMediaRepository.Domain.Dtos.MovieToMovieServiceDto", b =>
-                {
-                    b.Property<int>("MovieToMovieServicId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MovieId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MovieServiceId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("MovieToMovieServicId")
-                        .HasName("PK_Movie_MovieToMovieService");
-
-                    b.HasIndex("MovieServiceId");
-
-                    b.HasIndex("MovieId", "MovieServiceId")
-                        .IsUnique()
-                        .HasDatabaseName("UQ_Movie_MovieToMovieService_MovieId_MovieServiceId");
-
-                    b.ToTable("MovieToMovieService", "movie");
                 });
 
             modelBuilder.Entity("WagsMediaRepository.Domain.Dtos.MusicAlbumDto", b =>
@@ -1238,25 +1190,6 @@ namespace WagsMediaRepository.Web.Migrations
                     b.Navigation("MovieGenre");
                 });
 
-            modelBuilder.Entity("WagsMediaRepository.Domain.Dtos.MovieToMovieServiceDto", b =>
-                {
-                    b.HasOne("WagsMediaRepository.Domain.Dtos.MovieDto", "Movie")
-                        .WithMany("MovieToMovieServices")
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("WagsMediaRepository.Domain.Dtos.MovieServiceDto", "MovieService")
-                        .WithMany("MovieToMovieService")
-                        .HasForeignKey("MovieServiceId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Movie");
-
-                    b.Navigation("MovieService");
-                });
-
             modelBuilder.Entity("WagsMediaRepository.Domain.Dtos.MusicAlbumToMusicFormatDto", b =>
                 {
                     b.HasOne("WagsMediaRepository.Domain.Dtos.MusicAlbumDto", "MusicAlbum")
@@ -1468,18 +1401,11 @@ namespace WagsMediaRepository.Web.Migrations
             modelBuilder.Entity("WagsMediaRepository.Domain.Dtos.MovieDto", b =>
                 {
                     b.Navigation("MovieToMovieGenres");
-
-                    b.Navigation("MovieToMovieServices");
                 });
 
             modelBuilder.Entity("WagsMediaRepository.Domain.Dtos.MovieGenreDto", b =>
                 {
                     b.Navigation("MovieToMovieGenres");
-                });
-
-            modelBuilder.Entity("WagsMediaRepository.Domain.Dtos.MovieServiceDto", b =>
-                {
-                    b.Navigation("MovieToMovieService");
                 });
 
             modelBuilder.Entity("WagsMediaRepository.Domain.Dtos.MovieStatusDto", b =>

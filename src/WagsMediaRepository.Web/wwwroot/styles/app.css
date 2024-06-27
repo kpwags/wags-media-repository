@@ -299,6 +299,8 @@ section.menu {
             text-align: left;
             padding: 8px;
             border-right: 1px solid var(--text-color);
+            vertical-align: middle;
+            align-items: center;
 
             &.actions {
                 a,
@@ -312,6 +314,7 @@ section.menu {
                 display: flex;
                 flex-wrap: wrap;
                 gap: 8px;
+                align-content: center;
                 
                 &.centered {
                     justify-content: center;
@@ -366,14 +369,18 @@ main.links-page {
 
 main.link-types-page,
 main.video-games-systems-page,
-main.podcast-categories-page {
+main.podcast-categories-page,
+main.movie-genres-page,
+main.movie-services-page {
     width: 555px;
     margin: 0 auto;
 }
 
 .link-types-table,
 .video-games-systems-table,
-.podcast-categories-table {
+.podcast-categories-table,
+.movie-genres-table,
+.movie-services-table {
     th.name {
         width: 404px;
     }
@@ -448,6 +455,60 @@ main.podcasts-page {
 
     th.category {
         width: 200px;
+    }
+}
+
+main.movies-page {
+    width: 800px;
+    margin: 0 auto;
+}
+
+.movies-table {
+    &.to-watch {
+        th.title {
+            width: 400px;
+        }
+        
+        th.services {
+            width: 200px;
+        }
+
+        th.actions {
+            width: 160px;
+        }
+    }
+
+
+    &.watched {
+        th.title {
+            width: 250px;
+        }
+
+        th.date {
+            width: 150px;
+        }
+        
+        th.rating {
+            width: 200px;
+        }
+
+        th.actions {
+            width: 200px;
+        }
+    }
+    
+    &.could-not-finish {
+        th.title {
+            width: 450px;
+        }
+
+        th.date {
+            width: 150px;
+        }
+
+        th.actions {
+            width: 200px;
+        }
     }
 }
 
@@ -589,6 +650,12 @@ fieldset {
     &.black {
         color: var(--black-1);
     }
+}
+
+.star-rating {
+    display: flex;
+    justify-content: center;
+    column-gap: 2px;
 }
 
 .star {

@@ -1,15 +1,17 @@
-@for (var i = 0; i < Rating; i += 1)
-{
-    <FilledStar />
-}
-
-@if (Rating < 5)
-{
-    for (var i = Rating; i < 5; i += 1)
+<div class="star-rating">
+    @for (var i = 0; i < Rating; i += 1)
     {
-        <EmptyStar />
+        <FilledStar />
     }
-}
+
+    @if (Rating < 5)
+    {
+        for (var i = Rating; i < 5; i += 1)
+        {
+            <EmptyStar />
+        }
+    }
+</div>
 
 @code {
     [Parameter, EditorRequired] public int Rating { get; set; }

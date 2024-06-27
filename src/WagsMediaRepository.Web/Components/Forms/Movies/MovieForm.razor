@@ -1,0 +1,185 @@
+@rendermode InteractiveServer
+
+@using System.Text.Json
+@using WagsMediaRepository.Domain
+@using WagsMediaRepository.Web.Handlers.Commands.Movies
+@using WagsMediaRepository.Web.Handlers.Queries.Movies
+
+<EditForm EditContext="_editContext" OnSubmit="@SubmitForm" FormName="movie-form">
+    <DataAnnotationsValidator/>
+
+    @if (!string.IsNullOrWhiteSpace(_pageError))
+    {
+        <div class="alert error">
+            @_pageError
+        </div>
+    }
+    <fieldset disabled="@_isProcessing" aria-busy="@_isProcessing">
+        <div class="form-field">
+            <label for="title">
+                <span class="required-indicator">*</span>Title
+                <InputText type="text" id="title" @bind-Value="@_model.Title" />
+                <ValidationMessage For="@(() => _model.Title)"></ValidationMessage>
+            </label>
+        </div>
+
+        <div class="form-field">
+            <label for="completion-status">
+                <span class="required-indicator">*</span>Status
+                <InputSelect type="text" id="completion-status" @bind-Value="@_model.Status">
+                    <option value=""></option>
+                    <option value="@Constants.MovieStatus.PersonalToWatch">Personal To Watch</option>
+                    <option value="@Constants.MovieStatus.JointWatch">Joint To Watch</option>
+                    <option value="@Constants.MovieStatus.Watched">Watched</option>
+                    <option value="@Constants.MovieStatus.CouldNotFinish">Couldn't Finish</option>
+                </InputSelect>
+                <ValidationMessage For="@(() => _model.Status)"></ValidationMessage>
+            </label>
+        </div>
+
+        <div class="form-field">
+            <label for="link">
+                <span class="required-indicator">*</span>IMDb Link
+                <InputText type="text" id="link" @bind-Value="@_model.ImdbLink" />
+                <ValidationMessage For="@(() => _model.ImdbLink)"></ValidationMessage>
+            </label>
+        </div>
+
+        <div class="form-field">
+            <label for="cover-image">
+                Poster Image
+                <InputText type="text" id="cover-image" @bind-Value="@_model.PosterImageUrl" />
+                <ValidationMessage For="@(() => _model.PosterImageUrl)"></ValidationMessage>
+            </label>
+        </div>
+
+        <div class="form-field">
+            <label for="sort-order">
+                Sort Order
+                <InputNumber id="sort-order" @bind-Value="@_model.SortOrder" />
+                <ValidationMessage For="@(() => _model.SortOrder)"></ValidationMessage>
+            </label>
+        </div>
+        
+        <div class="form-field">
+            <label for="date-completed">
+                Date Completed
+                <InputDate id="date-completed" @bind-Value="@_model.DateWatched" />
+                <ValidationMessage For="@(() => _model.DateWatched)"></ValidationMessage>
+            </label>
+        </div>
+
+        <div class="form-field">
+            <label for="rating">
+                Rating
+                <InputNumber id="rating" @bind-Value="@_model.Rating" />
+                <ValidationMessage For="@(() => _model.Rating)"></ValidationMessage>
+            </label>
+        </div>
+
+        <div class="form-field">
+            <label for="thoughts">
+                Thoughts
+                <InputTextArea id="thoughts" @bind-Value="@_model.Thoughts" />
+                <ValidationMessage For="@(() => _model.Thoughts)"></ValidationMessage>
+            </label>
+        </div>
+
+        <div class="form-field">
+            <label for="genres">
+                Genre(s)
+                <select id="genres" @bind="@_model.GenreIds" multiple>
+                    @foreach (var genre in _movieGenres)
+                    {
+                    <option value="@genre.MovieGenreId">@genre.Name</option>
+                    }
+                </select>
+                <ValidationMessage For="@(() => _model.GenreIds)"></ValidationMessage>
+            </label>
+        </div>
+
+        <div class="form-field">
+            <label for="services">
+                Service(s)
+                <select id="services" @bind="@_model.ServiceIds" multiple>
+                    @foreach (var service in _movieServices)
+                    {
+                    <option value="@service.MovieServiceId">@service.Name</option>
+                    }
+                </select>
+                <ValidationMessage For="@(() => _model.ServiceIds)"></ValidationMessage>
+            </label>
+        </div>
+
+        <div class="form-field form-actions">
+            <button type="submit">Save</button>
+            @if (Movie is not null)
+            {
+                <a href="/video-games" class="button-ghost">Cancel</a>
+            }
+        </div>
+    </fieldset>
+</EditForm>
+
+@code {
+    private string _pageError = string.Empty;
+    private bool _isProcessing;
+    private EditContext? _editContext;
+    private SaveMovie.Request _model = new();
+    
+    private IReadOnlyCollection<MovieGenreApiModel> _movieGenres = [];
+    private IReadOnlyCollection<MovieServiceApiModel> _movieServices = [];
+    
+    [Parameter] public MovieApiModel? Movie { get; set; }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var movieGenreResult = await Mediator.Send(new GetAllMovieGenres.Request());
+
+        if (!movieGenreResult.IsSuccessful)
+        {
+            _pageError = movieGenreResult.ErrorMessage;
+            return;
+        }
+        
+        var movieServiceResult = await Mediator.Send(new GetAllMovieServices.Request());
+
+        if (!movieServiceResult.IsSuccessful)
+        {
+            _pageError = movieServiceResult.ErrorMessage;
+            return;
+        }
+
+        if (Movie is not null)
+        {
+            _model = new SaveMovie.Request(Movie);
+        }
+
+        _editContext = new EditContext(_model);
+
+        _movieGenres = movieGenreResult.Value ?? [];
+        _movieServices = movieServiceResult.Value ?? [];
+    }
+    
+    private async Task SubmitForm(EditContext editContext)
+    {
+        _isProcessing = true;
+        
+        if (!editContext.Validate())
+        {
+            _isProcessing = false;
+            return;
+        }
+
+        var result = await Mediator.Send(_model);
+        
+        if (!result.IsSuccessful)
+        {
+            _pageError = result.ErrorMessage;
+            _isProcessing = false;
+            return;
+        }
+        
+        NavManager.NavigateTo("/movies/", true);
+    }
+}

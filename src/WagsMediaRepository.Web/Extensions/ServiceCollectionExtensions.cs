@@ -8,6 +8,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<ILinkRepository, LinkRepository>();
+        services.AddScoped<IMovieRepository, MovieRepository>();
         services.AddScoped<IPodcastRepository, PodcastRepository>();
         services.AddScoped<IVideoGameRepository, VideoGameRepository>();
         

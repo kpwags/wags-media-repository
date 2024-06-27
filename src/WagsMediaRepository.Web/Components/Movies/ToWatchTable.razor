@@ -1,0 +1,59 @@
+@inject IJSRuntime JSRuntime
+
+<div class="table-subtitle">
+    <h2>@Title</h2>
+</div>
+
+<table class="data-table movies-table to-watch">
+    <thead>
+    <tr>
+        <th class="sort">&nbsp;</th>
+        <th class="title">Title</th>
+        <th class="services">Service(s)</th>
+        <th class="actions">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var movie in Movies)
+    {
+        <tr>
+            <td class="centered">@movie.SortOrder</td>
+            <td><a href="@movie.ImdbLink" target="_blank" rel="noreferrer nofollow">@movie.Title</a></td>
+            <td>
+                <div class="tag-cell centered">
+                    @foreach (var services in movie.Services)
+                    {
+                        <span class="tag" style="background-color:@services.ColorCode;">@services.Name</span>
+                    }
+                </div>
+            </td>
+            <td class="centered actions">
+                <a href="/movies/edit/@movie.MovieId">Edit</a>
+                <button type="button" class="link-button" @onclick="@(_ => DeleteMovie(movie))">Delete</button>
+            </td>
+        </tr>
+    }
+    @if (Movies.Count == 0)
+    {
+        <tr>
+            <td colspan="2" class="centered no-data"><em>No Movies in List</em></td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@code {
+    [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+    
+    [Parameter, EditorRequired] public IReadOnlyCollection<MovieApiModel> Movies { get; set; } = [];
+    
+    [Parameter, EditorRequired] public EventCallback<int> OnDelete { get; set; }
+
+    private async Task DeleteMovie(MovieApiModel movie)
+    {
+        if (!await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to delete the movie '{movie.Title}'?"))
+            return;
+
+        await OnDelete.InvokeAsync(movie.MovieId);
+    }
+}
