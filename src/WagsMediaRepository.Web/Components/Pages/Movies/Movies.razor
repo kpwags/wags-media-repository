@@ -1,6 +1,7 @@
 @page "/movies"
 
 @using WagsMediaRepository.Domain
+@using WagsMediaRepository.Infrastructure.Helpers
 @using WagsMediaRepository.Web.Components.Movies
 @using WagsMediaRepository.Web.Handlers.Commands.Movies
 @using WagsMediaRepository.Web.Handlers.Queries.Movies
@@ -77,6 +78,7 @@
         _personalWatchList = _movies
             .Where(m => m.MovieStatusId == (int)Constants.MovieStatus.PersonalToWatch)
             .OrderBy(m => m.SortOrder ?? int.MaxValue)
+            .ThenBy(m => Sorters.SortByTitle(m.Title))
             .ToList();
             
         _jointWatchList = _movies
@@ -86,7 +88,7 @@
             
         _watchedMovies = _movies
             .Where(m => m.MovieStatusId == (int)Constants.MovieStatus.Watched)
-            .OrderBy(m => m.Title)
+            .OrderByDescending(m => m.DateWatched)
             .ToList();
             
         _couldNotFinishMovies = _movies

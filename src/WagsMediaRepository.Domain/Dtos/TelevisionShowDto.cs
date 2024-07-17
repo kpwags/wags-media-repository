@@ -17,6 +17,10 @@ public class TelevisionShowDto
     public string CoverImageUrl { get; set; } = string.Empty;
     
     public int CurrentSeason { get; set; }
+    
+    public int NumberOfSeasons { get; set; }
+    
+    public int? SortOrder { get; set; }
 
     public TelevisionStatusDto TelevisionStatus { get; set; } = new();
 

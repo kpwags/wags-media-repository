@@ -824,10 +824,16 @@ namespace WagsMediaRepository.Web.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("NumberOfSeasons")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("Rating")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
                         .HasDefaultValue(0);
+
+                    b.Property<int?>("SortOrder")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("TelevisionStatusId")
                         .HasColumnType("INTEGER");

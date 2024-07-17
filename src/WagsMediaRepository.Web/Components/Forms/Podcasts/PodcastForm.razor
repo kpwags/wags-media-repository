@@ -33,13 +33,13 @@
         <div class="form-field">
             <label for="category">
                 <span class="required-indicator">*</span>Category
-                <InputSelect type="text" id="category" @bind-Value="@_model.PodcastCategoryId">
-                    <option value=""></option>
-                    @foreach (var category in _podcastCategories)
-                    {
-                        <option value="@category.PodcastCategoryId">@category.Name</option>
-                    }
-                </InputSelect>
+                <RadzenDropDown
+                    @bind-Value="@_model.PodcastCategoryId"
+                    Data="@_podcastCategories"
+                    TextProperty="@nameof(PodcastCategoryApiModel.Name)"
+                    ValueProperty="@nameof(PodcastCategoryApiModel.PodcastCategoryId)"
+                    Name="podcast-category"
+                />
                 <ValidationMessage For="@(() => _model.PodcastCategoryId)"></ValidationMessage>
             </label>
         </div>

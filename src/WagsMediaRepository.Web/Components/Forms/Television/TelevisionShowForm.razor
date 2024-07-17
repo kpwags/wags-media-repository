@@ -1,0 +1,209 @@
+@rendermode InteractiveServer
+
+@using WagsMediaRepository.Web.Handlers.Commands.Television
+@using WagsMediaRepository.Web.Handlers.Queries.Television
+
+<EditForm EditContext="_editContext" OnSubmit="@SubmitForm" FormName="tv-show-form">
+    <DataAnnotationsValidator/>
+
+    @if (!string.IsNullOrWhiteSpace(_pageError))
+    {
+        <div class="alert error">
+            @_pageError
+        </div>
+    }
+    
+    <fieldset disabled="@_isProcessing" aria-busy="@_isProcessing">
+        <div class="form-field">
+            <label for="title">
+                <span class="required-indicator">*</span>Title
+                <InputText type="text" id="title" @bind-Value="@_model.Title" />
+                <ValidationMessage For="@(() => _model.Title)"></ValidationMessage>
+            </label>
+        </div>
+
+        <div class="form-field">
+            <label for="completion-status">
+                <span class="required-indicator">*</span>Status
+                <RadzenDropDown
+                    @bind-Value="@_model.TelevisionStatusId"
+                    Data="@_statuses"
+                    TextProperty="@nameof(TelevisionStatusApiModel.Name)"
+                    ValueProperty="@nameof(TelevisionStatusApiModel.TelevisionStatusId)"
+                    Name="completion-status"
+                />
+                <ValidationMessage For="@(() => _model.TelevisionStatusId)"></ValidationMessage>
+            </label>
+        </div>
+
+        <div class="form-field">
+            <label for="link">
+                <span class="required-indicator">*</span>IMDb Link
+                <InputText type="text" id="link" @bind-Value="@_model.ImdbLink" />
+                <ValidationMessage For="@(() => _model.ImdbLink)"></ValidationMessage>
+            </label>
+        </div>
+
+        <div class="form-field">
+            <label for="cover-image">
+                <span class="required-indicator">*</span>Cover Image
+                <InputText type="text" id="cover-image" @bind-Value="@_model.CoverImageUrl" />
+                <ValidationMessage For="@(() => _model.CoverImageUrl)"></ValidationMessage>
+            </label>
+        </div>
+
+        <div class="form-field">
+            <label for="sort-order">
+                Sort Order
+                <InputNumber id="sort-order" @bind-Value="@_model.SortOrder" />
+                <ValidationMessage For="@(() => _model.SortOrder)"></ValidationMessage>
+            </label>
+        </div>
+
+        <div class="form-field">
+            <label for="current-season">
+                <span class="required-indicator">*</span>Current Season
+                <InputNumber id="current-season" @bind-Value="@_model.CurrentSeason" />
+                <ValidationMessage For="@(() => _model.CurrentSeason)"></ValidationMessage>
+            </label>
+        </div>
+
+        <div class="form-field">
+            <label for="number-of-seasons">
+                <span class="required-indicator">*</span>Number of Seasons
+                <InputNumber id="number-of-seasons" @bind-Value="@_model.NumberOfSeasons" />
+                <ValidationMessage For="@(() => _model.NumberOfSeasons)"></ValidationMessage>
+            </label>
+        </div>
+
+        <div class="form-field">
+            <label for="rating">
+                Rating
+                <RadzenRating @bind-Value="@_model.Rating" />
+            </label>
+        </div>
+
+        <div class="form-field">
+            <label for="thoughts">
+                Thoughts
+                <InputTextArea id="thoughts" @bind-Value="@_model.Thoughts" />
+                <ValidationMessage For="@(() => _model.Thoughts)"></ValidationMessage>
+            </label>
+        </div>
+
+        <div class="form-field">
+            <label for="genres">
+                Genre(s)
+                <RadzenDropDown
+                    @bind-Value="@_model.GenreIds"
+                    Data="@_genres"
+                    TextProperty="@nameof(TelevisionGenreApiModel.Name)"
+                    ValueProperty="@nameof(TelevisionGenreApiModel.TelevisionGenreId)" 
+                    Name="genres"
+                    Multiple="true"
+                    AllowClear="true"
+                    Chips="true"
+                />
+                <ValidationMessage For="@(() => _model.GenreIds)"></ValidationMessage>
+            </label>
+        </div>
+
+        <div class="form-field">
+            <label for="services">
+                Service(s)
+                <RadzenDropDown
+                    @bind-Value="@_model.ServiceIds"
+                    Data="@_services"
+                    TextProperty="@nameof(TelevisionServiceApiModel.Name)"
+                    ValueProperty="@nameof(TelevisionServiceApiModel.TelevisionServiceId)"
+                    Name="services"
+                    Multiple="true"
+                    AllowClear="true"
+                    Chips="true"
+                />
+                <ValidationMessage For="@(() => _model.ServiceIds)"></ValidationMessage>
+            </label>
+        </div>
+
+        <div class="form-field form-actions">
+            <button type="submit">Save</button>
+            @if (TelevisionShow is not null)
+            {
+                <a href="/tv/" class="button-ghost">Cancel</a>
+            }
+        </div>
+    </fieldset>
+</EditForm>
+
+@code {
+    private string _pageError = string.Empty;
+    private bool _isProcessing;
+    private EditContext? _editContext;
+    private SaveTelevisionShow.Request _model = new();
+    
+    private IReadOnlyCollection<TelevisionGenreApiModel> _genres = [];
+    private IReadOnlyCollection<TelevisionStatusApiModel> _statuses = [];
+    private IReadOnlyCollection<TelevisionServiceApiModel> _services = [];
+    
+    [Parameter] public TelevisionShowApiModel? TelevisionShow { get; set; }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var tvStatusesResult = await Mediator.Send(new GetAllTelevisionStatuses.Request());
+
+        if (!tvStatusesResult.IsSuccessful)
+        {
+            _pageError = tvStatusesResult.ErrorMessage;
+            return;
+        }
+        
+        var tvGenresResult = await Mediator.Send(new GetAllTelevisionGenres.Request());
+
+        if (!tvGenresResult.IsSuccessful)
+        {
+            _pageError = tvGenresResult.ErrorMessage;
+            return;
+        }
+        
+        var tvServicesResult = await Mediator.Send(new GetAllTelevisionServices.Request());
+
+        if (!tvServicesResult.IsSuccessful)
+        {
+            _pageError = tvServicesResult.ErrorMessage;
+            return;
+        }
+
+        if (TelevisionShow is not null)
+        {
+            _model = new SaveTelevisionShow.Request(TelevisionShow);
+        }
+
+        _editContext = new EditContext(_model);
+
+        _statuses = tvStatusesResult.Value ?? [];
+        _genres = tvGenresResult.Value ?? [];
+        _services = tvServicesResult.Value ?? [];
+    }
+    
+    private async Task SubmitForm(EditContext editContext)
+    {
+        _isProcessing = true;
+        
+        if (!editContext.Validate())
+        {
+            _isProcessing = false;
+            return;
+        }
+
+        var result = await Mediator.Send(_model);
+        
+        if (!result.IsSuccessful)
+        {
+            _pageError = result.ErrorMessage;
+            _isProcessing = false;
+            return;
+        }
+        
+        NavManager.NavigateTo("/tv/", true);
+    }
+}

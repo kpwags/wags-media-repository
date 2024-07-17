@@ -1,0 +1,70 @@
+@using WagsMediaRepository.Domain
+@inject IJSRuntime JSRuntime
+
+<div class="table-subtitle">
+    <h2>@Title</h2>
+</div>
+
+<table class="data-table tv-table to-watch">
+    <thead>
+    <tr>
+        @if (HasSort)
+        {
+            <th class="sort">&nbsp;</th>
+        }
+        <th class="title">Title</th>
+        <th class="services">Service(s)</th>
+        <th class="actions">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var tvShow in Shows)
+    {
+        <tr>
+            @if (HasSort)
+            {
+                <td class="centered">@tvShow.SortOrder</td>
+            }
+            <td><a href="@tvShow.ImdbLink" target="_blank" rel="noreferrer nofollow">@tvShow.Title</a></td>
+            <td>
+                <div class="tag-cell centered">
+                    @foreach (var services in tvShow.Services)
+                    {
+                        <span class="tag" style="background-color:@services.ColorCode;">@services.Name</span>
+                    }
+                </div>
+            </td>
+            <td class="centered actions">
+                <a href="/tv/edit/@tvShow.TelevisionShowId">Edit</a>
+                <button type="button" class="link-button" @onclick="@(_ => DeleteTvShow(tvShow))">Delete</button>
+            </td>
+        </tr>
+    }
+    @if (Shows.Count == 0)
+    {
+        <tr>
+            <td colspan="@(Status == Constants.TelevisionStatus.InBetweenSeasons ? 3 : 4)" class="centered no-data"><em>No TV Shows in List</em></td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@code {
+    [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+    
+    [Parameter, EditorRequired] public Constants.TelevisionStatus Status { get; set; }
+    
+    [Parameter, EditorRequired] public IReadOnlyCollection<TelevisionShowApiModel> Shows { get; set; } = [];
+    
+    [Parameter, EditorRequired] public EventCallback<int> OnDelete { get; set; }
+
+    private bool HasSort => Status != Constants.TelevisionStatus.Watching && Status != Constants.TelevisionStatus.InBetweenSeasons;
+
+    private async Task DeleteTvShow(TelevisionShowApiModel tvShow)
+    {
+        if (!await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to delete the show '{tvShow.Title}'?"))
+            return;
+
+        await OnDelete.InvokeAsync(tvShow.TelevisionShowId);
+    }
+}

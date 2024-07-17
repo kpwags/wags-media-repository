@@ -23,4 +23,14 @@ public static class Constants
         Watched = 3,
         CouldNotFinish = 4,
     }
+    
+    public enum TelevisionStatus
+    {
+        PersonalToWatch = 1,
+        JointWatch = 2,
+        Watching = 3,
+        InBetweenSeasons = 4,
+        Watched = 5,
+        CouldNotFinish = 6,
+    }
 }

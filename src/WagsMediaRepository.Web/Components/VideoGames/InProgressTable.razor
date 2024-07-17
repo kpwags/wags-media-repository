@@ -27,7 +27,7 @@
             <td class="centered">@videoGame.DateStarted?.ToString("M/d/yyyy")</td>
             <td class="centered actions">
                 <a href="/video-games/edit/@videoGame.VideoGameId">Edit</a>
-                <button type="button" class="link-button">Delete</button>
+                <button type="button" class="link-button" @onclick="@(_ => DeleteVideoGame(videoGame))">Delete</button>
             </td>
         </tr>
     }
@@ -42,4 +42,8 @@
 
 @code {
     [Parameter, EditorRequired] public IReadOnlyCollection<VideoGameApiModel> VideoGames { get; set; } = [];
+    
+    [Parameter, EditorRequired] public EventCallback<VideoGameApiModel> OnDelete { get; set; }
+    
+    private async Task DeleteVideoGame(VideoGameApiModel game) => await OnDelete.InvokeAsync(game);
 }

@@ -10,6 +10,8 @@ public interface IVideoGameRepository
 
     Task<VideoGame> UpdateVideoGameAsync(VideoGame videoGame);
 
+    Task DeleteVideoGameAsync(int videoGameId);
+
     Task<VideoGameSystem?> GetVideoGameSystemByIdAsync(int videoGameSystemId);
     
     Task<List<VideoGameSystem>> GetAllVideoGameSystemsAsync();

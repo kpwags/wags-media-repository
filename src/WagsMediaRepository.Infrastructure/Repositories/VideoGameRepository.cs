@@ -149,6 +149,17 @@ public class VideoGameRepository(IDbContextFactory<ApplicationDbContext> context
 
         return VideoGame.FromDto(updatedVideoGame);
     }
+
+    public async Task DeleteVideoGameAsync(int videoGameId)
+    {
+        await using var dbContext = await contextFactory.CreateDbContextAsync();
+        
+        await dbContext.VideoGameToVideoGameGenres.Where(vgg => vgg.VideoGameId == videoGameId).ExecuteDeleteAsync();
+        await dbContext.VideoGameToVideoGameSystems.Where(vgs => vgs.VideoGameId == videoGameId).ExecuteDeleteAsync();
+        await dbContext.VideoGames.Where(vg => vg.VideoGameId == videoGameId).ExecuteDeleteAsync();
+
+        await dbContext.SaveChangesAsync();
+    }
     #endregion "Video Games"
     
     #region "Video Game Systems"

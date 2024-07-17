@@ -3,6 +3,7 @@ using WagsMediaRepository.Application.Repositories;
 using WagsMediaRepository.Domain.Dtos;
 using WagsMediaRepository.Domain.Exceptions;
 using WagsMediaRepository.Infrastructure.Database;
+using WagsMediaRepository.Infrastructure.Helpers;
 
 namespace WagsMediaRepository.Infrastructure.Repositories;
 
@@ -101,10 +102,7 @@ public class PodcastRepository(IDbContextFactory<ApplicationDbContext> contextFa
             .ToListAsync();
 
         return podcasts
-            .OrderBy(p =>
-                p.Name.StartsWith("A ", StringComparison.OrdinalIgnoreCase) || p.Name.StartsWith("The ", StringComparison.OrdinalIgnoreCase) ?
-                    p.Name.Substring(p.Name.IndexOf(" ", StringComparison.Ordinal) + 1) :
-                    p.Name)
+            .OrderBy(p => Sorters.SortByTitle(p.Name))
             .Select(Podcast.FromDto)
             .ToList();
     }

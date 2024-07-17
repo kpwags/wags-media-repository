@@ -34,6 +34,7 @@
 
 html,
 body {
+    background: var(--background-color);
     background-color: var(--background-color);
     color: var(--text-color);
     font-size: 100%;
@@ -49,6 +50,7 @@ h1 {
 
 a,
 a:visited {
+    text-decoration: underline;
     color: var(--primary-color-1);
     
     &:hover {
@@ -254,6 +256,7 @@ section.menu {
     justify-content: space-between;
     align-items: center;
     margin-top: 32px;
+    margin-bottom: 24px;
     
     h1 {
         margin: 0;
@@ -267,7 +270,7 @@ section.menu {
 }
 
 .data-table {
-    margin: 24px 0;
+    margin: 16px 0 24px 0;
     border: 1px solid var(--text-color);
     border-collapse: collapse;
     
@@ -371,7 +374,8 @@ main.link-types-page,
 main.video-games-systems-page,
 main.podcast-categories-page,
 main.movie-genres-page,
-main.movie-services-page {
+main.movie-services-page,
+main.reference-page {
     width: 555px;
     margin: 0 auto;
 }
@@ -380,7 +384,8 @@ main.movie-services-page {
 .video-games-systems-table,
 .podcast-categories-table,
 .movie-genres-table,
-.movie-services-table {
+.movie-services-table,
+.reference-table {
     th.name {
         width: 404px;
     }
@@ -512,6 +517,52 @@ main.movies-page {
     }
 }
 
+main.tv-page {
+    width: 650px;
+    margin: 0 auto;
+}
+
+.tv-table {
+    &.to-watch {
+        th.title {
+            width: 400px;
+        }
+
+        th.services {
+            width: 200px;
+        }
+
+        th.actions {
+            width: 160px;
+        }
+    }
+
+
+    &.watched {
+        th.title {
+            width: 250px;
+        }
+
+        th.rating {
+            width: 200px;
+        }
+
+        th.actions {
+            width: 200px;
+        }
+    }
+
+    &.could-not-finish {
+        th.title {
+            width: 450px;
+        }
+
+        th.actions {
+            width: 200px;
+        }
+    }
+}
+
 .alert {
     padding: 16px 12px 12px;
     margin: 16px 0;
@@ -555,6 +606,8 @@ fieldset {
 
     label {
         font-weight: 600;
+        display: block;
+        margin: 0;
     }
 
     input {
@@ -623,6 +676,56 @@ fieldset {
     .required-indicator {
         color: var(--error-color);
         padding-right: 4px;
+    }
+
+    .rz-colorpicker {
+        display: flex;
+        justify-content: space-between;
+        height: 44px;
+        margin: 4px 0;
+        border: 1px solid var(--black-1);
+        
+        .rz-colorpicker-value {
+            margin: 0 12px;
+            height: 20px;
+            border-radius: 4px;
+        }
+    }
+    
+    .rz-dropdown {
+        display: flex;
+        border: 1px solid var(--black-1);
+        margin: 4px 0;
+    }
+    
+    .rz-rating {
+        display: flex;
+        margin: 12px 0;
+        --rz-rating-color: var(--primary-color-1);
+        align-items: center;
+    }
+    
+    .rz-rating a {
+        height: 36px;
+        width: 36px;
+        font-size: 36px;
+
+        &.rz-rating-cancel {
+            height: 24px;
+            width: 24px;
+            font-size: 24px;
+            margin-right: 12px;
+
+            .rz-rating-icon {
+                height: 24px;
+                width: 24px;
+            }
+        }
+        
+        .rz-rating-icon {
+            height: 36px;
+            width: 36px;
+        }
     }
 }
 

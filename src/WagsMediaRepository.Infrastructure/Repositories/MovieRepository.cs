@@ -3,6 +3,7 @@ using WagsMediaRepository.Application.Repositories;
 using WagsMediaRepository.Domain.Dtos;
 using WagsMediaRepository.Domain.Exceptions;
 using WagsMediaRepository.Infrastructure.Database;
+using WagsMediaRepository.Infrastructure.Helpers;
 
 namespace WagsMediaRepository.Infrastructure.Repositories;
 
@@ -194,7 +195,10 @@ public class MovieRepository(IDbContextFactory<ApplicationDbContext> dbContextFa
             .ThenInclude(ms => ms.MovieService)
             .ToListAsync();
 
-        return movies.Select(Movie.FromDto).ToList();
+        return movies
+            .Select(Movie.FromDto)
+            .OrderBy(m => Sorters.SortByTitle(m.Title))
+            .ToList();
     }
 
     public async Task<Movie> AddMovieAsync(Movie movie)

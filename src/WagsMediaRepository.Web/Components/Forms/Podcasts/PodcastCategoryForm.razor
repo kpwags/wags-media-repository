@@ -24,7 +24,13 @@
         <div class="form-field">
             <label for="color-code">
                 <span class="required-indicator">*</span>Color Code
-                <InputText type="text" id="color-code" @bind-Value="@_model.ColorCode"/>
+                <RadzenColorPicker
+                    @bind-Value="@_model.ColorCode"
+                    ShowHSV="true"
+                    ShowRGBA="true"
+                    ShowButton="true"
+                    ShowColors="false"
+                />
                 <ValidationMessage For="@(() => _model.ColorCode)"></ValidationMessage>
             </label>
         </div>

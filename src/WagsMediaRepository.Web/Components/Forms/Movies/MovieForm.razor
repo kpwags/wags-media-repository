@@ -1,6 +1,5 @@
 @rendermode InteractiveServer
 
-@using System.Text.Json
 @using WagsMediaRepository.Domain
 @using WagsMediaRepository.Web.Handlers.Commands.Movies
 @using WagsMediaRepository.Web.Handlers.Queries.Movies
@@ -115,7 +114,7 @@
             <button type="submit">Save</button>
             @if (Movie is not null)
             {
-                <a href="/video-games" class="button-ghost">Cancel</a>
+                <a href="/movies/" class="button-ghost">Cancel</a>
             }
         </div>
     </fieldset>

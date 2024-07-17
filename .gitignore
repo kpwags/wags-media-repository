@@ -401,3 +401,4 @@ FodyWeavers.xsd
 /src/WagsMediaRepository.Web/LocalDatabase.db-shm
 /src/WagsMediaRepository.Web/LocalDatabase.db-wal
 /src/WagsMediaRepository.Web/appsettings.Development.json
+tools/WagsMediaRepository.Loader/appsettings.json

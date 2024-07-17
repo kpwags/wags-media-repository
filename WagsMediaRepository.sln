@@ -19,6 +19,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WagsMediaRepository.Web.Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WagsMediaRepository.Generator", "src\WagsMediaRepository.Generator\WagsMediaRepository.Generator.csproj", "{E7AE09C6-0895-4FA6-8DE0-5CA866D9766D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{40B3EB6A-8317-481B-99A6-DE016D63E682}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WagsMediaRepository.Loader", "tools\WagsMediaRepository.Loader\WagsMediaRepository.Loader.csproj", "{39194196-7DD4-4F3E-8C13-6E78F73E54D1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,6 +38,7 @@ Global
 		{A1995382-9CB7-4401-97D2-A94873E75F6B} = {C5829981-0E51-4D89-B944-E21960ED908C}
 		{8E88F54B-55D9-412F-B72F-ECEDD9B796BF} = {1C369FC8-6E7A-4221-9E06-94AB57269F19}
 		{E7AE09C6-0895-4FA6-8DE0-5CA866D9766D} = {C5829981-0E51-4D89-B944-E21960ED908C}
+		{39194196-7DD4-4F3E-8C13-6E78F73E54D1} = {40B3EB6A-8317-481B-99A6-DE016D63E682}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B94C1FC7-6A05-4588-BFF2-C92AAD2DA9B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -60,5 +65,9 @@ Global
 		{E7AE09C6-0895-4FA6-8DE0-5CA866D9766D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7AE09C6-0895-4FA6-8DE0-5CA866D9766D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7AE09C6-0895-4FA6-8DE0-5CA866D9766D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39194196-7DD4-4F3E-8C13-6E78F73E54D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39194196-7DD4-4F3E-8C13-6E78F73E54D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39194196-7DD4-4F3E-8C13-6E78F73E54D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39194196-7DD4-4F3E-8C13-6E78F73E54D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
