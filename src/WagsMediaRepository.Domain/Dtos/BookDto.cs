@@ -31,6 +31,8 @@ public class BookDto
     public string CoverImageUrl { get; set; } = string.Empty;
     
     public bool IsAtLibrary { get; set; }
+    
+    public bool IsPurchased { get; set; }
 
     public int CurrentPage { get; set; } = 1;
 

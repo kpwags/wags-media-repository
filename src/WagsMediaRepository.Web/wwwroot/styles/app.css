@@ -563,6 +563,102 @@ main.tv-page {
     }
 }
 
+main.books-page {
+    width: 1280px;
+}
+
+.books-table {
+    width: 100%;
+
+    &.in-progress {
+        th.title {
+            width: 38%;
+        }
+
+        th.percent {
+            width: 12%;
+        }
+
+        th.author {
+            width: 20%;
+        }
+
+        th.date {
+            width: 15%;
+        }
+
+        th.actions {
+            width: 15%;
+        }
+    }
+
+    &.to-read {
+        th.sort {
+            width: 5%;
+        }
+        
+        th.title {
+            width: 33%;
+        }
+
+        th.author {
+            width: 20%;
+        }
+
+        th.type {
+            width: 12%;
+        }
+
+        th.series {
+            width: 20%;
+        }
+
+        th.actions {
+            width: 15%;
+        }
+    }
+
+    &.completed {
+        th.title {
+            width: 30%;
+        }
+
+        th.author {
+            width: 20%;
+        }
+
+        th.date {
+            width: 15%;
+        }
+
+        th.rating {
+            width: 20%;
+        }
+
+        th.actions {
+            width: 15%;
+        }
+    }
+
+    &.abandoned {
+        th.title {
+            width: 50%;
+        }
+
+        th.author {
+            width: 20%;
+        }
+
+        th.date {
+            width: 15%;
+        }
+
+        th.actions {
+            width: 15%;
+        }
+    }
+}
+
 .alert {
     padding: 16px 12px 12px;
     margin: 16px 0;

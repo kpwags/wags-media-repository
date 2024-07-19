@@ -33,4 +33,26 @@ public static class Constants
         Watched = 5,
         CouldNotFinish = 6,
     }
+
+    public enum BookType
+    {
+        Fiction = 1,
+        NonFiction = 2,
+        Reference = 3,
+    }
+
+    public enum BookFormat
+    {
+        Hardcover = 1,
+        Paperback = 2,
+        Ebook = 3,
+    }
+
+    public enum BookStatus
+    {
+        ToRead = 1,
+        Reading = 2,
+        Finished = 3,
+        Abandoned = 4,
+    }
 }
