@@ -4,6 +4,7 @@ using WagsMediaRepository.Infrastructure.Database;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WagsMediaRepository.Application.Repositories;
+using WagsMediaRepository.Domain;
 using WagsMediaRepository.Domain.Models;
 using WagsMediaRepository.Infrastructure.Repositories;
 using WagsMediaRepository.Loader.Configuration;
@@ -21,6 +22,9 @@ internal class Program
     private static IPodcastRepository? _podcastRepository;
     private static IMovieRepository? _movieRepository;
     private static ILinkRepository? _linkRepository;
+    private static IVideoGameRepository? _videoGameRepository;
+    private static IBookRepository? _bookRepository;
+    private static IMusicRepository? _musicRepository;
 
     static async Task Main()
     {
@@ -47,6 +51,9 @@ internal class Program
         services.AddTransient<IPodcastRepository, PodcastRepository>();
         services.AddTransient<IMovieRepository, MovieRepository>();
         services.AddTransient<ILinkRepository, LinkRepository>();
+        services.AddTransient<IVideoGameRepository, VideoGameRepository>();
+        services.AddTransient<IBookRepository, BookRepository>();
+        services.AddTransient<IMusicRepository, MusicRepository>();
         services.AddDbContextFactory<ApplicationDbContext>(opt =>
             opt.UseSqlite(config.GetConnectionString("RepoDb"), b => b.MigrationsAssembly("WagsMediaRepository.Web")));
             
@@ -56,6 +63,9 @@ internal class Program
         _podcastRepository = serviceProvider.GetService<IPodcastRepository>();
         _movieRepository = serviceProvider.GetService<IMovieRepository>();
         _linkRepository = serviceProvider.GetService<ILinkRepository>();
+        _videoGameRepository = serviceProvider.GetService<IVideoGameRepository>();
+        _bookRepository = serviceProvider.GetService<IBookRepository>();
+        _musicRepository = serviceProvider.GetService<IMusicRepository>();
         _dbContextFactory = serviceProvider.GetService<IDbContextFactory<ApplicationDbContext>>();
 
         if (_dbContextFactory is null || _televisionRepository is null)
@@ -71,6 +81,9 @@ internal class Program
         Console.WriteLine("2. Podcasts");
         Console.WriteLine("3. Movies");
         Console.WriteLine("4. Link");
+        Console.WriteLine("5. Music");
+        Console.WriteLine("6. Video Games");
+        Console.WriteLine("7. Books");
         Console.WriteLine("");
         
         try
@@ -92,6 +105,15 @@ internal class Program
                     break;
                 case NotionContent.Link:
                     await LoadLinks();
+                    break;
+                case NotionContent.VideoGame:
+                    await LoadVideoGames();
+                    break;
+                case NotionContent.Books:
+                    await LoadBooks();
+                    break;
+                case NotionContent.Music:
+                    await LoadMusic();
                     break;
                 default:
                     throw new Exception("Invalid selection");
@@ -231,7 +253,112 @@ internal class Program
             });
         }
     }
+    
+    static async Task LoadVideoGames()
+    {
+        if (_notionService is null)
+        {
+            throw new NullReferenceException("Notion Service is null");
+        }
+        
+        if (_videoGameRepository is null)
+        {
+            throw new NullReferenceException("Movies Repository is null");
+        }
+        
+        var videoGames = await _notionService.LoadVideoGames();
 
+        foreach (var videoGame in videoGames)
+        {
+               
+            await _videoGameRepository.AddVideoGameAsync(new VideoGame
+            {
+                Title = videoGame.Title,
+                Link = videoGame.Link,
+                DateStarted = videoGame.DateStarted,
+                DateCompleted = videoGame.DateCompleted,
+                Rating = videoGame.Rating,
+                Thoughts = videoGame.Thoughts,
+                CoverImageUrl = videoGame.CoverUrl,
+                Status = (Constants.VideoGameStatus)GetVideoGameStatus(videoGame.Status),
+                CompletionStatus = GetVideoGameCompleteStatus(videoGame.CompletionStatus),
+                Systems = [new VideoGameSystem { VideoGameSystemId = GetVideoGameSystem(videoGame.Platforms) }]
+            });
+        }
+    }
+    
+    static async Task LoadBooks()
+    {
+        if (_notionService is null)
+        {
+            throw new NullReferenceException("Notion Service is null");
+        }
+        
+        if (_bookRepository is null)
+        {
+            throw new NullReferenceException("Book Repository is null");
+        }
+        
+        var books = await _notionService.LoadBooks();
+
+        foreach (var book in books)
+        {
+            await _bookRepository.AddBookAsync(new Book
+            {
+                BookStatusId = GetBookStatusId(book.Status),
+                BookTypeId = GetBookTypeId(book.Type),
+                Title = book.Title,
+                SubTitle = book.Subtitle,
+                Author = book.Author,
+                Link = book.Link,
+                DateStarted = book.DateStarted,
+                DateCompleted = book.DateCompleted,
+                Rating = book.Rating,
+                BookNotesUrl = book.BookReviewUrl,
+                Thoughts = book.Thoughts,
+                CoverImageUrl = book.CoverUrl,
+                IsAtLibrary = book.LibraryHasIt,
+                IsPurchased = book.Purchased,
+                CurrentPage = book.CurrentPage,
+                PageCount = book.PageCount,
+                SortOrder = book.BacklogId == 0 ? null : book.BacklogId,
+            });
+        }
+    }
+
+    static async Task LoadMusic()
+    {
+        if (_notionService is null)
+        {
+            throw new NullReferenceException("Notion Service is null");
+        }
+        
+        if (_musicRepository is null)
+        {
+            throw new NullReferenceException("Music Repository is null");
+        }
+
+        var genres = await _musicRepository.GetGenresAsync();
+        var formats = await _musicRepository.GetFormatsAsync();
+        
+        var musicAlbums = await _notionService.LoadMusic();
+
+        foreach (var album in musicAlbums)
+        {
+
+            await _musicRepository.AddAlbumAsync(new MusicAlbum
+            {
+                Title = album.Album,
+                Artist = album.Artist,
+                CoverImageUrl = album.CoverUrl,
+                IsTopTen = album.IsTopTen,
+                ShowOnNowPage = album.ShowOnNow,
+                Genres = GetAlbumGenres(genres, album.Genres).Select(g => new MusicGenre { MusicGenreId = g }).ToList(),
+                Formats = GetAlbumFormats(formats, album.Formats).Select(f => new MusicFormat { MusicFormatId = f }).ToList(),
+            });
+        }
+    }
+    
     static int GetTelevisionStatus(string notionStatus) => notionStatus.ToLower(CultureInfo.InvariantCulture) switch
     {
         "personal to-watch" => 1,
@@ -278,6 +405,47 @@ internal class Program
         "couldn't finish" => 4,
         _ => 1,
     };
+    
+    static int GetVideoGameStatus(string notionStatus) => notionStatus.ToLower(CultureInfo.InvariantCulture) switch
+    {
+        "to play" => 1,
+        "current" => 2,
+        "completed" => 3,
+        _ => 1,
+    };
+    
+    static int GetVideoGameSystem(string notionSystem) => notionSystem.ToLower(CultureInfo.InvariantCulture) switch
+    {
+        "pc" => 1,
+        "switch" => 2,
+        "playstation" => 3,
+        "xbox" => 4,
+        _ => 1,
+    };
+
+    static Constants.VideoGameCompletionStatus GetVideoGameCompleteStatus(string notionStatus) => notionStatus.ToLower(CultureInfo.InvariantCulture) switch
+    {
+        "n/a" => Constants.VideoGameCompletionStatus.NotApplicable,
+        "yes" => Constants.VideoGameCompletionStatus.Yes,
+        "no" => Constants.VideoGameCompletionStatus.No,
+        _ => Constants.VideoGameCompletionStatus.NotApplicable,
+    };
+    
+    static int GetBookStatusId(string notionStatus) => notionStatus.ToLower(CultureInfo.InvariantCulture) switch
+    {
+        "not started" => 1,
+        "in progress" => 2,
+        "completed" => 3,
+        _ => 1,
+    };
+    
+    static int GetBookTypeId(string notionStatus) => notionStatus.ToLower(CultureInfo.InvariantCulture) switch
+    {
+        "fiction" => 1,
+        "non-fiction" => 2,
+        "reference" => 3,
+        _ => 1,
+    };
 
     static int GetLinkType(string linkType) => linkType.ToLower(CultureInfo.InvariantCulture) switch
     {
@@ -311,6 +479,40 @@ internal class Program
         "web development" => categories.First(c => c.Name.ToLower(CultureInfo.InvariantCulture) == "web development").LinkCategoryId,
         _ => 4
     };
+
+    static List<int> GetAlbumGenres(List<MusicGenre> databaseGenres, List<string> notionGenres)
+    {
+        var genreIds = new List<int>();
+
+        foreach (var genre in notionGenres)
+        {
+            var dbGenre = databaseGenres.FirstOrDefault(g => g.Name.ToLower(CultureInfo.InvariantCulture) == genre.ToLower(CultureInfo.InvariantCulture));
+
+            if (dbGenre is not null)
+            {
+                genreIds.Add(dbGenre.MusicGenreId);
+            }
+        }
+        
+        return genreIds;
+    }
+
+    static List<int> GetAlbumFormats(List<MusicFormat> databaseFormats, List<string> notionFormats)
+    {
+        var formatIds = new List<int>();
+
+        foreach (var format in notionFormats)
+        {
+            var dbFormat = databaseFormats.FirstOrDefault(g => g.Name.ToLower(CultureInfo.InvariantCulture) == format.ToLower(CultureInfo.InvariantCulture));
+
+            if (dbFormat is not null)
+            {
+                formatIds.Add(dbFormat.MusicFormatId);
+            }
+        }
+        
+        return formatIds;
+    }
     
     static void WriteConsoleError(string errorMessage)
     {

@@ -27,15 +27,24 @@
             @_pageError
         </div>
     }
-    
-    <InProgressTable VideoGames="_inProgressVideoGames" OnDelete="DeleteVideoGame" />
 
-    <ToPlayTable VideoGames="_toPlayVideoGames" OnDelete="DeleteVideoGame" />
-
-    <CompletedTable VideoGames="_completedVideoGames" OnDelete="DeleteVideoGame" />
+    <RadzenTabs RenderMode="TabRenderMode.Client" @bind-SelectedIndex="@_selectedTabIndex">
+        <Tabs>
+            <RadzenTabsItem Text="In Progress">
+                <InProgressTable VideoGames="_inProgressVideoGames" OnDelete="DeleteVideoGame" />
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="Backlog">
+                <ToPlayTable VideoGames="_toPlayVideoGames" OnDelete="DeleteVideoGame" />
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="Played">
+                <CompletedTable VideoGames="_completedVideoGames" OnDelete="DeleteVideoGame" />
+            </RadzenTabsItem>
+        </Tabs>
+    </RadzenTabs>
 </main>
 
 @code {
+    private int _selectedTabIndex = 0;
     private string _pageError = string.Empty;
     private IReadOnlyCollection<VideoGameApiModel> _videoGames = [];
     private IReadOnlyCollection<VideoGameApiModel> _inProgressVideoGames = [];

@@ -3,7 +3,7 @@
 @using WagsMediaRepository.Web.Handlers.Commands.Books
 @using WagsMediaRepository.Web.Handlers.Queries.Books
 
-<EditForm EditContext="_editContext" OnSubmit="@SubmitForm" FormName="tv-show-form">
+<EditForm EditContext="_editContext" OnSubmit="@SubmitForm" FormName="book-form">
     <DataAnnotationsValidator/>
 
     @if (!string.IsNullOrWhiteSpace(_pageError))
@@ -253,6 +253,15 @@
         if (Book is not null)
         {
             _model = new SaveBook.Request(Book);
+        }
+        else
+        {
+            var nextSort = await Mediator.Send(new GetNextSortOrder.Request());
+
+            _model = new SaveBook.Request
+            {
+                SortOrder = nextSort,
+            };
         }
 
         _editContext = new EditContext(_model);

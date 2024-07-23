@@ -11,4 +11,10 @@ public class NotionConfiguration
     public string MovieDatabase { get; set; } = string.Empty;
 
     public string LinkDatabase { get; set; } = string.Empty;
+
+    public string VideoGameDatabase { get; set; } = string.Empty;
+
+    public string MusicDatabase { get; set; } = string.Empty;
+
+    public string BookDatabase { get; set; } = string.Empty;
 }

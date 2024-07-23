@@ -1,0 +1,168 @@
+@rendermode InteractiveServer
+
+@using WagsMediaRepository.Web.Handlers.Commands.Music
+@using WagsMediaRepository.Web.Handlers.Queries.Music
+
+<EditForm EditContext="_editContext" OnSubmit="@SubmitForm" FormName="music-form">
+    <DataAnnotationsValidator/>
+
+    @if (!string.IsNullOrWhiteSpace(_pageError))
+    {
+    <div class="alert error">
+        @_pageError
+    </div>
+    }
+
+    <fieldset disabled="@_isProcessing" aria-busy="@_isProcessing">
+        <div class="form-field">
+            <label for="artist">
+                <span class="required-indicator">*</span>Artist
+                <InputText type="text" id="artist" @bind-Value="@_model.Artist" />
+                <ValidationMessage For="@(() => _model.Artist)"></ValidationMessage>
+            </label>
+        </div>
+    
+        <div class="form-field">
+            <label for="title">
+                <span class="required-indicator">*</span>Title
+                <InputText type="text" id="title" @bind-Value="@_model.Title" />
+                <ValidationMessage For="@(() => _model.Title)"></ValidationMessage>
+            </label>
+        </div>
+        
+        <div class="form-field">
+            <label for="subtitle">
+                <span class="required-indicator">*</span>Album Art
+                <InputText type="text" id="subtitle" @bind-Value="@_model.CoverImageUrl" />
+                <ValidationMessage For="@(() => _model.CoverImageUrl)"></ValidationMessage>
+            </label>
+        </div>
+
+        <div class="form-field">
+            <label for="formats">
+                <span class="required-indicator">*</span>Format(s)
+                <RadzenDropDown
+                    @bind-Value="@_model.FormatIds"
+                    Data="@_formats"
+                    TextProperty="@nameof(MusicFormatApiModel.Name)"
+                    ValueProperty="@nameof(MusicFormatApiModel.MusicFormatId)"
+                    Name="formats"
+                    Multiple="true"
+                    AllowClear="true"
+                    Chips="true"
+                    id="formats"
+                />
+                <ValidationMessage For="@(() => _model.FormatIds)"></ValidationMessage>
+            </label>
+        </div>
+
+        <div class="form-field">
+            <label for="genres">
+                <span class="required-indicator">*</span>Genre(s)
+                <RadzenDropDown
+                    @bind-Value="@_model.GenreIds"
+                    Data="@_genres"
+                    TextProperty="@nameof(MusicGenreApiModel.Name)"
+                    ValueProperty="@nameof(MusicGenreApiModel.MusicGenreId)"
+                    Name="formats"
+                    Multiple="true"
+                    AllowClear="true"
+                    Chips="true"
+                    id="genres"
+                />
+                <ValidationMessage For="@(() => _model.GenreIds)"></ValidationMessage>
+            </label>
+        </div>
+
+        <div class="form-field">
+            <label for="thoughts">
+                Thoughts
+                <InputTextArea id="thoughts" @bind-Value="@_model.Thoughts" />
+                <ValidationMessage For="@(() => _model.Thoughts)"></ValidationMessage>
+            </label>
+        </div>
+
+        <div class="form-field">
+            <label for="is-top-ten">
+                <RadzenSwitch
+                    @bind-Value="@_model.IsTopTen"
+                    id="is-top-ten"
+                />
+                Is In Top 10
+            </label>
+        </div>
+
+        <div class="form-field">
+            <label for="show-on-now-page">
+                <RadzenSwitch
+                    @bind-Value="@_model.ShowOnNowPage"
+                    id="show-on-now-page"
+                />
+                Show on Now Page
+            </label>
+        </div>
+
+        <div class="form-field form-actions">
+            <button type="submit">Save</button>
+            <a href="/music/" class="button-ghost">Cancel</a>
+        </div>
+    </fieldset>
+</EditForm>
+
+@code {
+    private string _pageError = string.Empty;
+    private bool _isProcessing = true;
+    private EditContext? _editContext;
+    private SaveAlbum.Request _model = new();
+    
+    private IReadOnlyCollection<MusicGenreApiModel> _genres = [];
+    private IReadOnlyCollection<MusicFormatApiModel> _formats = [];
+    
+    [Parameter] public MusicAlbumApiModel? Album { get; set; }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var referenceDataResult = await Mediator.Send(new GetMusicReferenceData.Request());
+
+        if (!referenceDataResult.IsSuccessful)
+        {
+            _pageError = referenceDataResult.ErrorMessage;
+            _isProcessing = false;
+            return;
+        }
+
+        if (Album is not null)
+        {
+            _model = new SaveAlbum.Request(Album);
+        }
+
+        _editContext = new EditContext(_model);
+
+        _genres = referenceDataResult.Value?.Genres ?? [];
+        _formats = referenceDataResult.Value?.Formats ?? [];
+        
+        _isProcessing = false;
+    }
+    
+    private async Task SubmitForm(EditContext editContext)
+    {
+        _isProcessing = true;
+        
+        if (!editContext.Validate())
+        {
+            _isProcessing = false;
+            return;
+        }
+
+        var result = await Mediator.Send(_model);
+        
+        if (!result.IsSuccessful)
+        {
+            _pageError = result.ErrorMessage;
+            _isProcessing = false;
+            return;
+        }
+        
+        NavManager.NavigateTo("/music/", true);
+    }
+}

@@ -30,6 +30,9 @@
     --grey-2: oklch(68.67% 0 149.29);
     --grey-3: oklch(39.71% 0 145.06);
     --grey-4: oklch(96.67% 0 14.29);
+    
+    --danger-1: oklch(54.71% 0.197 26.47);
+    --danger-2: oklch(33.53% 0.128 26.47);
 }
 
 html,
@@ -104,7 +107,16 @@ button[type="submit"] {
         color: oklch(100% 0 0);
         background-color: var(--primary-color-2);
         text-decoration: none;
+    }
+    
+    &.danger {
+        background-color: var(--danger-1);
+        border: 1px solid var(--danger-2);
 
+        &:hover {
+            background-color: var(--danger-2);
+            text-decoration: none;
+        }
     }
 }
 
@@ -518,29 +530,31 @@ main.movies-page {
 }
 
 main.tv-page {
-    width: 650px;
+    width: 1000px;
     margin: 0 auto;
 }
 
 .tv-table {
     &.to-watch {
-        th.title {
-            width: 400px;
-        }
+        thead tr {
+            th.title {
+                width: 550px;
+            }
 
-        th.services {
-            width: 200px;
-        }
+            th.services {
+                width: 250px;
+            }
 
-        th.actions {
-            width: 160px;
+            th.actions {
+                width: 200px;
+            }
         }
     }
 
 
     &.watched {
         th.title {
-            width: 250px;
+            width: 600px;
         }
 
         th.rating {
@@ -554,7 +568,7 @@ main.tv-page {
 
     &.could-not-finish {
         th.title {
-            width: 450px;
+            width: 800px;
         }
 
         th.actions {
@@ -655,6 +669,72 @@ main.books-page {
 
         th.actions {
             width: 15%;
+        }
+    }
+}
+
+main.music-page {
+    width: 1000px;
+    margin: 0 auto;
+}
+
+.music-table {
+    thead tr {
+        th.artist {
+            width: 375px;
+        }
+
+        th.title {
+            width: 375px;
+        }
+
+        th.actions {
+            width: 250px;
+        }
+    }
+}
+
+.album-track-form {
+    .track-form-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 16px;
+    }
+    
+    .album-track {
+        display: flex;
+        column-gap: 16px;
+        width: 100%;
+        align-items: center;
+        margin-bottom: 24px;
+        
+        .form-field {
+            margin: 0;
+            
+            input {
+                margin-bottom: 0;
+            }
+        }
+        
+        .track-number {
+            width: 100px;
+        }
+        
+        .track-title {
+            width: 100%;
+        }
+        
+        .track-action {
+            width: 100px;
+            align-self: flex-end;
+            
+            button {
+                padding: 8px 24px;
+                
+                &:disabled {
+                    cursor: not-allowed;
+                }
+            }
         }
     }
 }
@@ -905,3 +985,5 @@ fieldset {
         }
     }
 }
+
+.hidden { display: none; }

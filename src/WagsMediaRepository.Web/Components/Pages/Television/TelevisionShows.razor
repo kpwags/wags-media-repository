@@ -1,5 +1,7 @@
 @page "/tv"
 
+@rendermode InteractiveServer
+
 @using WagsMediaRepository.Domain
 @using WagsMediaRepository.Web.Components.Television
 @using WagsMediaRepository.Web.Handlers.Commands.Television
@@ -24,46 +26,58 @@
         </div>
     }
 
-    <WatchingTable
-        Title="Personal Watch List"
-        Shows="_personalWatchList"
-        Status="Constants.TelevisionStatus.PersonalToWatch"
-        OnDelete="DeleteTelevisionShow"
-    />
-
-    <WatchingTable
-        Title="Joint Watch List"
-        Shows="_jointWatchList"
-        Status="Constants.TelevisionStatus.JointWatch"
-        OnDelete="DeleteTelevisionShow"
-    />
-
-    <WatchingTable
-        Title="Currently Watching"
-        Shows="_watching"
-        Status="Constants.TelevisionStatus.Watching"
-        OnDelete="DeleteTelevisionShow"
-    />
-
-    <WatchingTable
-        Title="In Between Seasons"
-        Shows="_inBetweenSeasons"
-        Status="Constants.TelevisionStatus.InBetweenSeasons"
-        OnDelete="DeleteTelevisionShow"
-    />
-
-    <WatchedTable
-        Shows="_watched"
-        OnDelete="DeleteTelevisionShow"
-    />
-
-    <CouldNotFinishTable
-        Shows="_couldNotFinish"
-        OnDelete="DeleteTelevisionShow"
-    />
+    <RadzenTabs RenderMode="TabRenderMode.Client" @bind-SelectedIndex="@_selectedTabIndex">
+        <Tabs>
+            <RadzenTabsItem Text="Personal Watch List">
+                <WatchingTable
+                    Title="Personal Watch List"
+                    Shows="_personalWatchList"
+                    Status="Constants.TelevisionStatus.PersonalToWatch"
+                    OnDelete="DeleteTelevisionShow"
+                />
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="Joint Watch List">
+                <WatchingTable
+                    Title="Joint Watch List"
+                    Shows="_jointWatchList"
+                    Status="Constants.TelevisionStatus.JointWatch"
+                    OnDelete="DeleteTelevisionShow"
+                />
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="In-Between Seasons">
+                <WatchingTable
+                    Title="In Between Seasons"
+                    Shows="_inBetweenSeasons"
+                    Status="Constants.TelevisionStatus.InBetweenSeasons"
+                    OnDelete="DeleteTelevisionShow"
+                />
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="In Progress">
+                <WatchingTable
+                    Title="Currently Watching"
+                    Shows="_watching"
+                    Status="Constants.TelevisionStatus.Watching"
+                    OnDelete="DeleteTelevisionShow"
+                />
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="Watched">
+                <WatchedTable
+                    Shows="_watched"
+                    OnDelete="DeleteTelevisionShow"
+                />
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="Couldn't Finish">
+                <CouldNotFinishTable
+                    Shows="_couldNotFinish"
+                    OnDelete="DeleteTelevisionShow"
+                />
+            </RadzenTabsItem>
+        </Tabs>
+    </RadzenTabs>
 </main>
 
 @code {
+    private int _selectedTabIndex = 0;
     private string _pageError = string.Empty;
     private IReadOnlyCollection<TelevisionShowApiModel> _tvShows = [];
     private IReadOnlyCollection<TelevisionShowApiModel> _personalWatchList = [];

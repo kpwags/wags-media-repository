@@ -52,5 +52,7 @@ public interface IBookRepository
 
     Task DeleteBookAsync(int bookId);
 
+    Task<int> GetNextSortOrder();
+
     #endregion Books
 }

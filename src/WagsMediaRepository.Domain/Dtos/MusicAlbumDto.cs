@@ -13,6 +13,8 @@ public class MusicAlbumDto
     public string CoverImageUrl { get; set; } = string.Empty;
     
     public bool IsTopTen { get; set; }
+    
+    public bool ShowOnNowPage { get; set; }
 
     public List<MusicAlbumTrackDto> MusicAlbumTracks { get; set; } = [];
     

@@ -1,5 +1,7 @@
 @page "/movies"
 
+@rendermode InteractiveServer
+
 @using WagsMediaRepository.Domain
 @using WagsMediaRepository.Infrastructure.Helpers
 @using WagsMediaRepository.Web.Components.Movies
@@ -25,30 +27,40 @@
         </div>
     }
 
-    <ToWatchTable
-        Title="Personal Watch List"
-        Movies="_personalWatchList"
-        OnDelete="DeleteMovie"
-    />
-
-    <ToWatchTable
-        Title="Joint Watch List"
-        Movies="_jointWatchList"
-        OnDelete="DeleteMovie"
-    />
-
-    <WatchedTable
-        Movies="_watchedMovies"
-        OnDelete="DeleteMovie"
-    />
-
-    <CouldNotFinishTable
-        Movies="_couldNotFinishMovies"
-        OnDelete="DeleteMovie"
-    />
+    <RadzenTabs RenderMode="TabRenderMode.Client" @bind-SelectedIndex="@_selectedTabIndex">
+        <Tabs>
+            <RadzenTabsItem Text="Personal Watch List">
+                <ToWatchTable
+                    Title="Personal Watch List"
+                    Movies="_personalWatchList"
+                    OnDelete="DeleteMovie"
+                />
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="Joint Watch List">
+                <ToWatchTable
+                    Title="Joint Watch List"
+                    Movies="_jointWatchList"
+                    OnDelete="DeleteMovie"
+                />
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="Watched">
+                <WatchedTable
+                    Movies="_watchedMovies"
+                    OnDelete="DeleteMovie"
+                />
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="Couldn't Finish">
+                <CouldNotFinishTable
+                    Movies="_couldNotFinishMovies"
+                    OnDelete="DeleteMovie"
+                />
+            </RadzenTabsItem>
+        </Tabs>
+    </RadzenTabs>
 </main>
 
 @code {
+    private int _selectedTabIndex = 0;
     private string _pageError = string.Empty;
     private IReadOnlyCollection<MovieApiModel> _movies = [];
     private IReadOnlyCollection<MovieApiModel> _personalWatchList = [];

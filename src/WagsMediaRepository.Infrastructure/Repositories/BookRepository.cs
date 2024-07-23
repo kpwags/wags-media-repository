@@ -440,6 +440,17 @@ public class BookRepository(IDbContextFactory<ApplicationDbContext> contextFacto
 
         await dbContext.SaveChangesAsync();
     }
+
+    public async Task<int> GetNextSortOrder()
+    {
+        await using var dbContext = await _contextFactory.CreateDbContextAsync();
+
+        var books = await dbContext.Books.ToListAsync();
+
+        var maxSortOrder = books.Max(b => b.SortOrder);
+
+        return (maxSortOrder ?? 0) + 10;
+    }
     
     #endregion Books
     

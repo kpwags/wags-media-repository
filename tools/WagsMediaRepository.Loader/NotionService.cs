@@ -1,4 +1,3 @@
-
 using Notion.Client;
 using WagsMediaRepository.Loader.Configuration;
 using WagsMediaRepository.Loader.Models;
@@ -81,7 +80,7 @@ public class NotionService
 
     public async Task<List<NotionLink>> LoadLinks()
     {
-        var movies = new List<NotionLink>();
+        var links = new List<NotionLink>();
 
         bool hasMore;
         string? cursor = null;
@@ -90,13 +89,73 @@ public class NotionService
         {
             var result = await FetchFromNotion(_configuration.LinkDatabase, cursor);
 
-            movies.AddRange(MapNotionResultsToLink(result.Results));
+            links.AddRange(MapNotionResultsToLink(result.Results));
 
             hasMore = result.HasMore;
             cursor = result.NextCursor;
         } while (hasMore);
 
-        return movies;
+        return links;
+    }
+
+    public async Task<List<NotionVideoGame>> LoadVideoGames()
+    {
+        var videoGames = new List<NotionVideoGame>();
+
+        bool hasMore;
+        string? cursor = null;
+
+        do
+        {
+            var result = await FetchFromNotion(_configuration.VideoGameDatabase, cursor);
+
+            videoGames.AddRange(MapNotionResultsToVideoGame(result.Results));
+
+            hasMore = result.HasMore;
+            cursor = result.NextCursor;
+        } while (hasMore);
+
+        return videoGames;
+    }
+
+    public async Task<List<NotionBook>> LoadBooks()
+    {
+        var books = new List<NotionBook>();
+
+        bool hasMore;
+        string? cursor = null;
+
+        do
+        {
+            var result = await FetchFromNotion(_configuration.BookDatabase, cursor);
+
+            books.AddRange(MapNotionResultsToBooks(result.Results));
+
+            hasMore = result.HasMore;
+            cursor = result.NextCursor;
+        } while (hasMore);
+
+        return books;
+    }
+    
+    public async Task<List<NotionMusic>> LoadMusic()
+    {
+        var music = new List<NotionMusic>();
+
+        bool hasMore;
+        string? cursor = null;
+
+        do
+        {
+            var result = await FetchFromNotion(_configuration.MusicDatabase, cursor);
+
+            music.AddRange(MapNotionResultsToMusic(result.Results));
+
+            hasMore = result.HasMore;
+            cursor = result.NextCursor;
+        } while (hasMore);
+
+        return music;
     }
     
     private async Task<PaginatedList<Page>> FetchFromNotion(string dbId, string? cursor)
@@ -243,6 +302,136 @@ public class NotionService
         };
     }
 
+    private List<NotionVideoGame> MapNotionResultsToVideoGame(List<Page> results)
+    {
+        var videoGames = new List<NotionVideoGame>();
+
+        foreach (var page in results)
+        {
+            videoGames.Add(MapNotionResultToVideoGame(page));
+        }
+        
+        return videoGames;
+    }
+
+    private NotionVideoGame MapNotionResultToVideoGame(Page result)
+    {
+        var title = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "name");
+        var completionStatus = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "completed");
+        var link = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "link");
+        var coverUrl = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "coverurl");
+        var dateStarted = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "date started");
+        var dateCompleted = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "date completed");
+        var platform = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "platform");
+        var rating = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "rating");
+        var thoughts = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "thoughts");
+        var status = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "status");
+        
+        return new NotionVideoGame
+        {
+            Title = GetStringValue((TitlePropertyValue)title.Value),
+            CompletionStatus = GetStringValue((SelectPropertyValue)completionStatus.Value),
+            Link = GetStringValue((UrlPropertyValue)link.Value),
+            CoverUrl = GetStringValue((UrlPropertyValue)coverUrl.Value),
+            DateStarted = GetDateWatched((DatePropertyValue)dateStarted.Value) is not null ? GetDateWatched((DatePropertyValue)dateStarted.Value)?.Start : null,
+            DateCompleted = GetDateWatched((DatePropertyValue)dateCompleted.Value) is not null ? GetDateWatched((DatePropertyValue)dateCompleted.Value)?.Start : null,
+            Platforms = GetStringValue((SelectPropertyValue)platform.Value),
+            Thoughts = GetStringValue((RichTextPropertyValue)thoughts.Value),
+            Rating = GetNumericValue((NumberPropertyValue)rating.Value),
+            Status = GetStringValue((SelectPropertyValue)status.Value),
+        };
+    }
+    
+    private List<NotionBook> MapNotionResultsToBooks(List<Page> results)
+    {
+        var books = new List<NotionBook>();
+
+        foreach (var page in results)
+        {
+            books.Add(MapNotionResultToBook(page));
+        }
+        
+        return books;
+    }
+
+    private NotionBook MapNotionResultToBook(Page result)
+    {
+        var title = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "name");
+        var subtitle = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "subtitle");
+        var author = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "author");
+        var type = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "type");
+        var status = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "status");
+        var link = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "link");
+        var bookReviewUrl = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "reviewurlslug");
+        var medium = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "medium");
+        var coverUrl = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "coverurl");
+        var rating = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "rating");
+        var thoughts = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "thoughts");
+        var currentPage = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "current page");
+        var pageCount = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "page count");
+        var purchased = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "purchased");
+        var libraryHasIt = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "library has it");
+        var dateStarted = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "datestarted");
+        var dateCompleted = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "datefinished");
+        var backlogId = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "backlog id");
+        
+        return new NotionBook
+        {
+            BacklogId = GetNumericValue((NumberPropertyValue)backlogId.Value),
+            Title = GetStringValue((TitlePropertyValue)title.Value),
+            Subtitle = GetStringValue((RichTextPropertyValue)subtitle.Value),
+            Author = GetStringValue((RichTextPropertyValue)author.Value),
+            Type = GetStringValue((SelectPropertyValue)type.Value),
+            Status = GetStringValue((SelectPropertyValue)status.Value),
+            Link = GetStringValue((UrlPropertyValue)link.Value),
+            BookReviewUrl = GetStringValue((RichTextPropertyValue)bookReviewUrl.Value),
+            Medium = GetStringValue((SelectPropertyValue)medium.Value),
+            CoverUrl = GetStringValue((UrlPropertyValue)coverUrl.Value),
+            Rating = GetNumericValue((NumberPropertyValue)rating.Value),
+            Thoughts = GetStringValue((RichTextPropertyValue)thoughts.Value),
+            CurrentPage = GetNumericValue((NumberPropertyValue)currentPage.Value),
+            PageCount = GetNumericValue((NumberPropertyValue)pageCount.Value),
+            Purchased = GetCheckboxValue((CheckboxPropertyValue)purchased.Value),
+            LibraryHasIt = GetCheckboxValue((CheckboxPropertyValue)libraryHasIt.Value),
+            DateStarted = GetDateWatched((DatePropertyValue)dateStarted.Value) is not null ? GetDateWatched((DatePropertyValue)dateStarted.Value)?.Start : null,
+            DateCompleted = GetDateWatched((DatePropertyValue)dateCompleted.Value) is not null ? GetDateWatched((DatePropertyValue)dateCompleted.Value)?.Start : null,
+        };
+    }
+    
+    private List<NotionMusic> MapNotionResultsToMusic(List<Page> results)
+    {
+        var music = new List<NotionMusic>();
+
+        foreach (var page in results)
+        {
+            music.Add(MapNotionResultToMusicAlbum(page));
+        }
+        
+        return music;
+    }
+
+    private NotionMusic MapNotionResultToMusicAlbum(Page result)
+    {
+        var name = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "album");
+        var artist = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "artist");
+        var coverUrl = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "coverurl");
+        var formats = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "format");
+        var genres = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "genre");
+        var showOnNow = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "showonnow");
+        var top10 = result.Properties.FirstOrDefault(p => p.Key.ToLower() == "top10");
+        
+        return new NotionMusic
+        {
+            Album = GetStringValue((TitlePropertyValue)name.Value),
+            Artist = GetStringValue((RichTextPropertyValue)artist.Value),
+            CoverUrl = GetStringValue((UrlPropertyValue)coverUrl.Value),
+            Formats = GetStringValue((MultiSelectPropertyValue)formats.Value),
+            Genres = GetStringValue((MultiSelectPropertyValue)genres.Value),
+            ShowOnNow = GetCheckboxValue((CheckboxPropertyValue)showOnNow.Value),
+            IsTopTen = GetCheckboxValue((CheckboxPropertyValue)top10.Value),
+        };
+    }
+    
     public string GetStringValue(TitlePropertyValue value) => value?.Title?.FirstOrDefault()?.PlainText.Trim() ?? "";
     
     public string GetStringValue(RichTextPropertyValue value) => value?.RichText?.FirstOrDefault()?.PlainText.Trim() ?? "";
@@ -250,6 +439,8 @@ public class NotionService
     public string GetStringValue(UrlPropertyValue value) => value?.Url?.Trim() ?? "";
     
     public int GetNumericValue(NumberPropertyValue value) => (int)(value.Number ?? 0.0);
+    
+    public bool GetCheckboxValue(CheckboxPropertyValue value) => value.Checkbox;
     
     public List<string> GetStringValue(MultiSelectPropertyValue? values)
     {
