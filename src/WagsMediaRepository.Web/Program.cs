@@ -25,7 +25,6 @@ if (baseDirectory is null)
 var config = new ConfigurationBuilder()
     .SetBasePath(baseDirectory.FullName)
     .AddJsonFile("appsettings.json", false)
-    .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", false)
     .Build();
 
 config.Bind(configuration);
