@@ -6,6 +6,7 @@ using WagsMediaRepository.Application.Repositories;
 using WagsMediaRepository.Domain;
 using WagsMediaRepository.Domain.ApiModels;
 using WagsMediaRepository.Generator.Configuration;
+using WagsMediaRepository.Generator.Models;
 using WagsMediaRepository.Infrastructure.Database;
 using WagsMediaRepository.Infrastructure.Helpers;
 using WagsMediaRepository.Infrastructure.Repositories;
@@ -103,30 +104,32 @@ internal class Program
 
         var years = completed.Select(b => b.DateCompleted?.Year ?? DateTime.Now.Year).Distinct().ToList();
 
-        var bookYears = new Dictionary<int, List<BookApiModel>>();
+        var bookYears = new List<BookOutput>();
         
         foreach (var year in years)
         {
-            bookYears.Add(
-                year, 
-                completed
+            bookYears.Add(new BookOutput
+            {
+                Year = year.ToString(),
+                Books = completed
                     .Where(b => b.DateCompleted?.Year == year)
                     .OrderByDescending(b => b.DateCompleted)
                     .Select(BookApiModel.FromDomainModel)
-                    .ToList()
-            );
+                    .ToList(),
+            });
         }
 
         var json = JsonSerializer.Serialize(
             new
             {
                 inProgress = currentlyReading,
-                completed = bookYears.OrderByDescending(b => b.Key),
+                completed = bookYears.OrderByDescending(b => b.Year),
                 toRead,
             }, 
             options: new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true,
             }
         );
 
@@ -150,6 +153,7 @@ internal class Program
             options: new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true,
             }
         );
         
@@ -193,10 +197,11 @@ internal class Program
             options: new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true,
             }
         );
 
-        await WriteJsonToFile(json, "video-games.json");
+        await WriteJsonToFile(json, "videoGames.json");
     }
     
     static async Task ProcessMovies()
@@ -228,30 +233,32 @@ internal class Program
         
         var years = finished.Select(m => m.DateWatched?.Year ?? DateTime.Now.Year).Distinct().ToList();
 
-        var movieYears = new Dictionary<int, List<MovieApiModel>>();
+        var movieYears = new List<MovieOutput>();
         
         foreach (var year in years)
         {
-            movieYears.Add(
-                year, 
-                finished
+            movieYears.Add(new MovieOutput
+            {
+                Year = year.ToString(),
+                Movies = finished
                     .Where(m => m.DateWatched?.Year == year)
                     .OrderByDescending(m => m.DateWatched)
                     .Select(MovieApiModel.FromDomainModel)
                     .ToList()
-            );
+            });
         }
 
         var json = JsonSerializer.Serialize(
             new
             {
                 toWatch,
-                watched = movieYears.OrderByDescending(m => m.Key),
+                watched = movieYears.OrderByDescending(m => m.Year),
                 abandoned,
             }, 
             options: new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true,
             }
         );
 
@@ -308,6 +315,7 @@ internal class Program
             options: new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true,
             }
         );
 
@@ -332,25 +340,27 @@ internal class Program
         var categories = podcastCategoriesTask.Result;
         var podcasts = podcastsTask.Result;
 
-        var podcastOutput = new Dictionary<string, List<PodcastApiModel>>();
+        var podcastOutput = new List<PodcastOutput>();
         
         foreach (var category in categories)
         {
-            podcastOutput.Add(
-                category.Name, 
-                podcasts
+            podcastOutput.Add(new PodcastOutput
+            {
+                Name = category.Name, 
+                Podcasts = podcasts
                     .Where(p => p.PodcastCategoryId == category.PodcastCategoryId)
                     .OrderBy(p => Sorters.SortByTitle(p.Name))
                     .Select(PodcastApiModel.FromDomainModel)
                     .ToList()
-            );
+            });
         }
 
         var json = JsonSerializer.Serialize(
-            podcastOutput, 
+            podcastOutput,
             options: new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true,
             }
         );
 
@@ -374,13 +384,14 @@ internal class Program
             options: new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true,
             }
         );
 
         await WriteJsonToFile(json, "music.json");
     }
     
-    static async Task WriteJsonToFile(string content, string filename)
+    static async Task WriteJsonToFile(string json, string filename)
     {
         var path = Path.Join(_configuration?.Output, filename);
 
@@ -389,9 +400,9 @@ internal class Program
             File.Delete(path);
         }
 
-        await using var sw = new StreamWriter(path, true);
+        await using var sw = new StreamWriter(path, false);
         
-        await sw.WriteAsync(content);
+        await sw.WriteAsync(json);
     }
     
     static void WriteConsoleError(string errorMessage)

@@ -235,22 +235,31 @@ internal class Program
             throw new NullReferenceException("Link Repository is null");
         }
 
-        var categories = await _linkRepository.GetLinkCategoriesAsync();
+        var categoriesTask = _linkRepository.GetLinkCategoriesAsync();
+        var existingLinksTask = _linkRepository.GetLinksAsync();
+
+        await Task.WhenAll(categoriesTask, existingLinksTask);
+
+        var categories = categoriesTask.Result;
+        var existingLinks = existingLinksTask.Result;
         
         var links = await _notionService.LoadLinks();
 
         foreach (var link in links)
         {
-            await _linkRepository.AddLinkAsync(new Link
+            if (!existingLinks.Exists(l => l.Url == link.Link))
             {
-                Title = link.Title,
-                LinkTypeId = GetLinkType(link.Type),
-                LinkCategoryId = GetLinkCategory(link.Category, categories),
-                Url = link.Link,
-                Author = link.Author,
-                LinkDate = link.DateRead,
-                ReadingLogIssueNumber = link.Issue,
-            });
+                await _linkRepository.AddLinkAsync(new Link
+                {
+                    Title = link.Title,
+                    LinkTypeId = GetLinkType(link.Type),
+                    LinkCategoryId = GetLinkCategory(link.Category, categories),
+                    Url = link.Link,
+                    Author = link.Author,
+                    LinkDate = link.DateRead,
+                    ReadingLogIssueNumber = link.Issue,
+                });
+            }
         }
     }
     
