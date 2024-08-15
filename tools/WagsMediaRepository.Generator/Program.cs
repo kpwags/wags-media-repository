@@ -1,30 +1,19 @@
-﻿using System.Text.Json;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Net.Http.Json;
+using System.Text.Json;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using WagsMediaRepository.Application.Repositories;
 using WagsMediaRepository.Domain;
 using WagsMediaRepository.Domain.ApiModels;
 using WagsMediaRepository.Generator.Configuration;
+using WagsMediaRepository.Generator.DownloadModels;
 using WagsMediaRepository.Generator.Models;
-using WagsMediaRepository.Infrastructure.Database;
 using WagsMediaRepository.Infrastructure.Helpers;
-using WagsMediaRepository.Infrastructure.Repositories;
 
 namespace WagsMediaRepository.Generator;
 
 internal class Program
 {
     private static DirectoryConfiguration? _configuration;
-    
-    private static IDbContextFactory<ApplicationDbContext>? _dbContextFactory;
-    private static ITelevisionRepository? _televisionRepository;
-    private static IPodcastRepository? _podcastRepository;
-    private static IMovieRepository? _movieRepository;
-    private static ILinkRepository? _linkRepository;
-    private static IVideoGameRepository? _videoGameRepository;
-    private static IBookRepository? _bookRepository;
-    private static IMusicRepository? _musicRepository;
+    private static GeneralConfiguration? _generalConfiguration;
 
     static async Task Main()
     {
@@ -36,35 +25,13 @@ internal class Program
             .Build();
         
         _configuration = config.GetRequiredSection("Directory").Get<DirectoryConfiguration>();
-        
-        if (_configuration is null)
+        _generalConfiguration = config.GetRequiredSection("General").Get<GeneralConfiguration>();
+
+        if (_configuration is null || _generalConfiguration is null)
         {
             WriteConsoleError("Unable to read settings");
             return;
         }
-        
-        var services = new ServiceCollection();
-        services.AddSingleton(config);
-        services.AddTransient<ITelevisionRepository, TelevisionRepository>();
-        services.AddTransient<IPodcastRepository, PodcastRepository>();
-        services.AddTransient<IMovieRepository, MovieRepository>();
-        services.AddTransient<ILinkRepository, LinkRepository>();
-        services.AddTransient<IVideoGameRepository, VideoGameRepository>();
-        services.AddTransient<IBookRepository, BookRepository>();
-        services.AddTransient<IMusicRepository, MusicRepository>();
-        services.AddDbContextFactory<ApplicationDbContext>(opt =>
-            opt.UseSqlite(config.GetConnectionString("RepoDb"), b => b.MigrationsAssembly("WagsMediaRepository.Web")));
-            
-        var serviceProvider = services.BuildServiceProvider();
-        
-        _televisionRepository = serviceProvider.GetService<ITelevisionRepository>();
-        _podcastRepository = serviceProvider.GetService<IPodcastRepository>();
-        _movieRepository = serviceProvider.GetService<IMovieRepository>();
-        _linkRepository = serviceProvider.GetService<ILinkRepository>();
-        _videoGameRepository = serviceProvider.GetService<IVideoGameRepository>();
-        _bookRepository = serviceProvider.GetService<IBookRepository>();
-        _musicRepository = serviceProvider.GetService<IMusicRepository>();
-        _dbContextFactory = serviceProvider.GetService<IDbContextFactory<ApplicationDbContext>>();
 
         await ProcessBooks();
         await ProcessLinks();
@@ -81,22 +48,22 @@ internal class Program
     {
         WriteWithColor("Writing books to JSON");
         
-        if (_bookRepository is null)
+        var books = await Fetch<BookApiModel>("books");
+
+        if (books is null)
         {
-            WriteConsoleError("Error reading book repository");
+            WriteConsoleError("Error retrieving book data");
             return;
         }
-
-        var books = await _bookRepository.GetBooksAsync();
 
         var toRead = books
             .Where(b => b.BookStatusId == (int)Constants.BookStatus.ToRead)
             .OrderBy(b => b.SortOrder)
-            .Select(BookApiModel.FromDomainModel)
+            .Select(BookDownloadModel.FromApiModel)
             .ToList();
         var currentlyReading = books
             .Where(b => b.BookStatusId == (int)Constants.BookStatus.Reading)
-            .Select(BookApiModel.FromDomainModel)
+            .Select(BookDownloadModel.FromApiModel)
             .ToList();
         var completed = books
             .Where(b => b.BookStatusId == (int)Constants.BookStatus.Finished)
@@ -114,7 +81,7 @@ internal class Program
                 Books = completed
                     .Where(b => b.DateCompleted?.Year == year)
                     .OrderByDescending(b => b.DateCompleted)
-                    .Select(BookApiModel.FromDomainModel)
+                    .Select(BookDownloadModel.FromApiModel)
                     .ToList(),
             });
         }
@@ -139,15 +106,17 @@ internal class Program
     static async Task ProcessLinks()
     {
         WriteWithColor("Writing links to JSON");
-        
-        if (_linkRepository is null)
+
+        var response = await Fetch<LinkApiModel>("links");
+
+        if (response is null)
         {
-            WriteConsoleError("Error reading link repository");
+            WriteConsoleError("Error retrieving link data");
             return;
         }
 
-        var links = await _linkRepository.GetLinksAsync();
-        
+        var links = response.Select(LinkDownloadModel.FromApiModel).ToList();
+            
         var json = JsonSerializer.Serialize(
             links, 
             options: new JsonSerializerOptions
@@ -164,27 +133,27 @@ internal class Program
     {
         WriteWithColor("Writing video games to JSON");
         
-        if (_videoGameRepository is null)
+        var videoGames = await Fetch<VideoGameApiModel>("video-games");
+
+        if (videoGames is null)
         {
-            WriteConsoleError("Error reading video game repository");
+            WriteConsoleError("Error retrieving video game data");
             return;
         }
-
-        var videoGames = await _videoGameRepository.GetAllVideoGamesAsync();
 
         var toPlay = videoGames
             .Where(vg => vg.Status == Constants.VideoGameStatus.ToPlay)
             .OrderBy(vg => vg.SortOrder)
-            .Select(VideoGameApiModel.FromDomainModel)
+            .Select(VideoGameDownloadModel.FromDomainModel)
             .ToList();
         var currentlyPlaying = videoGames
             .Where(vg => vg.Status == Constants.VideoGameStatus.InProgress)
-            .Select(VideoGameApiModel.FromDomainModel)
+            .Select(VideoGameDownloadModel.FromDomainModel)
             .ToList();
         var completed = videoGames
             .Where(vg => vg.Status == Constants.VideoGameStatus.Completed)
             .OrderByDescending(vg => vg.DateCompleted)
-            .Select(VideoGameApiModel.FromDomainModel)
+            .Select(VideoGameDownloadModel.FromDomainModel)
             .ToList();
 
         var json = JsonSerializer.Serialize(
@@ -208,18 +177,24 @@ internal class Program
     {
         WriteWithColor("Writing movies to JSON");
         
-        if (_movieRepository is null)
+        if (_generalConfiguration is null)
         {
-            WriteConsoleError("Error reading movie repository");
+            WriteConsoleError("Error reading configuration");
             return;
         }
+        
+        var movies = await Fetch<MovieApiModel>("movies");
 
-        var movies = await _movieRepository.GetMoviesAsync();
+        if (movies is null)
+        {
+            WriteConsoleError("Error retrieving movie data");
+            return;
+        }
 
         var toWatch = movies
             .Where(m => m.Status.MovieStatusId == (int)Constants.MovieStatus.JointWatch || m.Status.MovieStatusId == (int)Constants.MovieStatus.PersonalToWatch)
             .OrderBy(m => m.SortOrder)
-            .Select(MovieApiModel.FromDomainModel)
+            .Select(MovieDownloadModel.FromApiModel)
             .ToList();
         var finished = movies
             .Where(m => m.Status.MovieStatusId == (int)Constants.MovieStatus.Watched)
@@ -228,7 +203,7 @@ internal class Program
         var abandoned = movies
             .Where(m => m.Status.MovieStatusId == (int)Constants.MovieStatus.CouldNotFinish)
             .OrderByDescending(m => m.DateWatched)
-            .Select(MovieApiModel.FromDomainModel)
+            .Select(MovieDownloadModel.FromApiModel)
             .ToList();
         
         var years = finished.Select(m => m.DateWatched?.Year ?? DateTime.Now.Year).Distinct().ToList();
@@ -243,7 +218,7 @@ internal class Program
                 Movies = finished
                     .Where(m => m.DateWatched?.Year == year)
                     .OrderByDescending(m => m.DateWatched)
-                    .Select(MovieApiModel.FromDomainModel)
+                    .Select(MovieDownloadModel.FromApiModel)
                     .ToList()
             });
         }
@@ -263,44 +238,59 @@ internal class Program
         );
 
         await WriteJsonToFile(json, "movies.json");
+        
+        // movies in the last X days
+        var recentMovies = finished.Where(m =>
+            m.DateWatched?.Date > DateTime.Now.AddDays(_generalConfiguration.MovieDateRange * -1).Date).ToList();
+        
+        json = JsonSerializer.Serialize(
+            recentMovies,
+            options: new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true,
+            }
+        );
+
+        await WriteJsonToFile(json, "recentMovies.json");
     }
     
     static async Task ProcessTelevision()
     {
         WriteWithColor("Writing TV to JSON");
         
-        if (_televisionRepository is null)
+        var tvShows = await Fetch<TelevisionShowApiModel>("tv");
+
+        if (tvShows is null)
         {
-            WriteConsoleError("Error reading TV repository");
+            WriteConsoleError("Error retrieving TV data");
             return;
         }
-
-        var tvShows = await _televisionRepository.GetTelevisionShowsAsync();
 
         var toWatch = tvShows
             .Where(t => t.Status.TelevisionStatusId == (int)Constants.TelevisionStatus.JointWatch || t.Status.TelevisionStatusId == (int)Constants.TelevisionStatus.PersonalToWatch)
             .OrderBy(m => m.SortOrder)
-            .Select(TelevisionShowApiModel.FromDomainModel)
+            .Select(TvDownloadModel.FromApiModel)
             .ToList();
         var inProgress = tvShows
             .Where(t => t.Status.TelevisionStatusId == (int)Constants.TelevisionStatus.Watching)
             .OrderBy(t => Sorters.SortByTitle(t.Title))
-            .Select(TelevisionShowApiModel.FromDomainModel)
+            .Select(TvDownloadModel.FromApiModel)
             .ToList();
         var betweenSeasons = tvShows
             .Where(t => t.Status.TelevisionStatusId == (int)Constants.TelevisionStatus.InBetweenSeasons)
             .OrderBy(t => Sorters.SortByTitle(t.Title))
-            .Select(TelevisionShowApiModel.FromDomainModel)
+            .Select(TvDownloadModel.FromApiModel)
             .ToList();
         var completed = tvShows
             .Where(t => t.Status.TelevisionStatusId == (int)Constants.TelevisionStatus.Watched)
             .OrderBy(t => Sorters.SortByTitle(t.Title))
-            .Select(TelevisionShowApiModel.FromDomainModel)
+            .Select(TvDownloadModel.FromApiModel)
             .ToList();
         var abandoned = tvShows
             .Where(t => t.Status.TelevisionStatusId == (int)Constants.TelevisionStatus.CouldNotFinish)
             .OrderBy(t => Sorters.SortByTitle(t.Title))
-            .Select(TelevisionShowApiModel.FromDomainModel)
+            .Select(TvDownloadModel.FromApiModel)
             .ToList();
 
         var json = JsonSerializer.Serialize(
@@ -326,19 +316,20 @@ internal class Program
     {
         WriteWithColor("Writing podcasts to JSON");
         
-        if (_podcastRepository is null)
-        {
-            WriteConsoleError("Error reading podcast repository");
-            return;
-        }
-
-        var podcastCategoriesTask = _podcastRepository.GetCategoriesAsync();
-        var podcastsTask = _podcastRepository.GetPodcastsAsync();
+        var podcastsTask = Fetch<PodcastApiModel>("podcasts");
+        var podcastCategoriesTask = Fetch<PodcastCategoryApiModel>("podcast-categories");
 
         await Task.WhenAll(podcastCategoriesTask, podcastsTask);
-
+        
+        
         var categories = podcastCategoriesTask.Result;
         var podcasts = podcastsTask.Result;
+
+        if (podcasts is null || categories is null)
+        {
+            WriteConsoleError("Error retrieving podcast data");
+            return;
+        }
 
         var podcastOutput = new List<PodcastOutput>();
         
@@ -350,7 +341,7 @@ internal class Program
                 Podcasts = podcasts
                     .Where(p => p.PodcastCategoryId == category.PodcastCategoryId)
                     .OrderBy(p => Sorters.SortByTitle(p.Name))
-                    .Select(PodcastApiModel.FromDomainModel)
+                    .Select(PodcastDownloadModel.FromApiModel)
                     .ToList()
             });
         }
@@ -371,16 +362,16 @@ internal class Program
     {
         WriteWithColor("Writing music to JSON");
         
-        if (_musicRepository is null)
+        var albums = await Fetch<MusicAlbumApiModel>("music");
+
+        if (albums is null)
         {
-            WriteConsoleError("Error reading music repository");
+            WriteConsoleError("Error retrieving music data");
             return;
         }
 
-        var albums = await _musicRepository.GetAlbumsAsync();
-
         var json = JsonSerializer.Serialize(
-            albums.OrderBy(a => Sorters.SortByTitle(a.Artist)).ThenBy(a => Sorters.SortByTitle(a.Title)).Select(MusicAlbumApiModel.FromDomainModel).ToList(), 
+            albums.OrderBy(a => Sorters.SortByTitle(a.Artist)).ThenBy(a => Sorters.SortByTitle(a.Title)).Select(MusicDownloadModel.FromApiModel).ToList(), 
             options: new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -420,5 +411,35 @@ internal class Program
         Console.ForegroundColor = color;
         Console.WriteLine(message);
         Console.ResetColor();
+    }
+
+    static HttpClient BuildClient()
+    {
+        var handler = new HttpClientHandler();
+        handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+        handler.ServerCertificateCustomValidationCallback = 
+            (httpRequestMessage, cert, cetChain, policyErrors) =>
+            {
+                return true;
+            };
+
+        return new HttpClient(handler);
+    }
+
+    static async Task<IReadOnlyCollection<T>?> Fetch<T>(string url)
+    {
+        if (_generalConfiguration is null)
+        {
+            WriteConsoleError("Error reading configuration");
+            return null;
+        }
+
+        var client = BuildClient();
+
+        var response =
+            await client.GetFromJsonAsync<IReadOnlyCollection<T>>(
+                $"{_generalConfiguration.ApiRootUrl}/api/download/{url}");
+
+        return response;
     }
 }

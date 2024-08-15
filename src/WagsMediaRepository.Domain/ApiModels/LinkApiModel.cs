@@ -1,5 +1,3 @@
-using WagsMediaRepository.Domain.Models;
-
 namespace WagsMediaRepository.Domain.ApiModels;
 
 public class LinkApiModel

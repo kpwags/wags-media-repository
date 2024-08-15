@@ -819,6 +819,7 @@ fieldset {
         border: 1px solid var(--black-1);
         font-weight: normal;
         display: block;
+        background: transparent;
     }
     
     select[multiple="false"] {
@@ -852,6 +853,26 @@ fieldset {
     .required-indicator {
         color: var(--error-color);
         padding-right: 4px;
+    }
+    
+    .calendar-wrapper {
+        width: 100%;
+    }
+    
+    .date-field div:first-child{
+        width: 100%;
+        
+        .rz-calendar {
+            display: flex;
+            height: 44px;
+            margin: 4px 0;
+            border-radius: 4px;
+            width: 100%;
+            
+            input {
+                border-color: var(--black-1);
+            }
+        }
     }
 
     .rz-colorpicker {

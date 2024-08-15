@@ -4,6 +4,7 @@ using WagsMediaRepository.Application.Repositories;
 using WagsMediaRepository.Domain.Dtos;
 using WagsMediaRepository.Domain.Exceptions;
 using WagsMediaRepository.Infrastructure.Database;
+using WagsMediaRepository.Infrastructure.Helpers;
 
 namespace WagsMediaRepository.Infrastructure.Repositories;
 
@@ -155,10 +156,12 @@ public class BookRepository(IDbContextFactory<ApplicationDbContext> contextFacto
         await using var dbContext = await _contextFactory.CreateDbContextAsync();
 
         var series = await dbContext.BookSeries
-            .OrderBy(bs => bs.Name)
             .ToListAsync();
         
-        return series.Select(BookSeries.FromDto).ToList();
+        return series
+            .OrderBy(bs => Sorters.SortByTitle(bs.Name))
+            .Select(BookSeries.FromDto)
+            .ToList();
     }
 
     public async Task<BookSeries> AddSeriesAsync(BookSeries series)

@@ -39,7 +39,9 @@
         <div class="form-field">
             <label for="link-date">
                 <span class="required-indicator">*</span>Date
-                <InputDate id="link-date" @bind-Value="@_model.LinkDate" />
+                <div class="date-field">
+                    <RadzenDatePicker @bind-Value=@_model.LinkDate Name="link-date" id="link-date" ShowCalendarWeek Kind="DateTimeKind.Unspecified" DateFormat="MM/dd/yyyy" />
+                </div>
                 <ValidationMessage For="@(() => _model.LinkDate)"></ValidationMessage>
             </label>
         </div>

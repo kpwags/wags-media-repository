@@ -62,8 +62,10 @@
         
         <div class="form-field">
             <label for="date-completed">
-                Date Completed
-                <InputDate id="date-completed" @bind-Value="@_model.DateWatched" />
+                Date Watched
+                <div class="date-field">
+                    <RadzenDatePicker @bind-Value=@_model.DateWatched Name="date-completed" id="date-completed" ShowCalendarWeek Kind="DateTimeKind.Unspecified" DateFormat="MM/dd/yyyy" />
+                </div>
                 <ValidationMessage For="@(() => _model.DateWatched)"></ValidationMessage>
             </label>
         </div>

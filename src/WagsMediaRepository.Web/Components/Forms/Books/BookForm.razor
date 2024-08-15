@@ -146,7 +146,9 @@
         <div class="form-field">
             <label for="date-started">
                 Date Started
-                <InputDate id="date-started" @bind-Value="@_model.DateStarted" />
+                <div class="date-field">
+                    <RadzenDatePicker @bind-Value=@_model.DateStarted Name="date-started" id="date-started" ShowCalendarWeek Kind="DateTimeKind.Unspecified" DateFormat="MM/dd/yyyy" />
+                </div>
                 <ValidationMessage For="@(() => _model.DateStarted)"></ValidationMessage>
             </label>
         </div>
@@ -154,7 +156,9 @@
         <div class="form-field">
             <label for="date-completed">
                 Date Completed
-                <InputDate id="date-completed" @bind-Value="@_model.DateCompleted" />
+                <div class="date-field">
+                    <RadzenDatePicker @bind-Value=@_model.DateCompleted Name="date-completed" id="date-completed" ShowCalendarWeek Kind="DateTimeKind.Unspecified" DateFormat="MM/dd/yyyy" />
+                </div>
                 <ValidationMessage For="@(() => _model.DateCompleted)"></ValidationMessage>
             </label>
         </div>

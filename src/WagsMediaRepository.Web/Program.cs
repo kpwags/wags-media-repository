@@ -1,4 +1,5 @@
 using System.IO;
+using System.Text.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +26,7 @@ if (baseDirectory is null)
 var config = new ConfigurationBuilder()
     .SetBasePath(baseDirectory.FullName)
     .AddJsonFile("appsettings.json", false)
+    .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", true)
     .Build();
 
 config.Bind(configuration);
@@ -40,6 +42,12 @@ builder.Services.AddDbContextFactory<ApplicationDbContext>(opt =>
 
 builder.Services.AddRepositories();
 builder.Services.AddServices();
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+    });
 
 builder.Services.AddMediatR(cfg =>
 {
@@ -57,6 +65,8 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseRouting();
+app.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
 
 app.UseStaticFiles();
 app.UseAntiforgery();
