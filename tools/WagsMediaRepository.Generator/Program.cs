@@ -240,8 +240,10 @@ internal class Program
         await WriteJsonToFile(json, "movies.json");
         
         // movies in the last X days
-        var recentMovies = finished.Where(m =>
-            m.DateWatched?.Date > DateTime.Now.AddDays(_generalConfiguration.MovieDateRange * -1).Date).ToList();
+        var recentMovies = finished
+            .Where(m => m.DateWatched?.Date > DateTime.Now.AddDays(_generalConfiguration.MovieDateRange * -1).Date)
+            .Select(MovieDownloadModel.FromApiModel)
+            .ToList();
         
         json = JsonSerializer.Serialize(
             recentMovies,
