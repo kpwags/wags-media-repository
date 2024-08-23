@@ -1,0 +1,44 @@
+@page "/tv/services/edit/{Id:int}"
+
+@rendermode InteractiveServer
+
+@using WagsMediaRepository.Web.Components.Forms.Television
+@using WagsMediaRepository.Web.Handlers.Queries.Television
+
+<PageTitle>Edit TV Service - Wags Media Repository</PageTitle>
+
+<main class="thin">
+    <h1>Edit TV Service</h1>
+
+    <div class="back-button">
+        <a href="/tv/services/">&larr; Back</a>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_pageError))
+    {
+        <div class="alert error">
+            @_pageError
+        </div>
+    }
+
+    <TelevisionServiceForm TelevisionService="TelevisionService" />
+</main>
+
+@code {
+    private string _pageError = string.Empty;
+    private TelevisionServiceApiModel? TelevisionService { get; set; }
+
+    [Parameter] public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await Mediator.Send(new GetTelevisionService.Request(Id));
+
+        if (!result.IsSuccessful)
+        {
+            _pageError = result.ErrorMessage;
+        }
+
+        TelevisionService = result.Value;
+    }
+}

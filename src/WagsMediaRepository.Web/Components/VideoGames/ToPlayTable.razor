@@ -1,0 +1,50 @@
+@rendermode InteractiveServer
+<div class="table-subtitle">
+    <h2>To Play</h2>
+</div>
+
+<table class="data-table video-games-table to-play">
+    <thead>
+    <tr>
+        <th class="sort">&nbsp;</th>
+        <th class="title">Title</th>
+        <th class="system">System</th>
+        <th class="actions">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var videoGame in VideoGames)
+    {
+        <tr>
+            <td class="centered">@videoGame.SortOrder</td>
+            <td><a href="@videoGame.Link" target="_blank" rel="noreferrer nofollow">@videoGame.Title</a></td>
+            <td>
+                <div class="tag-cell centered">
+                    @foreach (var system in videoGame.Systems)
+                    {
+                        <span class="tag" style="background-color:@system.ColorCode;">@system.Name</span>
+                    }
+                </div>
+            </td>
+            <td class="centered actions">
+                <a href="/video-games/edit/@videoGame.VideoGameId">Edit</a>
+                <button type="button" class="link-button" @onclick="@(_ => DeleteVideoGame(videoGame))">Delete</button>
+            </td>
+        </tr>
+    }
+    @if (VideoGames.Count == 0)
+    {
+        <tr>
+            <td colspan="6" class="centered no-data"><em>No Video Games To Play</em></td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyCollection<VideoGameApiModel> VideoGames { get; set; } = [];
+    
+    [Parameter, EditorRequired] public EventCallback<VideoGameApiModel> OnDelete { get; set; }
+    
+    private async Task DeleteVideoGame(VideoGameApiModel game) => await OnDelete.InvokeAsync(game);
+}

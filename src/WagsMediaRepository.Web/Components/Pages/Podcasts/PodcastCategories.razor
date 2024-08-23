@@ -1,0 +1,79 @@
+@page "/podcasts/categories"
+
+@rendermode InteractiveServer
+
+@using WagsMediaRepository.Web.Handlers.Commands.Podcasts
+@using WagsMediaRepository.Web.Handlers.Queries.Podcasts
+
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Podcast Categories - Wags Media Repository</PageTitle>
+
+<main class="podcast-categories-page">
+    <div class="table-title">
+        <h1>Podcast Categories</h1>
+        <div class="actions">
+            <a href="/podcasts/categories/add" class="button-primary">Add Category</a>
+        </div>
+    </div>
+
+    <table class="data-table podcast-categories-table">
+        <thead>
+        <tr>
+            <th class="name">Name</th>
+            <th class="actions">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var category in _categories)
+        {
+            <tr>
+                <td class="name">@category.Name</td>
+                <td class="centered actions">
+                    <a href="/podcasts/categories/edit/@category.PodcastCategoryId">Edit</a>
+                    <button type="button" class="link-button" @onclick="@(() => DeleteCategory(category))">Delete</button>
+                </td>
+            </tr>
+        }
+        @if (_categories.Count == 0)
+        {
+            <tr>
+                <td colspan="2" class="centered no-data"><em>No Podcast Categories Available</em></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <div class="back-button">
+        <a href="/podcasts">&larr; Back</a>
+    </div>
+</main>
+
+@code {
+    private IReadOnlyCollection<PodcastCategoryApiModel> _categories = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCategories();
+    }
+
+    private async Task LoadCategories()
+    {
+        var result = await Mediator.Send(new GetAllPodcastCategories.Request());
+
+        if (result.IsSuccessful)
+        {
+            _categories = result.Value ?? [];
+        }
+    }
+
+    private async Task DeleteCategory(PodcastCategoryApiModel category)
+    {
+        if (!await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to delete the category '{category.Name}'?"))
+            return;
+
+        await Mediator.Send(new DeletePodcast.Request(category.PodcastCategoryId));
+
+        await LoadCategories();
+    }
+}

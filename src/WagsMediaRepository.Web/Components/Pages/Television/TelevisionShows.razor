@@ -1,0 +1,150 @@
+@page "/tv"
+
+@rendermode InteractiveServer
+
+@using WagsMediaRepository.Domain
+@using WagsMediaRepository.Web.Components.Television
+@using WagsMediaRepository.Web.Handlers.Commands.Television
+@using WagsMediaRepository.Web.Handlers.Queries.Television
+
+<PageTitle>TV - Wags Media Repository</PageTitle>
+
+<main class="tv-page">
+    <div class="table-title">
+        <h1>TV</h1>
+        <div class="actions">
+            <a href="/tv/add/" class="button-primary">Add TV Show</a>
+            <a href="/tv/genres/" class="button-primary">Manage Genres</a>
+            <a href="/tv/services/" class="button-primary">Manage Services</a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_pageError))
+    {
+        <div class="alert error">
+            @_pageError
+        </div>
+    }
+
+    <RadzenTabs RenderMode="TabRenderMode.Client" @bind-SelectedIndex="@_selectedTabIndex">
+        <Tabs>
+            <RadzenTabsItem Text="Personal Watch List">
+                <WatchingTable
+                    Title="Personal Watch List"
+                    Shows="_personalWatchList"
+                    Status="Constants.TelevisionStatus.PersonalToWatch"
+                    OnDelete="DeleteTelevisionShow"
+                />
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="Joint Watch List">
+                <WatchingTable
+                    Title="Joint Watch List"
+                    Shows="_jointWatchList"
+                    Status="Constants.TelevisionStatus.JointWatch"
+                    OnDelete="DeleteTelevisionShow"
+                />
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="In-Between Seasons">
+                <WatchingTable
+                    Title="In Between Seasons"
+                    Shows="_inBetweenSeasons"
+                    Status="Constants.TelevisionStatus.InBetweenSeasons"
+                    OnDelete="DeleteTelevisionShow"
+                />
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="In Progress">
+                <WatchingTable
+                    Title="Currently Watching"
+                    Shows="_watching"
+                    Status="Constants.TelevisionStatus.Watching"
+                    OnDelete="DeleteTelevisionShow"
+                />
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="Watched">
+                <WatchedTable
+                    Shows="_watched"
+                    OnDelete="DeleteTelevisionShow"
+                />
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="Couldn't Finish">
+                <CouldNotFinishTable
+                    Shows="_couldNotFinish"
+                    OnDelete="DeleteTelevisionShow"
+                />
+            </RadzenTabsItem>
+        </Tabs>
+    </RadzenTabs>
+</main>
+
+@code {
+    private int _selectedTabIndex = 0;
+    private string _pageError = string.Empty;
+    private IReadOnlyCollection<TelevisionShowApiModel> _tvShows = [];
+    private IReadOnlyCollection<TelevisionShowApiModel> _personalWatchList = [];
+    private IReadOnlyCollection<TelevisionShowApiModel> _jointWatchList = [];
+    private IReadOnlyCollection<TelevisionShowApiModel> _watching = [];
+    private IReadOnlyCollection<TelevisionShowApiModel> _inBetweenSeasons = [];
+    private IReadOnlyCollection<TelevisionShowApiModel> _watched = [];
+    private IReadOnlyCollection<TelevisionShowApiModel> _couldNotFinish = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTelevisionShows();
+    }
+
+    private async Task LoadTelevisionShows()
+    {
+        _pageError = "";
+        
+        var result = await Mediator.Send(new GetAllTelevisionShows.Request());
+
+        if (!result.IsSuccessful)
+        {
+            _pageError = result.ErrorMessage;
+            return;
+        }
+        
+        _tvShows = result.Value ?? [];
+            
+        _personalWatchList = _tvShows
+            .Where(t => t.TelevisionStatusId == (int)Constants.TelevisionStatus.PersonalToWatch)
+            .OrderBy(t => t.SortOrder ?? int.MaxValue)
+            .ToList();
+            
+        _jointWatchList = _tvShows
+            .Where(t => t.TelevisionStatusId == (int)Constants.TelevisionStatus.JointWatch)
+            .OrderBy(t => t.SortOrder ?? int.MaxValue)
+            .ToList();
+            
+        _watching = _tvShows
+            .Where(t => t.TelevisionStatusId == (int)Constants.TelevisionStatus.Watching)
+            .ToList();
+            
+        _inBetweenSeasons = _tvShows
+            .Where(t => t.TelevisionStatusId == (int)Constants.TelevisionStatus.InBetweenSeasons)
+            .ToList();
+            
+        _watched = _tvShows
+            .Where(t => t.TelevisionStatusId == (int)Constants.TelevisionStatus.Watched)
+            .ToList();
+            
+        _couldNotFinish = _tvShows
+            .Where(t => t.TelevisionStatusId == (int)Constants.TelevisionStatus.CouldNotFinish)
+            .ToList();
+    }
+
+    private async Task DeleteTelevisionShow(int televisionShowId)
+    {
+        _pageError = "";
+        
+        var result = await Mediator.Send(new DeleteTelevisionShow.Request(televisionShowId));
+
+        if (!result.IsSuccessful)
+        {
+            _pageError = result.ErrorMessage;
+            return;
+        }
+
+        await LoadTelevisionShows();
+    }
+}

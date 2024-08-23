@@ -1,0 +1,40 @@
+<table class="data-table books-table in-progress">
+    <thead>
+        <tr>
+            <th class="title">Title</th>
+            <th class="author">Author</th>
+            <th class="date">Date Started</th>
+            <th class="percent">Progress</th>
+            <th class="actions">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var book in Books)
+        {
+            <tr>
+                <td>@book.FullTitle</td>
+                <td>@book.Author</td>
+                <td class="centered">@book.DateStarted?.ToString("M/d/yyyy")</td>
+                <td class="centered">@(book.PercentComplete)%</td>
+                <td class="centered actions">
+                    <a href="/books/edit/@book.BookId">Edit</a>
+                    <button type="button" class="link-button" @onclick="@(_ => DeleteBook(book))">Delete</button>
+                </td>
+            </tr>
+        }
+        @if (Books.Count == 0)
+        {
+            <tr>
+                <td colspan="5" class="centered no-data"><em>No Books In Progress</em></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyCollection<BookApiModel> Books { get; set; } = [];
+    
+    [Parameter, EditorRequired] public EventCallback<BookApiModel> OnDelete { get; set; }
+    
+    private async Task DeleteBook(BookApiModel book) => await OnDelete.InvokeAsync(book);
+}

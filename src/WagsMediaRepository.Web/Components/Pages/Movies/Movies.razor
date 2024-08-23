@@ -1,0 +1,126 @@
+@page "/movies"
+
+@rendermode InteractiveServer
+
+@using WagsMediaRepository.Domain
+@using WagsMediaRepository.Infrastructure.Helpers
+@using WagsMediaRepository.Web.Components.Movies
+@using WagsMediaRepository.Web.Handlers.Commands.Movies
+@using WagsMediaRepository.Web.Handlers.Queries.Movies
+
+<PageTitle>Movies - Wags Media Repository</PageTitle>
+
+<main class="movies-page">
+    <div class="table-title">
+        <h1>Movies</h1>
+        <div class="actions">
+            <a href="/movies/add/" class="button-primary">Add Movie</a>
+            <a href="/movies/genres/" class="button-primary">Manage Genres</a>
+            <a href="/movies/services/" class="button-primary">Manage Services</a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_pageError))
+    {
+        <div class="alert error">
+            @_pageError
+        </div>
+    }
+
+    <RadzenTabs RenderMode="TabRenderMode.Client" @bind-SelectedIndex="@_selectedTabIndex">
+        <Tabs>
+            <RadzenTabsItem Text="Personal Watch List">
+                <ToWatchTable
+                    Title="Personal Watch List"
+                    Movies="_personalWatchList"
+                    OnDelete="DeleteMovie"
+                />
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="Joint Watch List">
+                <ToWatchTable
+                    Title="Joint Watch List"
+                    Movies="_jointWatchList"
+                    OnDelete="DeleteMovie"
+                />
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="Watched">
+                <WatchedTable
+                    Movies="_watchedMovies"
+                    OnDelete="DeleteMovie"
+                />
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="Couldn't Finish">
+                <CouldNotFinishTable
+                    Movies="_couldNotFinishMovies"
+                    OnDelete="DeleteMovie"
+                />
+            </RadzenTabsItem>
+        </Tabs>
+    </RadzenTabs>
+</main>
+
+@code {
+    private int _selectedTabIndex = 0;
+    private string _pageError = string.Empty;
+    private IReadOnlyCollection<MovieApiModel> _movies = [];
+    private IReadOnlyCollection<MovieApiModel> _personalWatchList = [];
+    private IReadOnlyCollection<MovieApiModel> _jointWatchList = [];
+    private IReadOnlyCollection<MovieApiModel> _watchedMovies = [];
+    private IReadOnlyCollection<MovieApiModel> _couldNotFinishMovies = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadMovies();
+    }
+
+    private async Task LoadMovies()
+    {
+        _pageError = "";
+        
+        var result = await Mediator.Send(new GetAllMovies.Request());
+
+        if (!result.IsSuccessful)
+        {
+            _pageError = result.ErrorMessage;
+            return;
+        }
+        
+        _movies = result.Value ?? [];
+            
+        _personalWatchList = _movies
+            .Where(m => m.MovieStatusId == (int)Constants.MovieStatus.PersonalToWatch)
+            .OrderBy(m => m.SortOrder ?? int.MaxValue)
+            .ThenBy(m => Sorters.SortByTitle(m.Title))
+            .ToList();
+            
+        _jointWatchList = _movies
+            .Where(m => m.MovieStatusId == (int)Constants.MovieStatus.JointWatch)
+            .OrderBy(m => m.SortOrder ?? int.MaxValue)
+            .ToList();
+            
+        _watchedMovies = _movies
+            .Where(m => m.MovieStatusId == (int)Constants.MovieStatus.Watched)
+            .OrderByDescending(m => m.DateWatched)
+            .ToList();
+            
+        _couldNotFinishMovies = _movies
+            .Where(m => m.MovieStatusId == (int)Constants.MovieStatus.CouldNotFinish)
+            .OrderBy(m => m.Title)
+            .ToList();
+    }
+
+    private async Task DeleteMovie(int movieId)
+    {
+        _pageError = "";
+        
+        var result = await Mediator.Send(new DeleteMovie.Request(movieId));
+
+        if (!result.IsSuccessful)
+        {
+            _pageError = result.ErrorMessage;
+            return;
+        }
+
+        await LoadMovies();
+    }
+}

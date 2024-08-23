@@ -1,0 +1,91 @@
+@page "/movies/genres"
+
+@rendermode InteractiveServer
+
+@using WagsMediaRepository.Web.Handlers.Commands.Movies
+@using WagsMediaRepository.Web.Handlers.Queries.Movies
+
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Movie Genres - Wags Media Repository</PageTitle>
+
+<main class="movie-genres-page">
+    <div class="table-title">
+        <h1>Movie Genres</h1>
+        <div class="actions">
+            <a href="/movies/genres/add" class="button-primary">Add Genre</a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_pageError))
+    {
+        <div class="alert error">
+            @_pageError
+        </div>
+    }
+
+    <table class="data-table movie-genres-table">
+        <thead>
+            <tr>
+                <th class="name">Name</th>
+                <th class="actions">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var movieGenre in _movieGenres)
+        {
+            <tr>
+                <td class="name">@movieGenre.Name</td>
+                <td class="centered actions">
+                    <a href="/movies/genres/edit/@movieGenre.MovieGenreId">Edit</a>
+                    <button type="button" class="link-button" @onclick="@(() => DeleteMovieGenre(movieGenre))">Delete</button>
+                </td>
+            </tr>
+        }
+        @if (_movieGenres.Count == 0)
+        {
+            <tr>
+                <td colspan="2" class="centered no-data"><em>No Movie Genres Available</em></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <div class="back-button">
+        <a href="/movies/">&larr; Back</a>
+    </div>
+</main>
+
+@code {
+    private string _pageError = string.Empty;
+    private IReadOnlyCollection<MovieGenreApiModel> _movieGenres = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadGenres();
+    }
+
+    private async Task LoadGenres()
+    {
+        var result = await Mediator.Send(new GetAllMovieGenres.Request());
+
+        if (result.IsSuccessful)
+        {
+            _movieGenres = result.Value ?? [];
+        }
+        else
+        {
+            _pageError = result.ErrorMessage;
+        }
+    }
+
+    private async Task DeleteMovieGenre(MovieGenreApiModel movieGenre)
+    {
+        if (!await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to delete the movie genre '{movieGenre.Name}'?"))
+            return;
+
+        await Mediator.Send(new DeleteMovieGenre.Request(movieGenre.MovieGenreId));
+
+        await LoadGenres();
+    }
+}
