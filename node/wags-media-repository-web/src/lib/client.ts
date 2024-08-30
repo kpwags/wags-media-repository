@@ -31,8 +31,8 @@ async function client(endpoint: string, {
 
     return window.fetch(`${apiUrl}/${endpoint}`, config).then(async (response) => {
         if (response.status === 400) {
-            const error = await response.text();
-            return Promise.reject(error);
+            const error = await response.json();
+            return Promise.reject(error.error);
         }
 
         if (response.ok) {

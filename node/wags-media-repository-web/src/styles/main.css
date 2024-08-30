@@ -96,6 +96,14 @@ table tbody td .ant-btn-link {
   padding: 0;
 }
 
+div.ant-modal-body {
+  margin-top: 24px;
+}
+
+div.ant-modal-body .ant-alert {
+  margin-bottom: 24px;
+}
+
 @media (min-width: 1024px) {
   .slim-table {
     max-width: 600px;

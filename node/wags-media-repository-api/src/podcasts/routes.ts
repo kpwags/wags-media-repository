@@ -6,12 +6,22 @@ import { Podcast, PodcastCategory } from '../models/podcast';
 const router = express.Router();
 
 router.get('/categories', (_, res) => {
-    podcastRepository.GetAllPodcastCategories((data) => res.json(data));
+    podcastRepository.GetAllPodcastCategories((error, data) => {
+        if (error) {
+            return res.status(400).json({ error });
+        }
+
+        res.json(data);
+    });
 });
 
 router.get('/categories/:id', (req, res) => {
     const id = parseInt(req.params.id);
-    podcastRepository.GetPodcastCategoryById(id, (category) => {
+    podcastRepository.GetPodcastCategoryById(id, (error, category) => {
+        if (error) {
+            return res.status(400).json({ error });
+        }
+
         if (!category) {
             res.status(404).json({ error: 'Podcast category not found' });
         } else {
@@ -29,40 +39,66 @@ router.post('/categories', (req, res) => {
         colorCode,
     };
 
-    podcastRepository.AddPodcastCategory(category);
-    res.send();
+    podcastRepository.AddPodcastCategory(category, (error) => {
+        if (error) {
+            return res.status(400).json({ error });
+        }
+
+        res.send();
+    });
 });
 
 router.put('/categories/:id', (req, res) => {
     const id = parseInt(req.params.id);
 
-    const { podcastCategoryId, name, colorCode } = req.body;
+    const { name, colorCode } = req.body;
 
     const category: PodcastCategory = {
-        podcastCategoryId: parseInt(podcastCategoryId),
+        podcastCategoryId: id,
         name,
         colorCode,
     };
 
-    podcastRepository.UpdatePodcastCategory(category);
-    res.send();
+    podcastRepository.UpdatePodcastCategory(category, (error) => {
+        if (error) {
+            return res.status(400).json({ error });
+        }
+
+        res.send();
+    });
 });
 
 router.delete('/categories/:id', (req, res) => {
     const id = parseInt(req.params.id);
 
-    podcastRepository.DeletePodcastCategory(id);
+    podcastRepository.DeletePodcastCategory(id, (error) => {
+        if (error) {
+            return res.status(400).json({ error });
+        }
+
+        res.send();
+    });
 
     res.send();
 });
 
 router.get('/', (_, res) => {
-    podcastRepository.GetAllPodcasts((data) => res.json(data));
+    podcastRepository.GetAllPodcasts((error, data) => {
+        if (error) {
+            return res.status(400).json({ error });
+        }
+
+        res.json(data);
+    });
 });
 
 router.get('/:id', (req, res) => {
     const id = parseInt(req.params.id);
-    podcastRepository.GetPodcastById(id, (podcast) => {
+    podcastRepository.GetPodcastById(id, (error, podcast) => {
+        if (error) {
+            return res.status(400).json({ error });
+        }
+
         if (!podcast) {
             res.status(404).json({ error: 'Podcast not found' });
         } else {
@@ -87,7 +123,13 @@ router.post('/', (req, res) => {
         },
     };
 
-    podcastRepository.AddPodcast(podcast);
+    podcastRepository.AddPodcast(podcast, (error) => {
+        if (error) {
+            return res.status(400).json({ error });
+        }
+
+        res.send();
+    });
     res.send();
 });
 
@@ -108,14 +150,26 @@ router.put('/:id', (req, res) => {
         },
     };
 
-    podcastRepository.UpdatePodcast(podcast);
+    podcastRepository.UpdatePodcast(podcast, (error) => {
+        if (error) {
+            return res.status(400).json({ error });
+        }
+
+        res.send();
+    });
     res.send();
 });
 
 router.delete('/:id', (req, res) => {
     const id = parseInt(req.params.id);
 
-    podcastRepository.DeletePodcast(id);
+    podcastRepository.DeletePodcast(id, (error) => {
+        if (error) {
+            return res.status(400).json({ error });
+        }
+
+        res.send();
+    });
 
     res.send();
 });

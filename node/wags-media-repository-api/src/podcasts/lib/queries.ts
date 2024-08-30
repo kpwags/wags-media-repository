@@ -66,7 +66,7 @@ VALUES (?, ?);
 `;
 
 export const updatePodcastCategory = `
-UPDATE Podcast SET
+UPDATE PodcastCategory SET
     Name = ?,
     ColorCode = ?
 WHERE PodcastCategoryId = ?;
