@@ -1,6 +1,6 @@
 import sqlite3 from 'sqlite3';
 import config from '../../config';
-
+import cleanSqliteError from '../../lib/cleanSqliteError';
 import { Podcast, PodcastCategory } from '../../models/podcast';
 import {
 	getPodcasts,
@@ -13,19 +13,23 @@ import {
 	PodcastCategoryQueryReturn,
 	getPodcastCategoryById,
 	insertPodcastCategory,
+	deletePodcastCategory,
+	updatePodcastCategory,
 } from './queries';
 
 class PodcastRepository {
 	private static GetDatabase = () => new sqlite3.Database(config.db);
 
-	static readonly GetAllPodcasts = (callback: (podcast: Podcast[]) => void) => {
+	static readonly GetAllPodcasts = (callback: (error: string | null, podcasts: Podcast[]) => void) => {
 		const db = this.GetDatabase();
 
 		const podcasts: Podcast[] = [];
 
 		db.all(getPodcasts, (err: any, rows: PodcastQueryReturn[]) => {
+			db.close();
+
 			if (err) {
-				throw err;
+				return callback(cleanSqliteError(err), []);
 			}
 
 			rows.forEach((row) => {
@@ -43,27 +47,25 @@ class PodcastRepository {
 				});
 			});
 
-			db.close();
-
-			return callback(podcasts);
+			return callback(null, podcasts);
 		});
 	};
 
-	static readonly GetPodcastById = (id: number, callback: (podcast: Podcast | null) => void) => {
+	static readonly GetPodcastById = (id: number, callback: (error: string | null, podcast: Podcast | null) => void) => {
 		const db = this.GetDatabase();
 
 		db.get(getPodcastById, [id], (err, row: PodcastQueryReturn) => {
-			if (err) {
-				throw err;
-			}
-
 			db.close();
 
-			if (!row) {
-				return callback(null);
+			if (err) {
+				return callback(cleanSqliteError(err), null);
 			}
 
-			return callback({
+			if (!row) {
+				return callback(null, null);
+			}
+
+			return callback(null, {
 				podcastId: row.PodcastId,
 				podcastCategoryId: row.PodcastCategoryId,
 				name: row.Name,
@@ -78,19 +80,21 @@ class PodcastRepository {
 		});
 	};
 
-	static readonly AddPodcast = (podcast: Podcast) => {
+	static readonly AddPodcast = (podcast: Podcast, callback: (error: string | null) => void) => {
 		const db = this.GetDatabase();
 
 		db.run(insertPodcast, [podcast.name, podcast.link, podcast.coverImageUrl, podcast.podcastCategoryId], (err) => {
+			db.close();
+
 			if (err) {
-				throw err;
+				return callback(cleanSqliteError(err));
 			}
 
-			db.close();
+			return callback(null);
 		});
 	};
 
-	static readonly UpdatePodcast = (podcast: Podcast) => {
+	static readonly UpdatePodcast = (podcast: Podcast, callback: (error: string | null) => void) => {
 		const db = this.GetDatabase();
 
 		db.run(updatePodcast, [
@@ -100,35 +104,40 @@ class PodcastRepository {
 			podcast.coverImageUrl,
 			podcast.podcastId,
 		], (err) => {
+			db.close();
+
 			if (err) {
-				throw err;
+				return callback(cleanSqliteError(err));
 			}
 
-			db.close();
+			return callback(null);
 		});
 	};
 
-	static readonly DeletePodcast = (podcastId: number) => {
+	static readonly DeletePodcast = (podcastId: number, callback: (error: string | null) => void) => {
 		const db = this.GetDatabase();
 
 		db.run(deletePodcast, [podcastId], (err) => {
+			db.close();
+
 			if (err) {
-				console.log(err);
-				throw err;
+				return callback(cleanSqliteError(err));
 			}
 
-			db.close();
+			return callback(null);
 		});
 	};
 
-	static readonly GetAllPodcastCategories = (callback: (categories: PodcastCategory[]) => void) => {
+	static readonly GetAllPodcastCategories = (callback: (error: string | null, categories: PodcastCategory[]) => void) => {
 		const db = this.GetDatabase();
 
 		const categories: PodcastCategory[] = [];
 
 		db.all(getPodcastCategories, (err: any, rows: PodcastCategoryQueryReturn[]) => {
+			db.close();
+
 			if (err) {
-				throw err;
+				return callback(cleanSqliteError(err), []);
 			}
 
 			rows.forEach((row) => {
@@ -139,27 +148,25 @@ class PodcastRepository {
 				});
 			});
 
-			db.close();
-
-			return callback(categories);
+			return callback(null, categories);
 		});
 	};
 
-	static readonly GetPodcastCategoryById = (id: number, callback: (podcast: PodcastCategory | null) => void) => {
+	static readonly GetPodcastCategoryById = (id: number, callback: (error: string | null, podcast: PodcastCategory | null) => void) => {
 		const db = this.GetDatabase();
 
 		db.get(getPodcastCategoryById, [id], (err, row: PodcastCategoryQueryReturn) => {
-			if (err) {
-				throw err;
-			}
-
 			db.close();
 
-			if (!row) {
-				return callback(null);
+			if (err) {
+				return callback(cleanSqliteError(err), null);
 			}
 
-			return callback({
+			if (!row) {
+				return callback(null, null);
+			}
+
+			return callback(null, {
 				podcastCategoryId: row.PodcastCategoryId,
 				name: row.Name,
 				colorCode: row.ColorCode,
@@ -167,44 +174,49 @@ class PodcastRepository {
 		});
 	};
 
-	static readonly AddPodcastCategory = (category: PodcastCategory) => {
+	static readonly AddPodcastCategory = (category: PodcastCategory, callback: (error: string | null) => void) => {
 		const db = this.GetDatabase();
 
 		db.run(insertPodcastCategory, [category.name, category.colorCode], (err) => {
+			db.close();
+
 			if (err) {
-				throw err;
+				return callback(cleanSqliteError(err));
 			}
 
-			db.close();
+			return callback(null);
 		});
 	};
 
-	static readonly UpdatePodcastCategory = (category: PodcastCategory) => {
+	static readonly UpdatePodcastCategory = (category: PodcastCategory, callback: (error: string | null) => void) => {
 		const db = this.GetDatabase();
 
-		db.run(updatePodcast, [
+		db.run(updatePodcastCategory, [
 			category.name,
 			category.colorCode,
 			category.podcastCategoryId,
 		], (err) => {
+			db.close();
+
 			if (err) {
-				throw err;
+				return callback(cleanSqliteError(err));
 			}
 
-			db.close();
+			return callback(null);
 		});
 	};
 
-	static readonly DeletePodcastCategory = (podcastCategoryId: number) => {
+	static readonly DeletePodcastCategory = (podcastCategoryId: number, callback: (error: string | null) => void) => {
 		const db = this.GetDatabase();
 
-		db.run(deletePodcast, [podcastCategoryId], (err) => {
+		db.run(deletePodcastCategory, [podcastCategoryId], (err) => {
+			db.close();
+
 			if (err) {
-				console.log(err);
-				throw err;
+				return callback(cleanSqliteError(err));
 			}
 
-			db.close();
+			return callback(null);
 		});
 	};
 }
