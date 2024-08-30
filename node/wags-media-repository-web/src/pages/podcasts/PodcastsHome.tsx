@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
     Button,
+    Row,
     Space,
     Table,
     TableProps,
@@ -94,18 +95,30 @@ const PodcastsHome = (): JSX.Element => {
     ]
 
     return (
-        <>
+        <Space direction="vertical" size={24} className="full-width">
             <Title level={1}>Podcasts</Title>
-            <Space direction="vertical" size={24} className="full-width">
-                <Table
-                    columns={tableColumns}
-                    dataSource={podcasts}
-                    rowKey="podcastId"
-                    pagination={false}
-                    loading={loading}
-                />
-            </Space>
-        </>
+            <Row justify="end">
+                <Space direction="horizontal" size={8}>
+                    <Button href="/podcasts/categories">
+                        Categories
+                    </Button>
+                    <Button
+                        type="primary"
+                        htmlType="button"
+                        onClick={() => { }}
+                    >
+                        Add New Podcast
+                    </Button>
+                </Space>
+            </Row>
+            <Table
+                columns={tableColumns}
+                dataSource={podcasts}
+                rowKey="podcastId"
+                pagination={false}
+                loading={loading}
+            />
+        </Space>
     );
 }
 
