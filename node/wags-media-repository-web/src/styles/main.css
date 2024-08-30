@@ -6,6 +6,8 @@
   --white-1: oklch(100% 0 0);
 
   --danger-1: #a9011c;
+
+  --sidebar-width: 200px;
 }
 
 html,
@@ -18,16 +20,53 @@ body {
     margin: 0;
 }
 
+h1.ant-typography {
+  text-align: left;
+}
+
 .site-header {
   color: var(--white-1);
   display: flex;
   align-items: center;
   font-size: 1.5rem;
+  padding: 0 16px;
+}
+
+.site-header .ant-btn {
+  border: none;
+  background: transparent;
+}
+
+.site-header .ant-btn svg {
+  fill: var(--white-1);
 }
 
 .main-content-area {
   min-height: calc(100vh - 64px);
   height: 100%;
+  margin-left: 0;
+}
+
+@media (min-width: 1024px) {
+  .main-content-area {
+    margin-left: var(--sidebar-width);
+  }
+}
+
+body:has(aside.ant-layout-sider-collapsed) .main-content-area {
+  margin-left: 0;
+}
+
+.sidebar {
+  overflow: auto;
+  height: calc(100vh - 64px);
+  position: fixed !important;
+  inset-inline-start: 0;
+  top: 64px;
+  bottom: 0;
+  scrollbar-width: thin;
+  scrollbar-color: unset;
+  z-index: 10;
 }
 
 .sidebar-menu {
@@ -51,4 +90,21 @@ body {
 
 .ant-error svg {
   fill: var(--danger-1);
+}
+
+table tbody td .ant-btn-link {
+  padding: 0;
+}
+
+@media (min-width: 1024px) {
+  .slim-table {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 1023px) {
+  h1.ant-typography {
+    font-size: 28px;
+  }
 }
