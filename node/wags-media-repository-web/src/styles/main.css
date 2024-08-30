@@ -1,0 +1,54 @@
+:root {
+  --font: Roboto, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --background: oklch(100% 0 0);
+  --text: oklch(26.97% 0 0);
+
+  --white-1: oklch(100% 0 0);
+
+  --danger-1: #a9011c;
+}
+
+html,
+body {
+    background-color: var(--background);
+    color: var(--text);
+    font-size: 100%;
+    font-family: var(--font);
+    padding: 0;
+    margin: 0;
+}
+
+.site-header {
+  color: var(--white-1);
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+}
+
+.main-content-area {
+  min-height: calc(100vh - 64px);
+  height: 100%;
+}
+
+.sidebar-menu {
+  height: 100%;
+  border-right: 0;
+}
+
+.page-content {
+  padding: 24px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.table-link {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ant-error svg {
+  fill: var(--danger-1);
+}

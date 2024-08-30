@@ -1,0 +1,26 @@
+import express from 'express';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import config from './config';
+
+import PodcastRoutes from './podcasts/routes';
+
+const app = express();
+
+const port = config.port || 3000;
+
+const corsOptions = {
+    origin: ['http://localhost:3009'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+};
+
+app.use(cors(corsOptions));
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+app.use('/podcasts', PodcastRoutes);
+
+app.listen(port, () => {
+    console.log(`Server listening on port ${port}`);
+});
