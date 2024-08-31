@@ -88,6 +88,41 @@ body:has(aside.ant-layout-sider-collapsed) .main-content-area {
   text-overflow: ellipsis;
 }
 
+.table-filter .ant-form-item {
+  margin: 0;
+}
+
+.table-filter .ant-form-item-label {
+  width: 90px;
+  text-align: left;
+}
+
+.table-filter .ant-form-item-control {
+  width: 240px;
+}
+
+.table-filter .ant-form-item-control .ant-select {
+  width: 240px !important;
+}
+
+@media (max-width: 768px) {
+  .filter-actions {
+    flex-wrap: wrap-reverse;
+  }
+
+  .table-filter {
+    margin-top: 24px;
+  }
+
+  .table-filter .ant-form-item-label {
+    padding: 0;
+  }
+
+  .table-filter .ant-form-item-control .ant-select {
+    width: 100% !important;
+  }
+}
+
 .ant-error svg {
   fill: var(--danger-1);
 }
