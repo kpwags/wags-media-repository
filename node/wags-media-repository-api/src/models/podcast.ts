@@ -2,6 +2,7 @@ export type PodcastCategory = {
     podcastCategoryId: number;
     name: string;
     colorCode: string;
+    podcastCount?: number;
 }
 
 export type Podcast = {

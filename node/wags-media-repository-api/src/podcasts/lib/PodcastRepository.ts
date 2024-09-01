@@ -145,6 +145,7 @@ class PodcastRepository {
 					podcastCategoryId: row.PodcastCategoryId,
 					name: row.Name,
 					colorCode: row.ColorCode,
+					podcastCount: row.PodcastCount,
 				});
 			});
 
@@ -170,6 +171,7 @@ class PodcastRepository {
 				podcastCategoryId: row.PodcastCategoryId,
 				name: row.Name,
 				colorCode: row.ColorCode,
+				podcastCount: row.PodcastCount,
 			});
 		});
 	};

@@ -8,6 +8,7 @@ import {
     Spin,
     Table,
     TableProps,
+    Tooltip,
     Typography
 } from 'antd';
 
@@ -86,17 +87,29 @@ const PodcastCategories = (): JSX.Element => {
                     >
                         Edit
                     </Button>
-                    <Confirmation
-                        text={`Are you sure you want to delete '${category.name}'`}
-                        onConfirm={() => deletePodcastCategory(category.podcastCategoryId)}
-                    >
-                        <Button
-                            type="link"
-                            htmlType="button"
+                    {category.podcastCount > 0 ? (
+                        <Tooltip placement="top" title={`${category.name} cannot be deleted as it has ${category.podcastCount} podcast(s) assigned to it.`}>
+                            <Button
+                                type="link"
+                                htmlType="button"
+                                disabled
+                            >
+                                Delete
+                            </Button>
+                        </Tooltip>
+                    ) : (
+                        <Confirmation
+                            text={`Are you sure you want to delete '${category.name}'`}
+                            onConfirm={() => deletePodcastCategory(category.podcastCategoryId)}
                         >
-                            Delete
-                        </Button>
-                    </Confirmation>
+                            <Button
+                                type="link"
+                                htmlType="button"
+                            >
+                                Delete
+                            </Button>
+                        </Confirmation>
+                    )}
                 </Space>
             )
         }
