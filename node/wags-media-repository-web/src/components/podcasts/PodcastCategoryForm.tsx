@@ -36,7 +36,7 @@ const PodcastCategoryForm = ({
 
     const [form] = Form.useForm<FormValues>();
 
-    const addPodcast = async (name: string, color: string): Promise<string | null> => {
+    const addPodcastCategory = async (name: string, color: string): Promise<string | null> => {
         const [, error] = await Api.Post('podcasts/categories', {
             data: {
                 name,
@@ -47,7 +47,7 @@ const PodcastCategoryForm = ({
         return error;
     };
 
-    const updatePodcast = async (name: string, color: string): Promise<string | null> => {
+    const updatePodcastCategory = async (name: string, color: string): Promise<string | null> => {
         const [, error] = await Api.Put(`podcasts/categories/${podcastCategory?.podcastCategoryId}`, {
             data: {
                 name,
@@ -65,8 +65,8 @@ const PodcastCategoryForm = ({
         const color = typeof colorCode === 'string' ? colorCode : colorCode.toHexString();
 
         const error = podcastCategory
-            ? await updatePodcast(name, color)
-            : await addPodcast(name, color);
+            ? await updatePodcastCategory(name, color)
+            : await addPodcastCategory(name, color);
 
         if (error) {
             setFormError(error);

@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
+    Alert,
     Button,
     Form,
+    Grid,
     Input,
     Row,
     Select,
@@ -13,29 +15,41 @@ import {
     Typography
 } from 'antd';
 
+import usePodcastCategories from '@hooks/usePodcastCategories';
+
 import { Api } from '@lib/api';
 
-import { Podcast, PodcastCategory } from '@models/Podcast';
+import { Podcast } from '@models/Podcast';
 import Confirmation from '@components/base/Confirmation';
+import PodcastForm from '@components/podcasts/PodcastForm';
 
-const { Text, Title, Link } = Typography;
+const { useBreakpoint } = Grid;
+const { Text, Title } = Typography;
 
 const PodcastsHome = (): JSX.Element => {
     const [allPodcasts, setAllPodcasts] = useState<Podcast[]>([]);
+    const [fetchError, setFetchError] = useState<string>('');
     const [podcasts, setPodcasts] = useState<Podcast[]>([]);
-    const [podcastCategories, setPodcastCategories] = useState<PodcastCategory[]>([]);
     const [processingMessage, setProcessingMessage] = useState<string>('Loading...');
     const [activeFilters, setActiveFilters] = useState<{ name: string, categoryId: number }>({ name: '', categoryId: 0 });
+    const [podcastToEdit, setPodcastToEdit] = useState<Podcast | undefined>(undefined);
+    const [showFormModal, setShowFormModal] = useState<boolean>(false);
+
+    const { podcastCategories, error, isLoading } = usePodcastCategories();
+
+    const screens = useBreakpoint();
+
+    const loadingMessage = isLoading ? 'Loading...' : processingMessage;
+    const errorMessage = error ? error.message : fetchError;
+    const isLargeScreen = screens.lg || screens.xl || screens.xxl;
 
     const fetchPodcasts = async (): Promise<[Podcast[] | null, string | null]> => await await Api.Get<Podcast[]>('podcasts');
-    const fetchPodcastCategories = async (): Promise<[PodcastCategory[] | null, string | null]> => {
-        return await await Api.Get<PodcastCategory[]>('podcasts/categories');
-    }
 
-    const loadPodcasts = async () => {
+    const loadPodcasts = useCallback(async () => {
         const [data, error] = await fetchPodcasts();
 
         if (error) {
+            setFetchError(error);
             setProcessingMessage('');
             return;
         }
@@ -43,34 +57,14 @@ const PodcastsHome = (): JSX.Element => {
         setPodcasts(data ?? []);
         setAllPodcasts(data ?? []);
         setProcessingMessage('');
-    };
-
-    const loadPageData = async () => {
-        const [
-            [podcastData, podcastError],
-            [podcastCategoryData, podcastCatgeoryError]
-        ] = await Promise.all([
-            fetchPodcasts(),
-            fetchPodcastCategories(),
-        ]);
-
-        if (podcastError || podcastCatgeoryError) {
-            setProcessingMessage('');
-            return;
-        }
-
-        setPodcasts(podcastData ?? []);
-        setAllPodcasts(podcastData ?? []);
-        setPodcastCategories(podcastCategoryData ?? []);
-
-        setProcessingMessage('');
-    };
+    }, []);
 
     const deletePodcast = async (id: number) => {
         setProcessingMessage('Deleting podcast...');
         const [, error] = await Api.Delete(`podcasts/${id}`);
 
         if (error) {
+            setFetchError(error);
             setProcessingMessage('');
             return;
         }
@@ -88,13 +82,13 @@ const PodcastsHome = (): JSX.Element => {
     const filterPodcastsByCategory = (categoryId: number) => {
         setActiveFilters({
             ...activeFilters,
-            categoryId,
+            categoryId: categoryId ?? 0,
         });
     };
 
     useEffect(() => {
-        loadPageData();
-    }, []);
+        loadPodcasts();
+    }, [loadPodcasts]);
 
     useEffect(() => {
         if (activeFilters.categoryId === 0 && activeFilters.name.trim() === '') {
@@ -126,28 +120,30 @@ const PodcastsHome = (): JSX.Element => {
             key: 'category',
             title: 'Category',
             width: '25%',
+            hidden: !isLargeScreen,
             render: (_, podcast: Podcast) => (
                 <Tag color={podcast.category.colorCode}>{podcast.category.name}</Tag>
-            )
-        },
-        {
-            key: 'link',
-            title: 'Link',
-            width: '25%',
-            render: (_, { link }: Podcast) => (
-                <Link href={link} target="_blank" rel="nofollow" className="table-link">{link}</Link>
             )
         },
         {
             key: 'actions',
             title: 'Actions',
             width: '15%',
-            render: (_, { podcastId, name }: Podcast) => (
-                <Space direction="horizontal" size={4}>
-                    <Link href={`/podcasts/edit/${podcastId}`}>Edit</Link>
+            render: (_, podcast: Podcast) => (
+                <Space direction="horizontal" size={16}>
+                    <Button
+                        type="link"
+                        htmlType="button"
+                        onClick={() => {
+                            setPodcastToEdit(podcast);
+                            setShowFormModal(true);
+                        }}
+                    >
+                        Edit
+                    </Button>
                     <Confirmation
-                        text={`Are you sure you want to delete '${name}'`}
-                        onConfirm={() => deletePodcast(podcastId)}
+                        text={`Are you sure you want to delete '${podcast.name}'`}
+                        onConfirm={() => deletePodcast(podcast.podcastId)}
                     >
                         <Button
                             type="link"
@@ -162,52 +158,70 @@ const PodcastsHome = (): JSX.Element => {
     ]
 
     return (
-        <Spin spinning={processingMessage !== ''} tip={processingMessage}>
-            <Space direction="vertical" size={24} className="full-width">
-                <Title level={1}>Podcasts</Title>
-                <Row justify="space-between" align="bottom" className="filter-actions">
-                    <Space direction="vertical" size={8} className="table-filter">
-                        <Text strong>Filters</Text>
-                        <Form.Item label="Name">
-                            <Input
-                                placeholder="Enter Podcast Name"
-                                onChange={(e) => {
-                                    filterPodcastsByName(e.target.value);
-                                }}
-                            />
-                        </Form.Item>
-                        <Form.Item label="Category">
-                            <Select
-                                style={{ width: 200 }}
-                                placeholder="Select Category"
-                                onChange={(e) => {
-                                    filterPodcastsByCategory(e);
-                                }}
-                                options={podcastCategories.map((pc) => ({ key: pc.podcastCategoryId, label: pc.name, value: pc.podcastCategoryId }))} />
-                        </Form.Item>
-                    </Space>
-                    <Space direction="horizontal" size={8}>
-                        <Button href="/podcasts/categories">
-                            Categories
-                        </Button>
-                        <Button
-                            type="primary"
-                            htmlType="button"
-                            onClick={() => { }}
-                        >
-                            Add New Podcast
-                        </Button>
-                    </Space>
-                </Row>
-                <Table
-                    columns={tableColumns}
-                    dataSource={podcasts}
-                    rowKey="podcastId"
-                    pagination={false}
-                    loading={processingMessage !== ''}
-                />
-            </Space>
-        </Spin>
+        <>
+            <Spin spinning={loadingMessage !== ''} tip={loadingMessage}>
+                <Space direction="vertical" size={24} className="full-width">
+                    <Title level={1}>Podcasts</Title>
+                    {errorMessage !== '' ? <Alert type="error" message={errorMessage} /> : null}
+                    <Row justify="space-between" align="bottom" className="filter-actions">
+                        <Space direction="vertical" size={8} className="table-filter">
+                            <Text strong>Filters</Text>
+                            <Form.Item label="Name">
+                                <Input
+                                    placeholder="Enter Podcast Name"
+                                    onChange={(e) => {
+                                        filterPodcastsByName(e.target.value);
+                                    }}
+                                />
+                            </Form.Item>
+                            <Form.Item label="Category">
+                                <Select
+                                    style={{ width: 200 }}
+                                    placeholder="Select Category"
+                                    onChange={(e) => {
+                                        filterPodcastsByCategory(e);
+                                    }}
+                                    allowClear
+                                    options={(podcastCategories ?? []).map((pc) => ({ key: pc.podcastCategoryId, label: pc.name, value: pc.podcastCategoryId }))} />
+                            </Form.Item>
+                        </Space>
+                        <Space direction="horizontal" size={16}>
+                            <Button href="/podcasts/categories">
+                                Categories
+                            </Button>
+                            <Button
+                                type="primary"
+                                htmlType="button"
+                                onClick={() => setShowFormModal(true)}
+                            >
+                                Add New Podcast
+                            </Button>
+                        </Space>
+                    </Row>
+                    <Table
+                        columns={tableColumns}
+                        dataSource={podcasts}
+                        rowKey="podcastId"
+                        pagination={false}
+                        loading={loadingMessage !== ''}
+                    />
+                </Space>
+            </Spin>
+
+            <PodcastForm
+                podcast={podcastToEdit ?? undefined}
+                open={showFormModal}
+                onClose={() => {
+                    setPodcastToEdit(undefined);
+                    setShowFormModal(false);
+                }}
+                onSaved={() => {
+                    loadPodcasts();
+                    setPodcastToEdit(undefined);
+                    setShowFormModal(false);
+                }}
+            />
+        </>
     );
 }
 
