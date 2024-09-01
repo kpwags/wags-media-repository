@@ -44,18 +44,20 @@ export const deletePodcast = `DELETE FROM Podcast WHERE PodcastId = ?;`;
 
 export const getPodcastCategories = `
 SELECT
-	PodcastCategoryId,
-	Name,
-	ColorCode
-FROM PodcastCategory
+	PC.PodcastCategoryId,
+	PC.Name,
+	PC.ColorCode,
+	(SELECT COUNT(PodcastId) FROM Podcast WHERE  PodcastCategoryId = PC.PodcastCategoryId) AS PodcastCount
+FROM PodcastCategory PC
 ORDER BY Name ASC;
 `;
 
 export const getPodcastCategoryById = `
 SELECT
-    PodcastCategoryId,
-	Name,
-	ColorCode
+    PC.PodcastCategoryId,
+	PC.Name,
+	PC.ColorCode,
+	(SELECT COUNT(PodcastId) FROM Podcast WHERE  PodcastCategoryId = PC.PodcastCategoryId) AS PodcastCount
 FROM PodcastCategory
 WHERE PodcastCategoryId = ?
 `;
@@ -88,4 +90,5 @@ export type PodcastCategoryQueryReturn = {
     PodcastCategoryId: number;
     Name: string;
     ColorCode: string;
+    PodcastCount: number;
 }
