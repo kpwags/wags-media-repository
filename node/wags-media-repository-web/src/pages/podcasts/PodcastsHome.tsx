@@ -70,7 +70,7 @@ const PodcastsHome = (): JSX.Element => {
         }
 
         await loadPodcasts();
-    }
+    };
 
     const filterPodcastsByName = (filterText: string) => {
         setActiveFilters({

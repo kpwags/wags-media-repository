@@ -63,6 +63,7 @@ const PageLayout = ({ children }: PageLayoutProps): JSX.Element => {
             key: 'links',
             icon: <LinkOutlined />,
             label: 'Links',
+            onClick: () => navigateToPage('/links'),
         });
 
         menu.push({

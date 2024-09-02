@@ -3,6 +3,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import config from './config';
 
+import LinkRoutes from './links/routes';
 import PodcastRoutes from './podcasts/routes';
 
 const app = express();
@@ -19,6 +20,7 @@ app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.use('/links', LinkRoutes);
 app.use('/podcasts', PodcastRoutes);
 
 app.listen(port, () => {

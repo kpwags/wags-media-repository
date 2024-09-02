@@ -139,6 +139,11 @@ div.ant-modal-body .ant-alert {
   margin-bottom: 24px;
 }
 
+.ant-input-number,
+.ant-picker {
+  width: 100%;
+}
+
 @media (min-width: 1024px) {
   .slim-table {
     max-width: 600px;

@@ -8,15 +8,17 @@ import {
     ModalProps,
     Spin,
 } from 'antd';
-import { Color } from 'antd/es/color-picker';
 import { useQueryClient } from '@tanstack/react-query';
+import { Color } from 'antd/es/color-picker';
 
 import { Api } from '@lib/api';
 
-import { PodcastCategory } from '@models/Podcast';
+import { LinkCategory } from '@models/Link';
 
-interface PodcastCategoryFormProps extends ModalProps {
-    podcastCategory?: PodcastCategory;
+const { useForm } = Form;
+
+interface LinkCategoryFormProps extends ModalProps {
+    linkCategory?: LinkCategory;
     onSaved: () => void;
     onClose: () => void;
 }
@@ -26,21 +28,21 @@ type FormValues = {
     colorCode: string | Color;
 }
 
-const PodcastCategoryForm = ({
-    podcastCategory,
+const LinkCategoryForm = ({
+    linkCategory,
     open,
     onSaved,
     onClose,
-}: PodcastCategoryFormProps): JSX.Element => {
+}: LinkCategoryFormProps): JSX.Element => {
     const [formError, setFormError] = useState<string>('');
     const [processingMessage, setProcessingMessage] = useState<string>('Loading...');
 
-    const [form] = Form.useForm<FormValues>();
+    const queryClient = useQueryClient();
 
-    const queryClient = useQueryClient()
+    const [form] = useForm<FormValues>();
 
-    const addPodcastCategory = async (name: string, color: string): Promise<string | null> => {
-        const [, error] = await Api.Post('podcasts/categories', {
+    const addLinkCategory = async (name: string, color: string): Promise<string | null> => {
+        const [, error] = await Api.Post('links/categories', {
             data: {
                 name,
                 colorCode: color,
@@ -50,8 +52,8 @@ const PodcastCategoryForm = ({
         return error;
     };
 
-    const updatePodcastCategory = async (name: string, color: string): Promise<string | null> => {
-        const [, error] = await Api.Put(`podcasts/categories/${podcastCategory?.podcastCategoryId}`, {
+    const updateLinkCategory = async (name: string, color: string): Promise<string | null> => {
+        const [, error] = await Api.Put(`links/categories/${linkCategory?.linkCategoryId}`, {
             data: {
                 name,
                 colorCode: color,
@@ -61,15 +63,15 @@ const PodcastCategoryForm = ({
         return error;
     };
 
-    const savePodcast = async ({ name, colorCode }: FormValues) => {
+    const saveLink = async ({ name, colorCode }: FormValues) => {
         setProcessingMessage('Saving...');
         setFormError('');
 
         const color = typeof colorCode === 'string' ? colorCode : colorCode.toHexString();
 
-        const error = podcastCategory
-            ? await updatePodcastCategory(name, color)
-            : await addPodcastCategory(name, color);
+        const error = linkCategory
+            ? await updateLinkCategory(name, color)
+            : await addLinkCategory(name, color);
 
         if (error) {
             setFormError(error);
@@ -77,7 +79,7 @@ const PodcastCategoryForm = ({
             return;
         }
 
-        queryClient.invalidateQueries({ queryKey: ['podcast-categories'] })
+        queryClient.invalidateQueries({ queryKey: ['link-categories'] });
 
         onSaved();
     };
@@ -88,16 +90,16 @@ const PodcastCategoryForm = ({
             open={open}
             onOk={() => form.submit()}
             onCancel={() => onClose()}
-            okText={podcastCategory ? 'Save' : 'Add'}
+            okText={linkCategory ? 'Save' : 'Add'}
             cancelText="Cancel"
             forceRender
-            title={podcastCategory ? 'Edit Podcast Category' : 'Add Podcast Category'}
+            title={linkCategory ? 'Edit Link Category' : 'Add Link Category'}
             afterOpenChange={(open) => {
                 if (open) {
-                    if (podcastCategory) {
+                    if (linkCategory) {
                         form.setFieldsValue({
-                            name: podcastCategory.name,
-                            colorCode: podcastCategory.colorCode,
+                            name: linkCategory.name,
+                            colorCode: linkCategory.colorCode,
                         });
                     }
 
@@ -112,7 +114,7 @@ const PodcastCategoryForm = ({
             <Spin spinning={processingMessage !== ''} tip={processingMessage}>
                 {formError !== '' ? <Alert type="error" message={formError} /> : null}
 
-                <Form form={form} onFinish={savePodcast}>
+                <Form form={form} onFinish={saveLink}>
                     <Form.Item
                         name="name"
                         label="Name"
@@ -134,4 +136,4 @@ const PodcastCategoryForm = ({
     );
 };
 
-export default PodcastCategoryForm;
+export default LinkCategoryForm;
