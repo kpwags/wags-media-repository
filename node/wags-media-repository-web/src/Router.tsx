@@ -7,6 +7,8 @@ import {
 import PageLayout from '@components/base/PageLayout';
 import AppContainer from '@components/base/AppContainer';
 
+import LinksHome from '@pages/links/LinksHome';
+import LinkCategories from '@pages/links/LinkCategories';
 import PodcastsHome from '@pages/podcasts/PodcastsHome';
 import PodcastCategories from '@pages/podcasts/PodcastCategories';
 
@@ -15,6 +17,8 @@ const Router = (): JSX.Element => (
         <AppContainer>
             <PageLayout>
                 <Routes>
+                    <Route path="/links" element={<LinksHome />} />
+                    <Route path="/links/categories" element={<LinkCategories />} />
                     <Route path="/podcasts/categories" element={<PodcastCategories />} />
                     <Route path="/podcasts" element={<PodcastsHome />} />
                     <Route

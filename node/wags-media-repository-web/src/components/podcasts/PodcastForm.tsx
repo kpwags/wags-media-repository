@@ -129,11 +129,16 @@ const PodcastForm = ({
                         label="Name"
                         required
                     >
-                        <Input />
+                        <Input placeholder="Enter Name" />
                     </Form.Item>
 
-                    <Form.Item name="podcastCategoryId" label="Category">
+                    <Form.Item
+                        name="podcastCategoryId"
+                        label="Category"
+                        required
+                    >
                         <Select
+                            placeholder="Select Category"
                             options={(podcastCategories ?? []).map((pc) => ({ key: pc.podcastCategoryId, label: pc.name, value: pc.podcastCategoryId }))} />
                     </Form.Item>
 
@@ -142,7 +147,7 @@ const PodcastForm = ({
                         label="Link"
                         required
                     >
-                        <Input />
+                        <Input placeholder="Enter Podcast URL" />
                     </Form.Item>
 
                     <Form.Item
@@ -150,7 +155,7 @@ const PodcastForm = ({
                         label="Image URL"
                         required
                     >
-                        <Input />
+                        <Input placeholder="Enter Image URL" />
                     </Form.Item>
                 </Form>
             </Spin>
