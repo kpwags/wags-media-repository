@@ -5,6 +5,7 @@ import config from './config';
 
 import LinkRoutes from './links/routes';
 import PodcastRoutes from './podcasts/routes';
+import SystemRoutes from './system/routes';
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(bodyParser.json());
 
 app.use('/links', LinkRoutes);
 app.use('/podcasts', PodcastRoutes);
+app.use('/system', SystemRoutes);
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
