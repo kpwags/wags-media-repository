@@ -11,6 +11,7 @@ import DesktopOutlined from '@ant-design/icons/lib/icons/DesktopOutlined';
 import AudioOutlined from '@ant-design/icons/lib/icons/AudioOutlined';
 import RocketOutlined from '@ant-design/icons/lib/icons/RocketOutlined';
 import MenuOutlined from '@ant-design/icons/lib/icons/MenuOutlined';
+import ControlOutlined from '@ant-design/icons/lib/icons/ControlOutlined';
 
 const { Header, Content, Sider } = Layout;
 const { useBreakpoint } = Grid;
@@ -147,6 +148,19 @@ const PageLayout = ({ children }: PageLayoutProps): JSX.Element => {
                 {
                     key: 'video-games-backlog',
                     label: 'Backlog',
+                },
+            ],
+        });
+
+        menu.push({
+            key: 'system',
+            icon: <ControlOutlined />,
+            label: 'System',
+            children: [
+                {
+                    key: 'video-services',
+                    label: 'Video Services',
+                    onClick: () => navigateToPage('/system/video-services'),
                 },
             ],
         });
