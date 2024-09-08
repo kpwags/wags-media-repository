@@ -40,7 +40,7 @@ const PodcastCategoryForm = ({
     const queryClient = useQueryClient()
 
     const addPodcastCategory = async (name: string, color: string): Promise<string | null> => {
-        const [, error] = await Api.Post('podcasts/categories', {
+        const [, error] = await Api.Post('podcast/category', {
             data: {
                 name,
                 colorCode: color,
@@ -51,7 +51,7 @@ const PodcastCategoryForm = ({
     };
 
     const updatePodcastCategory = async (name: string, color: string): Promise<string | null> => {
-        const [, error] = await Api.Put(`podcasts/categories/${podcastCategory?.podcastCategoryId}`, {
+        const [, error] = await Api.Put(`podcast/category/${podcastCategory?.podcastCategoryId}`, {
             data: {
                 name,
                 colorCode: color,

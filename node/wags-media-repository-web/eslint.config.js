@@ -40,6 +40,7 @@ export default tseslint.config(
           extensions: ['.js', '.jsx', '.ts', '.tsx'],
           map: [
             ['@components', './src/components'],
+            ['@contexts', './src/contexts'],
             ['@hooks', './src/hooks'],
             ['@models', './src/models'],
             ['@pages', './src/pages'],

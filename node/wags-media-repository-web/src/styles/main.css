@@ -5,6 +5,8 @@
 
   --white-1: oklch(100% 0 0);
 
+  --blue-1: #1677ff;
+
   --danger-1: #a9011c;
 
   --sidebar-width: 200px;
@@ -142,6 +144,21 @@ div.ant-modal-body .ant-alert {
 .ant-input-number,
 .ant-picker {
   width: 100%;
+}
+
+.rating {
+  display: flex;
+  column-gap: 4px;
+}
+
+.rating svg {
+  height: 20px;
+  width: 20px;
+}
+
+.rating svg,
+.rating svg path {
+  fill: var(--blue-1);
 }
 
 @media (min-width: 1024px) {

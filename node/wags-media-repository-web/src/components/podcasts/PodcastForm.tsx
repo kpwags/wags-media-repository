@@ -45,7 +45,7 @@ const PodcastForm = ({
     const [form] = Form.useForm<FormValues>();
 
     const addPodcast = async (values: FormValues): Promise<string | null> => {
-        const [, error] = await Api.Post('podcasts', {
+        const [, error] = await Api.Post('podcast', {
             data: {
                 name: values.name,
                 link: values.link,
@@ -58,7 +58,7 @@ const PodcastForm = ({
     };
 
     const updatePodcast = async (values: FormValues): Promise<string | null> => {
-        const [, error] = await Api.Put(`podcasts/${podcast?.podcastId}`, {
+        const [, error] = await Api.Put(`podcast/${podcast?.podcastId}`, {
             data: {
                 name: values.name,
                 link: values.link,

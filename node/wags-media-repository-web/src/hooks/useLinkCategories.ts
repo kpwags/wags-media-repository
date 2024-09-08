@@ -12,7 +12,7 @@ const useLinkCategories = () => {
     } = useQuery({
         queryKey: ['link-categories'],
         queryFn: async () => {
-            const [data, error] = await await Api.Get<LinkCategory[]>('links/categories');
+            const [data, error] = await await Api.Get<LinkCategory[]>('link/category');
 
             if (error) {
                 return Promise.reject(new Error(error));

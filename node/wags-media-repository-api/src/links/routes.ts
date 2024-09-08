@@ -5,7 +5,7 @@ import { Link, LinkCategory } from '../models/link';
 
 const router = express.Router();
 
-router.get('/categories', (_, res) => {
+router.get('/category', (_, res) => {
     linkRepository.GetAllLinkCatgeories((error, data) => {
         if (error) {
             return res.status(400).json({ error });
@@ -15,7 +15,7 @@ router.get('/categories', (_, res) => {
     });
 });
 
-router.get('/categories/:id', (req, res) => {
+router.get('/category/:id', (req, res) => {
     const id = parseInt(req.params.id);
     linkRepository.GetLinkCategoryById(id, (error, category) => {
         if (error) {
@@ -30,7 +30,7 @@ router.get('/categories/:id', (req, res) => {
     });
 });
 
-router.post('/categories', (req, res) => {
+router.post('/category', (req, res) => {
     const { linkCategoryId, name, colorCode } = req.body;
 
     const category: LinkCategory = {
@@ -48,7 +48,7 @@ router.post('/categories', (req, res) => {
     });
 });
 
-router.put('/categories/:id', (req, res) => {
+router.put('/category/:id', (req, res) => {
     const id = parseInt(req.params.id);
 
     const { name, colorCode } = req.body;
@@ -68,7 +68,7 @@ router.put('/categories/:id', (req, res) => {
     });
 });
 
-router.delete('/categories/:id', (req, res) => {
+router.delete('/category/:id', (req, res) => {
     const id = parseInt(req.params.id);
 
     linkRepository.DeleteLinkCategory(id, (error) => {

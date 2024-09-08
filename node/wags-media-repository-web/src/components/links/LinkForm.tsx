@@ -53,7 +53,7 @@ const LinkForm = ({
     const [form] = Form.useForm<FormValues>();
 
     const addLink = async (values: FormValues): Promise<string | null> => {
-        const [, error] = await Api.Post('links', {
+        const [, error] = await Api.Post('link', {
             data: {
                 linkTypeId: values.linkTypeId,
                 linkCategoryId: values.linkCategoryId,
@@ -69,7 +69,7 @@ const LinkForm = ({
     };
 
     const updateLink = async (values: FormValues): Promise<string | null> => {
-        const [, error] = await Api.Put(`links/${link?.linkId}`, {
+        const [, error] = await Api.Put(`link/${link?.linkId}`, {
             data: {
                 linkTypeId: values.linkTypeId,
                 linkCategoryId: values.linkCategoryId,
@@ -184,7 +184,6 @@ const LinkForm = ({
                     >
                         <InputNumber placeholder="Enter Issue Number" />
                     </Form.Item>
-
 
                     <Form.Item
                         name="linkTypeId"

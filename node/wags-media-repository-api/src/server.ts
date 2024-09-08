@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import config from './config';
 
 import LinkRoutes from './links/routes';
+import MovieRoutes from './movies/routes';
 import PodcastRoutes from './podcasts/routes';
 import SystemRoutes from './system/routes';
 
@@ -21,8 +22,9 @@ app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use('/links', LinkRoutes);
-app.use('/podcasts', PodcastRoutes);
+app.use('/link', LinkRoutes);
+app.use('/movie', MovieRoutes);
+app.use('/podcast', PodcastRoutes);
 app.use('/system', SystemRoutes);
 
 app.listen(port, () => {
