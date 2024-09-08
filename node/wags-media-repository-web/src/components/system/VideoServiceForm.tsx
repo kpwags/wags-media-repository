@@ -42,7 +42,7 @@ const VideoServiceForm = ({
     const [form] = useForm<FormValues>();
 
     const addVideoService = async (name: string, color: string): Promise<string | null> => {
-        const [, error] = await Api.Post('system/video-services', {
+        const [, error] = await Api.Post('system/video-service', {
             data: {
                 name,
                 colorCode: color,
@@ -53,7 +53,7 @@ const VideoServiceForm = ({
     };
 
     const updateVideoService = async (name: string, color: string): Promise<string | null> => {
-        const [, error] = await Api.Put(`system/video-services/${videoService?.videoServiceId}`, {
+        const [, error] = await Api.Put(`system/video-service/${videoService?.videoServiceId}`, {
             data: {
                 name,
                 colorCode: color,

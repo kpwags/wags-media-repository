@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useState } from 'react';
+import { ReactNode, useContext, useEffect, useState } from 'react';
 import { Button, Grid, Layout, Menu, MenuProps, Space } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,6 +13,8 @@ import RocketOutlined from '@ant-design/icons/lib/icons/RocketOutlined';
 import MenuOutlined from '@ant-design/icons/lib/icons/MenuOutlined';
 import ControlOutlined from '@ant-design/icons/lib/icons/ControlOutlined';
 
+import AppContext from '@contexts/AppContext';
+
 const { Header, Content, Sider } = Layout;
 const { useBreakpoint } = Grid;
 
@@ -22,6 +24,8 @@ type PageLayoutProps = {
 
 const PageLayout = ({ children }: PageLayoutProps): JSX.Element => {
     const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
+
+    const { currentSidebarItem } = useContext(AppContext);
 
     const navigate = useNavigate();
     const screens = useBreakpoint();
@@ -75,14 +79,17 @@ const PageLayout = ({ children }: PageLayoutProps): JSX.Element => {
                 {
                     key: 'movies-personal',
                     label: 'Personal List',
+                    onClick: () => navigateToPage('/movies/personal'),
                 },
                 {
                     key: 'movies-joint',
                     label: 'Joint List',
+                    onClick: () => navigateToPage('/movies/joint'),
                 },
                 {
-                    key: 'movies-watch',
+                    key: 'movies-watched',
                     label: 'Watched',
+                    onClick: () => navigateToPage('/movies/watched'),
                 },
                 {
                     key: 'movies-abandoned',
@@ -158,6 +165,11 @@ const PageLayout = ({ children }: PageLayoutProps): JSX.Element => {
             label: 'System',
             children: [
                 {
+                    key: 'video-genres',
+                    label: 'Video Genres',
+                    onClick: () => navigateToPage('/system/video-genres'),
+                },
+                {
                     key: 'video-services',
                     label: 'Video Services',
                     onClick: () => navigateToPage('/system/video-services'),
@@ -170,9 +182,36 @@ const PageLayout = ({ children }: PageLayoutProps): JSX.Element => {
 
     const isLargeScreen = screens.lg || screens.xl || screens.xxl;
 
-    useMemo(() => {
+    useEffect(() => {
         setSidebarCollapsed(!isLargeScreen);
     }, [isLargeScreen]);
+
+    const getOpenedKeys = (): string[] => {
+        const keys: string[] = [];
+
+        if (document.location.href.toLocaleLowerCase().includes('books')) {
+            keys.push('books');
+        }
+
+        if (document.location.href.toLocaleLowerCase().includes('movies')) {
+            keys.push('movies');
+        }
+
+        if (document.location.href.toLocaleLowerCase().includes('tv')) {
+            keys.push('tv');
+        }
+
+        if (document.location.href.toLocaleLowerCase().includes('video-games')) {
+            keys.push('video-games');
+        }
+
+        if (document.location.href.toLocaleLowerCase().includes('video-genres')
+            || document.location.href.toLocaleLowerCase().includes('video-services')) {
+            keys.push('system');
+        }
+
+        return keys;
+    };
 
     return (
         <Layout>
@@ -194,6 +233,8 @@ const PageLayout = ({ children }: PageLayoutProps): JSX.Element => {
                     <Menu
                         mode="inline"
                         className="sidebar-menu"
+                        defaultOpenKeys={getOpenedKeys()}
+                        selectedKeys={[currentSidebarItem]}
                         items={BuildMenu()}
                     />
                 </Sider>

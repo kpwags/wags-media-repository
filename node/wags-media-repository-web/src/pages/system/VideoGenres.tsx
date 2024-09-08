@@ -17,25 +17,26 @@ import AppContext from '@contexts/AppContext';
 import { Api } from '@lib/api';
 
 import Confirmation from '@components/base/Confirmation';
-import VideoServiceForm from '@components/system/VideoServiceForm';
+import VideoGenreFrom from '@components/system/VideoGenreForm';
 
-import { VideoService } from '@models/System';
+import { VideoGenre } from '@models/System';
 
 const { useBreakpoint } = Grid;
 const { Title } = Typography;
 
-const VideoServices = (): JSX.Element => {
-    const [videoServices, setVideoServices] = useState<VideoService[]>([]);
+const VideoGenres = (): JSX.Element => {
+    const [genres, setGenres] = useState<VideoGenre[]>([]);
     const [processingMessage, setProcessingMessage] = useState<string>('Loading...');
     const [errorMessage, setErrorMessage] = useState<string>('');
     const [showFormModal, setShowFormModal] = useState<boolean>(false);
-    const [videoServiceToEdit, setVideoServiceToEdit] = useState<VideoService | undefined>(undefined);
+    const [genreToEdit, setGenreToEdit] = useState<VideoGenre | undefined>(undefined);
 
     const { setSidebarItem } = useContext(AppContext);
+
     const screens = useBreakpoint();
 
-    const loadVideoServices = async () => {
-        const [data, error] = await await Api.Get<VideoService[]>('system/video-service');
+    const loadGenres = async () => {
+        const [data, error] = await Api.Get<VideoGenre[]>('system/video-genre');
 
         if (error) {
             setErrorMessage(error);
@@ -43,14 +44,14 @@ const VideoServices = (): JSX.Element => {
             return;
         }
 
-        setVideoServices(data ?? []);
+        setGenres(data ?? []);
         setProcessingMessage('');
     };
 
-    const deletePodcastCategory = async (id: number) => {
-        setProcessingMessage('Deleting Video Service...');
+    const deleteVideoGenre = async (id: number) => {
+        setProcessingMessage('Deleting Genre...');
 
-        const [, error] = await Api.Delete(`system/video-service/${id}`);
+        const [, error] = await Api.Delete(`system/video-genre/${id}`);
 
         if (error) {
             setErrorMessage(error);
@@ -58,17 +59,17 @@ const VideoServices = (): JSX.Element => {
             return;
         }
 
-        await loadVideoServices();
+        await loadGenres();
     }
 
     useEffect(() => {
-        loadVideoServices();
-        setSidebarItem('video-services');
+        loadGenres();
+        setSidebarItem('video-genres');
     }, [setSidebarItem]);
 
     const isLargeScreen = screens.md || screens.lg || screens.xl || screens.xxl;
 
-    const tableColumns: TableProps<VideoService>['columns'] = [
+    const tableColumns: TableProps<VideoGenre>['columns'] = [
         {
             key: 'name',
             title: 'Name',
@@ -80,20 +81,20 @@ const VideoServices = (): JSX.Element => {
             title: 'Actions',
             align: 'center',
             width: '30%',
-            render: (_, videoService: VideoService) => (
+            render: (_, genre: VideoGenre) => (
                 <Space direction={isLargeScreen ? 'horizontal' : 'vertical'} size={isLargeScreen ? 16 : 8}>
                     <Button
                         type="link"
                         htmlType="button"
                         onClick={() => {
-                            setVideoServiceToEdit(videoService);
+                            setGenreToEdit(genre);
                             setShowFormModal(true);
                         }}
                     >
                         Edit
                     </Button>
-                    {(videoService.tvShowCount ?? 0) > 0 || (videoService.movieCount ?? 0) > 0 ? (
-                        <Tooltip placement="top" title={`${videoService.name} cannot be deleted as it has ${(videoService?.tvShowCount ?? 0) + (videoService?.movieCount ?? 0)} item(s) assigned to it.`}>
+                    {(genre?.tvShowCount ?? 0) > 0 || (genre?.movieCount ?? 0) > 0 ? (
+                        <Tooltip placement="top" title={`${genre.name} cannot be deleted as it has TV shows or movies assigned to it.`}>
                             <Button
                                 type="link"
                                 htmlType="button"
@@ -104,8 +105,8 @@ const VideoServices = (): JSX.Element => {
                         </Tooltip>
                     ) : (
                         <Confirmation
-                            text={`Are you sure you want to delete '${videoService.name}'`}
-                            onConfirm={() => deletePodcastCategory(videoService.videoServiceId)}
+                            text={`Are you sure you want to delete '${genre.name}'`}
+                            onConfirm={() => deleteVideoGenre(genre.videoGenreId)}
                         >
                             <Button
                                 type="link"
@@ -124,7 +125,8 @@ const VideoServices = (): JSX.Element => {
         <Spin spinning={processingMessage !== ''} tip={processingMessage}>
             <Row justify="start" className="slim-table">
                 <Space direction="vertical" size={24} className="full-width">
-                    <Title level={1}>Video Services</Title>
+
+                    <Title level={1}>Video Genres</Title>
 
                     {errorMessage !== '' ? <Alert type="error" message={errorMessage} /> : null}
 
@@ -134,29 +136,30 @@ const VideoServices = (): JSX.Element => {
                             htmlType="button"
                             onClick={() => setShowFormModal(true)}
                         >
-                            Add New Service
+                            Add New Genre
                         </Button>
                     </Row>
+
                     <Table
                         columns={tableColumns}
-                        dataSource={videoServices}
-                        rowKey="videoServiceId"
+                        dataSource={genres}
+                        rowKey="videoGenreId"
                         pagination={false}
                         loading={processingMessage !== ''}
                     />
                 </Space>
             </Row>
 
-            <VideoServiceForm
-                videoService={videoServiceToEdit ?? undefined}
+            <VideoGenreFrom
+                genre={genreToEdit ?? undefined}
                 open={showFormModal}
                 onClose={() => {
-                    setVideoServiceToEdit(undefined);
+                    setGenreToEdit(undefined);
                     setShowFormModal(false);
                 }}
                 onSaved={() => {
-                    loadVideoServices();
-                    setVideoServiceToEdit(undefined);
+                    loadGenres();
+                    setGenreToEdit(undefined);
                     setShowFormModal(false);
                 }}
             />
@@ -164,4 +167,4 @@ const VideoServices = (): JSX.Element => {
     );
 }
 
-export default VideoServices;
+export default VideoGenres;

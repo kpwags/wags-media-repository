@@ -1,12 +1,12 @@
 import express from 'express';
 
-import systemRepository from './lib/SystemRepository';
-import { VideoService } from '../models/system';
+import SystemRepository from './lib/SystemRepository';
+import { VideoGenre, VideoService } from '../models/system';
 
 const router = express.Router();
 
-router.get('/video-services', (_, res) => {
-    systemRepository.GetAllVideoServices((error, data) => {
+router.get('/video-genre', (_, res) => {
+    SystemRepository.GetAllVideoGenres((error, data) => {
         if (error) {
             return res.status(400).json({ error });
         }
@@ -15,10 +15,88 @@ router.get('/video-services', (_, res) => {
     });
 });
 
-router.get('/video-services/:id', (req, res) => {
+router.get('/video-genre/:id', (req, res) => {
     const id = parseInt(req.params.id);
 
-    systemRepository.GetVideoServiceById(id, (error, category) => {
+    SystemRepository.GetVideoGenreById(id, (error, category) => {
+        if (error) {
+            return res.status(400).json({ error });
+        }
+
+        if (!category) {
+            res.status(404).json({ error: 'Genre not found' });
+        } else {
+            res.json(category);
+        }
+    });
+});
+
+router.post('/video-genre', (req, res) => {
+    const { name, colorCode } = req.body;
+
+    const genre: VideoGenre = {
+        videoGenreId: 0,
+        name,
+        colorCode,
+    };
+
+    SystemRepository.AddVideoGenre(genre, (error) => {
+        if (error) {
+            return res.status(400).json({ error });
+        }
+
+        res.send();
+    });
+});
+
+router.put('/video-genre/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+
+    const { name, colorCode } = req.body;
+
+    const genre: VideoGenre = {
+        videoGenreId: id,
+        name,
+        colorCode,
+    };
+
+    SystemRepository.UpdateVideoGenre(genre, (error) => {
+        if (error) {
+            return res.status(400).json({ error });
+        }
+
+        res.send();
+    });
+});
+
+router.delete('/video-genres/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+
+    SystemRepository.DeleteVideoGenre(id, (error) => {
+        if (error) {
+            return res.status(400).json({ error });
+        }
+
+        res.send();
+    });
+
+    res.send();
+});
+
+router.get('/video-service', (_, res) => {
+    SystemRepository.GetAllVideoServices((error, data) => {
+        if (error) {
+            return res.status(400).json({ error });
+        }
+
+        res.json(data);
+    });
+});
+
+router.get('/video-service/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+
+    SystemRepository.GetVideoServiceById(id, (error, category) => {
         if (error) {
             return res.status(400).json({ error });
         }
@@ -31,7 +109,7 @@ router.get('/video-services/:id', (req, res) => {
     });
 });
 
-router.post('/video-services', (req, res) => {
+router.post('/video-service', (req, res) => {
     const { videoServiceId, name, colorCode } = req.body;
 
     const service: VideoService = {
@@ -40,7 +118,7 @@ router.post('/video-services', (req, res) => {
         colorCode,
     };
 
-    systemRepository.AddVideoService(service, (error) => {
+    SystemRepository.AddVideoService(service, (error) => {
         if (error) {
             return res.status(400).json({ error });
         }
@@ -49,7 +127,7 @@ router.post('/video-services', (req, res) => {
     });
 });
 
-router.put('/video-services/:id', (req, res) => {
+router.put('/video-service/:id', (req, res) => {
     const id = parseInt(req.params.id);
 
     const { name, colorCode } = req.body;
@@ -60,7 +138,7 @@ router.put('/video-services/:id', (req, res) => {
         colorCode,
     };
 
-    systemRepository.UpdateVideoService(service, (error) => {
+    SystemRepository.UpdateVideoService(service, (error) => {
         if (error) {
             return res.status(400).json({ error });
         }
@@ -69,10 +147,10 @@ router.put('/video-services/:id', (req, res) => {
     });
 });
 
-router.delete('/video-services/:id', (req, res) => {
+router.delete('/video-service/:id', (req, res) => {
     const id = parseInt(req.params.id);
 
-    systemRepository.DeleteVideoService(id, (error) => {
+    SystemRepository.DeleteVideoService(id, (error) => {
         if (error) {
             return res.status(400).json({ error });
         }

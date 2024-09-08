@@ -32,7 +32,7 @@ const LinkCategories = (): JSX.Element => {
     const screens = Grid.useBreakpoint();
 
     const loadCategories = async () => {
-        const [data, error] = await Api.Get<LinkCategory[]>('links/categories');
+        const [data, error] = await Api.Get<LinkCategory[]>('link/category');
 
         if (error) {
             setErrorMessage(error);
@@ -47,7 +47,7 @@ const LinkCategories = (): JSX.Element => {
     const deletePodcastCategory = async (id: number) => {
         setProcessingMessage('Deleting Category...');
 
-        const [, error] = await Api.Delete(`links/categories/${id}`);
+        const [, error] = await Api.Delete(`link/category/${id}`);
 
         if (error) {
             setErrorMessage(error);

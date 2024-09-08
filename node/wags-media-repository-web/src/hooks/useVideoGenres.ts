@@ -2,17 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 
 import { Api } from "@lib/api";
 
-import { PodcastCategory } from "@models/Podcast";
+import { VideoGenre } from "@models/System";
 
-const usePodcastCategories = () => {
+const useVideoGenres = () => {
     const {
         data,
         error,
         isLoading,
     } = useQuery({
-        queryKey: ['podcast-categories'],
+        queryKey: ['video-genres'],
         queryFn: async () => {
-            const [data, error] = await await Api.Get<PodcastCategory[]>('podcast/category');
+            const [data, error] = await await Api.Get<VideoGenre[]>('system/video-genre');
 
             if (error) {
                 return Promise.reject(new Error(error));
@@ -24,10 +24,10 @@ const usePodcastCategories = () => {
     });
 
     return {
-        podcastCategories: data,
+        videoGenres: data,
         error,
         isLoading,
     };
 };
 
-export default usePodcastCategories;
+export default useVideoGenres;

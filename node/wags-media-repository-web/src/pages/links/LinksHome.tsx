@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import {
     Alert,
     Button,
@@ -15,9 +15,12 @@ import {
     Typography
 } from 'antd';
 
+import AppContext from '@contexts/AppContext';
+
 import useLinkCategories from '@hooks/useLinkCategories';
 
 import { Api } from '@lib/api';
+import { sortByDate } from '@lib/sorting';
 
 import Confirmation from '@components/base/Confirmation';
 import DateDisplay from '@components/DateDisplay/DateDisplay';
@@ -41,6 +44,8 @@ const LinksHome = (): JSX.Element => {
     const [linkToEdit, setLinkToEdit] = useState<Link | undefined>(undefined);
     const [showFormModal, setShowFormModal] = useState<boolean>(false);
 
+    const { setSidebarItem } = useContext(AppContext);
+
     const { linkCategories, error, isLoading } = useLinkCategories();
 
     const screens = useBreakpoint();
@@ -49,7 +54,7 @@ const LinksHome = (): JSX.Element => {
     const errorMessage = error ? error.message : fetchError;
     const isLargeScreen = screens.lg || screens.xl || screens.xxl;
 
-    const fetchLinks = async (): Promise<[Link[] | null, string | null]> => await await Api.Get<Link[]>('links');
+    const fetchLinks = async (): Promise<[Link[] | null, string | null]> => await await Api.Get<Link[]>('link');
 
     const loadLinks = useCallback(async () => {
         const [data, error] = await fetchLinks();
@@ -67,7 +72,7 @@ const LinksHome = (): JSX.Element => {
 
     const deleteLink = async (id: number) => {
         setProcessingMessage('Deleting link...');
-        const [, error] = await Api.Delete(`links/${id}`);
+        const [, error] = await Api.Delete(`link/${id}`);
 
         if (error) {
             setFetchError(error);
@@ -101,7 +106,8 @@ const LinksHome = (): JSX.Element => {
 
     useEffect(() => {
         loadLinks();
-    }, [loadLinks]);
+        setSidebarItem('links');
+    }, [loadLinks, setSidebarItem]);
 
     useEffect(() => {
         if (activeFilters.categoryId === 0 && activeFilters.typeId === 0 && activeFilters.name.trim() === '') {
@@ -148,6 +154,7 @@ const LinksHome = (): JSX.Element => {
             title: 'Date',
             width: '15%',
             hidden: !isLargeScreen,
+            sorter: (a: Link, b: Link) => sortByDate(a.linkDate.toString(), b.linkDate.toString()),
             render: (_, link: Link) => (
                 <DateDisplay date={link.linkDate} />
             )

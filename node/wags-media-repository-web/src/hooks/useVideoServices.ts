@@ -12,7 +12,7 @@ const useVideoServices = () => {
     } = useQuery({
         queryKey: ['video-services'],
         queryFn: async () => {
-            const [data, error] = await await Api.Get<VideoService[]>('system/video-services');
+            const [data, error] = await await Api.Get<VideoService[]>('system/video-service');
 
             if (error) {
                 return Promise.reject(new Error(error));

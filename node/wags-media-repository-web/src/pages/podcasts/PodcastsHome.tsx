@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import {
     Alert,
     Button,
@@ -14,6 +14,8 @@ import {
     Tag,
     Typography
 } from 'antd';
+
+import AppContext from '@contexts/AppContext';
 
 import usePodcastCategories from '@hooks/usePodcastCategories';
 
@@ -35,6 +37,8 @@ const PodcastsHome = (): JSX.Element => {
     const [podcastToEdit, setPodcastToEdit] = useState<Podcast | undefined>(undefined);
     const [showFormModal, setShowFormModal] = useState<boolean>(false);
 
+    const { setSidebarItem } = useContext(AppContext);
+
     const { podcastCategories, error, isLoading } = usePodcastCategories();
 
     const screens = useBreakpoint();
@@ -43,7 +47,7 @@ const PodcastsHome = (): JSX.Element => {
     const errorMessage = error ? error.message : fetchError;
     const isLargeScreen = screens.lg || screens.xl || screens.xxl;
 
-    const fetchPodcasts = async (): Promise<[Podcast[] | null, string | null]> => await await Api.Get<Podcast[]>('podcasts');
+    const fetchPodcasts = async (): Promise<[Podcast[] | null, string | null]> => await await Api.Get<Podcast[]>('podcast');
 
     const loadPodcasts = useCallback(async () => {
         const [data, error] = await fetchPodcasts();
@@ -61,7 +65,7 @@ const PodcastsHome = (): JSX.Element => {
 
     const deletePodcast = async (id: number) => {
         setProcessingMessage('Deleting podcast...');
-        const [, error] = await Api.Delete(`podcasts/${id}`);
+        const [, error] = await Api.Delete(`podcast/${id}`);
 
         if (error) {
             setFetchError(error);
@@ -88,7 +92,8 @@ const PodcastsHome = (): JSX.Element => {
 
     useEffect(() => {
         loadPodcasts();
-    }, [loadPodcasts]);
+        setSidebarItem('podcasts');
+    }, [loadPodcasts, setSidebarItem]);
 
     useEffect(() => {
         if (activeFilters.categoryId === 0 && activeFilters.name.trim() === '') {
@@ -115,6 +120,7 @@ const PodcastsHome = (): JSX.Element => {
             title: 'Name',
             dataIndex: 'name',
             width: '30%',
+            sorter: (a: Podcast, b: Podcast) => (a.name).localeCompare(b.name),
         },
         {
             key: 'category',

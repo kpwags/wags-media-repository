@@ -13,12 +13,12 @@ import { Color } from 'antd/es/color-picker';
 
 import { Api } from '@lib/api';
 
-import { LinkCategory } from '@models/Link';
+import { VideoGenre } from '@models/System';
 
 const { useForm } = Form;
 
-interface LinkCategoryFormProps extends ModalProps {
-    linkCategory?: LinkCategory;
+interface VideoGenreFormProps extends ModalProps {
+    genre?: VideoGenre;
     onSaved: () => void;
     onClose: () => void;
 }
@@ -28,12 +28,12 @@ type FormValues = {
     colorCode: string | Color;
 }
 
-const LinkCategoryForm = ({
-    linkCategory,
+const VideoGenreForm = ({
+    genre,
     open,
     onSaved,
     onClose,
-}: LinkCategoryFormProps): JSX.Element => {
+}: VideoGenreFormProps): JSX.Element => {
     const [formError, setFormError] = useState<string>('');
     const [processingMessage, setProcessingMessage] = useState<string>('Loading...');
 
@@ -41,8 +41,8 @@ const LinkCategoryForm = ({
 
     const [form] = useForm<FormValues>();
 
-    const addLinkCategory = async (name: string, color: string): Promise<string | null> => {
-        const [, error] = await Api.Post('link/category', {
+    const addGenre = async (name: string, color: string): Promise<string | null> => {
+        const [, error] = await Api.Post('system/video-genre', {
             data: {
                 name,
                 colorCode: color,
@@ -52,8 +52,8 @@ const LinkCategoryForm = ({
         return error;
     };
 
-    const updateLinkCategory = async (name: string, color: string): Promise<string | null> => {
-        const [, error] = await Api.Put(`link/category/${linkCategory?.linkCategoryId}`, {
+    const updateGenre = async (name: string, color: string): Promise<string | null> => {
+        const [, error] = await Api.Put(`system/video-genre/${genre?.videoGenreId}`, {
             data: {
                 name,
                 colorCode: color,
@@ -63,15 +63,15 @@ const LinkCategoryForm = ({
         return error;
     };
 
-    const saveLink = async ({ name, colorCode }: FormValues) => {
+    const saveGenre = async ({ name, colorCode }: FormValues) => {
         setProcessingMessage('Saving...');
         setFormError('');
 
         const color = typeof colorCode === 'string' ? colorCode : colorCode.toHexString();
 
-        const error = linkCategory
-            ? await updateLinkCategory(name, color)
-            : await addLinkCategory(name, color);
+        const error = genre
+            ? await updateGenre(name, color)
+            : await addGenre(name, color);
 
         if (error) {
             setFormError(error);
@@ -79,7 +79,7 @@ const LinkCategoryForm = ({
             return;
         }
 
-        queryClient.invalidateQueries({ queryKey: ['link-categories'] });
+        queryClient.invalidateQueries({ queryKey: ['video-genres'] });
 
         onSaved();
     };
@@ -90,16 +90,16 @@ const LinkCategoryForm = ({
             open={open}
             onOk={() => form.submit()}
             onCancel={() => onClose()}
-            okText={linkCategory ? 'Save' : 'Add'}
+            okText={genre ? 'Save' : 'Add'}
             cancelText="Cancel"
             forceRender
-            title={linkCategory ? 'Edit Link Category' : 'Add Link Category'}
+            title={genre ? 'Edit Genre' : 'Add Genre'}
             afterOpenChange={(open) => {
                 if (open) {
-                    if (linkCategory) {
+                    if (genre) {
                         form.setFieldsValue({
-                            name: linkCategory.name,
-                            colorCode: linkCategory.colorCode,
+                            name: genre.name,
+                            colorCode: genre.colorCode,
                         });
                     }
 
@@ -114,7 +114,7 @@ const LinkCategoryForm = ({
             <Spin spinning={processingMessage !== ''} tip={processingMessage}>
                 {formError !== '' ? <Alert type="error" message={formError} /> : null}
 
-                <Form form={form} onFinish={saveLink}>
+                <Form form={form} onFinish={saveGenre}>
                     <Form.Item
                         name="name"
                         label="Name"
@@ -136,4 +136,4 @@ const LinkCategoryForm = ({
     );
 };
 
-export default LinkCategoryForm;
+export default VideoGenreForm;
