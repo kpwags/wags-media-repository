@@ -8,3 +8,16 @@ export const sortByDate = (a: string | undefined, b: string | undefined) => {
         return 0;
     }
 }
+
+export const sortByTitle = (a: string, b: string) => {
+    const articles = ['a', 'an', 'the'],
+        re = new RegExp('^(?:(' + articles.join('|') + ') )(.*)$'), // e.g. /^(?:(foo|bar) )(.*)$/
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        replacor = function (_: any, $1: string, $2: string) {
+            return $2 + ', ' + $1;
+        };
+    a = a.toLowerCase().replace(re, replacor);
+    b = b.toLowerCase().replace(re, replacor);
+
+    return a === b ? 0 : a < b ? -1 : 1;
+}

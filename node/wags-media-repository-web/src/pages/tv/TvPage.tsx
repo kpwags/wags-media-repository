@@ -20,23 +20,23 @@ import useVideoServices from '@hooks/useVideoServices';
 import useDocumentTitle from '@hooks/useDocumentTitle';
 
 import { Api } from '@lib/api';
-import { MovieStatus } from '@lib/constants';
-import { getMovieTableColumns } from '@lib/movieColumns';
-import { sortByDate } from '@lib/sorting';
+import { TvStatus } from '@lib/constants';
+import { getTvShowColumns } from '@lib/tvShowColumns';
+import { sortByTitle } from '@lib/sorting';
 
-import { Movie } from '@models/Movie';
-import MovieForm from '@components/movies/MovieForm';
+import { TelevisionShow } from '@models/Tv';
+import TvShowForm from '@components/tv/TvShowForm';
 
 const { useBreakpoint } = Grid;
 const { Text, Title } = Typography;
 
-const MoviesTable = ({ status }: { status: MovieStatus }): JSX.Element => {
-    const [allMovies, setAllMovies] = useState<Movie[]>([]);
+const TvPage = ({ status }: { status: TvStatus }): JSX.Element => {
+    const [allTvShows, setAllTvShows] = useState<TelevisionShow[]>([]);
+    const [tvShows, setTvShows] = useState<TelevisionShow[]>([]);
     const [fetchError, setFetchError] = useState<string>('');
-    const [movies, setMovies] = useState<Movie[]>([]);
     const [processingMessage, setProcessingMessage] = useState<string>('Loading...');
     const [activeFilters, setActiveFilters] = useState<{ title: string, genreId: number, serviceId: number }>({ title: '', genreId: 0, serviceId: 0 });
-    const [movieToEdit, setMovieToEdit] = useState<Movie | undefined>(undefined);
+    const [tvShowToEdit, setTvShowToEdit] = useState<TelevisionShow | undefined>(undefined);
     const [showFormModal, setShowFormModal] = useState<boolean>(false);
 
     const { setSidebarItem } = useContext(AppContext);
@@ -52,28 +52,29 @@ const MoviesTable = ({ status }: { status: MovieStatus }): JSX.Element => {
     const errorMessage = genresErrorMessage || servicesErrorMessage || fetchError;
     const isLargeScreen = screens.lg || screens.xl || screens.xxl;
 
-    const fetchMovies = async (): Promise<[Movie[] | null, string | null]> => await await Api.Get<Movie[]>('movie');
+    const fetchTvShows = async (): Promise<[TelevisionShow[] | null, string | null]> => await await Api.Get<TelevisionShow[]>('tv');
 
-    const filterAndSortMovies = useCallback((data: Movie[]) => {
-        if (status === MovieStatus.Watched || status === MovieStatus.CouldNotFinish) {
-            const sorted = (data ?? [])
-                .filter((m) => m.statusId === status)
-                .sort((a, b) => sortByDate(a.dateWatched.toString(), b.dateWatched.toString()));
+    const loadTelevisionShows = useCallback(async () => {
+        const [data, error] = await fetchTvShows();
 
-            setMovies(sorted);
-            setAllMovies(sorted);
-        } else {
-            const sorted = (data ?? [])
-                .filter((m) => m.statusId === status)
-                .sort((a, b) => (a.sortOrder ?? Number.MAX_SAFE_INTEGER) - (b.sortOrder ?? Number.MAX_SAFE_INTEGER));
-
-            setMovies(sorted);
-            setAllMovies(sorted);
+        if (error) {
+            setFetchError(error);
+            setProcessingMessage('');
+            return;
         }
+
+        if (status === TvStatus.PersonalToWatch || status === TvStatus.JointToWatch) {
+            setAllTvShows((data ?? []).filter((tv) => tv.statusId === status).sort((a, b) => (a.sortOrder ?? Number.MAX_SAFE_INTEGER) - (b.sortOrder ?? Number.MAX_SAFE_INTEGER)));
+        } else {
+            setAllTvShows((data ?? []).filter((tv) => tv.statusId === status).sort((a, b) => sortByTitle(a.title, b.title)) ?? []);
+        }
+
+        setProcessingMessage('');
     }, [status]);
 
-    const loadMovies = useCallback(async () => {
-        const [data, error] = await fetchMovies();
+    const deleteTelevisionShow = async (id: number) => {
+        setProcessingMessage('Deleting TV show...');
+        const [, error] = await Api.Delete(`tv/${id}`);
 
         if (error) {
             setFetchError(error);
@@ -81,41 +82,33 @@ const MoviesTable = ({ status }: { status: MovieStatus }): JSX.Element => {
             return;
         }
 
-        filterAndSortMovies(data ?? []);
-        setProcessingMessage('');
-    }, [filterAndSortMovies]);
-
-    const deleteMovie = async (id: number) => {
-        setProcessingMessage('Deleting movie...');
-        const [, error] = await Api.Delete(`movie/${id}`);
-
-        if (error) {
-            setFetchError(error);
-            setProcessingMessage('');
-            return;
-        }
-
-        await loadMovies();
+        await loadTelevisionShows();
     };
 
     const changeSidebar = useCallback(() => {
         switch (status) {
-            case MovieStatus.PersonalToWatch:
-                setSidebarItem('movies-personal');
+            case TvStatus.PersonalToWatch:
+                setSidebarItem('tv-personal');
                 break;
 
-            case MovieStatus.JointToWatch:
-                setSidebarItem('movies-joint');
+            case TvStatus.JointToWatch:
+                setSidebarItem('tv-joint');
                 break;
 
-
-            case MovieStatus.Watched:
-                setSidebarItem('movies-watched');
+            case TvStatus.CurrentlyWatching:
+                setSidebarItem('tv-watching');
                 break;
 
+            case TvStatus.InBetweenSeasons:
+                setSidebarItem('tv-between');
+                break;
 
-            case MovieStatus.CouldNotFinish:
-                setSidebarItem('movies-abandoned');
+            case TvStatus.Finished:
+                setSidebarItem('tv-watched');
+                break;
+
+            case TvStatus.CouldNotFinish:
+                setSidebarItem('tv-abandoned');
                 break;
 
             default:
@@ -145,56 +138,60 @@ const MoviesTable = ({ status }: { status: MovieStatus }): JSX.Element => {
     };
 
     useEffect(() => {
-        loadMovies();
+        loadTelevisionShows();
         changeSidebar();
-    }, [loadMovies, changeSidebar]);
+    }, [loadTelevisionShows, changeSidebar]);
 
     useEffect(() => {
         if (activeFilters.genreId === 0 && activeFilters.serviceId === 0 && activeFilters.title.trim() === '') {
-            setMovies(allMovies);
+            setTvShows(allTvShows);
             return;
         }
 
         if (activeFilters.genreId === 0 && activeFilters.serviceId === 0 && activeFilters.title.trim() !== '') {
-            setMovies(allMovies.filter((m) => m.title.toLocaleLowerCase().includes(activeFilters.title.toLocaleLowerCase())));
+            setTvShows(allTvShows.filter((m) => m.title.toLocaleLowerCase().includes(activeFilters.title.toLocaleLowerCase())));
             return;
         }
 
         if (activeFilters.genreId > 0 && activeFilters.serviceId === 0 && activeFilters.title.trim() === '') {
-            setMovies(allMovies.filter((m) => m.genres.map((g) => g.videoGenreId).includes(activeFilters.genreId)));
+            setTvShows(allTvShows.filter((m) => m.genres.map((g) => g.videoGenreId).includes(activeFilters.genreId)));
             return;
         }
 
         if (activeFilters.genreId === 0 && activeFilters.serviceId > 0 && activeFilters.title.trim() === '') {
-            setMovies(allMovies.filter((m) => m.services.map((s) => s.videoServiceId).includes(activeFilters.serviceId)));
+            setTvShows(allTvShows.filter((m) => m.services.map((s) => s.videoServiceId).includes(activeFilters.serviceId)));
             return;
         }
 
-        setMovies(allMovies.filter((m) => m.genres.map((g) => g.videoGenreId).includes(activeFilters.genreId)
+        setTvShows(allTvShows.filter((m) => m.genres.map((g) => g.videoGenreId).includes(activeFilters.genreId)
             && m.services.map((s) => s.videoServiceId).includes(activeFilters.serviceId)
             && m.title.toLocaleLowerCase().includes(activeFilters.title.toLocaleLowerCase())));
-    }, [allMovies, activeFilters]);
+    }, [allTvShows, activeFilters]);
 
-    const tableColumns = getMovieTableColumns(
+    const tableColumns = getTvShowColumns(
         status,
         isLargeScreen ?? false,
-        (movie) => {
-            setMovieToEdit(movie);
+        (tvShow) => {
+            setTvShowToEdit(tvShow);
             setShowFormModal(true);
         },
-        (movieId) => deleteMovie(movieId)
+        (tvShowId) => deleteTelevisionShow(tvShowId)
     );
 
     const pageTitle = (): string => {
         switch (status) {
-            case MovieStatus.PersonalToWatch:
-                return "Movies on My List";
-            case MovieStatus.JointToWatch:
-                return "Movies on the Joint List";
-            case MovieStatus.Watched:
-                return "Movies Watched";
-            case MovieStatus.CouldNotFinish:
-                return "Movies I Could Not Finish";
+            case TvStatus.PersonalToWatch:
+                return "TV Shows on My List";
+            case TvStatus.JointToWatch:
+                return "TV Shows on the Joint List";
+            case TvStatus.CurrentlyWatching:
+                return "TV Shows Currently Watching";
+            case TvStatus.InBetweenSeasons:
+                return "TV Shows Between Seasons";
+            case TvStatus.Finished:
+                return "TV Shows Finished";
+            case TvStatus.CouldNotFinish:
+                return "TV Shows I Could Not Finish";
             default:
                 return "How the hell did you get here?";
         }
@@ -215,7 +212,7 @@ const MoviesTable = ({ status }: { status: MovieStatus }): JSX.Element => {
                             <Text strong>Filters</Text>
                             <Form.Item label="Title">
                                 <Input
-                                    placeholder="Enter Movie Title"
+                                    placeholder="Enter TV Show Title"
                                     onChange={(e) => {
                                         filterMovieByTitle(e.target.value);
                                     }}
@@ -249,30 +246,30 @@ const MoviesTable = ({ status }: { status: MovieStatus }): JSX.Element => {
                                 htmlType="button"
                                 onClick={() => setShowFormModal(true)}
                             >
-                                Add New Movie
+                                Add New TV Show
                             </Button>
                         </Space>
                     </Row>
                     <Table
                         columns={tableColumns}
-                        dataSource={movies}
-                        rowKey="movieId"
+                        dataSource={tvShows}
+                        rowKey="televisionShowId"
                         pagination={false}
                         loading={loadingMessage !== ''}
                     />
                 </Space>
             </Spin>
 
-            <MovieForm
-                movie={movieToEdit ?? undefined}
+            <TvShowForm
+                tvShow={tvShowToEdit ?? undefined}
                 open={showFormModal}
                 onClose={() => {
-                    setMovieToEdit(undefined);
+                    setTvShowToEdit(undefined);
                     setShowFormModal(false);
                 }}
                 onSaved={() => {
-                    loadMovies();
-                    setMovieToEdit(undefined);
+                    loadTelevisionShows();
+                    setTvShowToEdit(undefined);
                     setShowFormModal(false);
                 }}
             />
@@ -280,4 +277,4 @@ const MoviesTable = ({ status }: { status: MovieStatus }): JSX.Element => {
     );
 }
 
-export default MoviesTable;
+export default TvPage;
