@@ -23,6 +23,7 @@ export const getMovieTableColumns = (status: MovieStatus, isLargeScreen: boolean
         case MovieStatus.JointToWatch:
             return getToWatchTableColumns(isLargeScreen, onEdit, onDelete);
         case MovieStatus.Watched:
+        case MovieStatus.CouldNotFinish:
             return getWatchedTableColumns(isLargeScreen, onEdit, onDelete);
     }
 };

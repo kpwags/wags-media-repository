@@ -94,6 +94,7 @@ const PageLayout = ({ children }: PageLayoutProps): JSX.Element => {
                 {
                     key: 'movies-abandoned',
                     label: 'Abandoned',
+                    onClick: () => navigateToPage('/movies/abandoned'),
                 },
             ],
         });
@@ -119,22 +120,32 @@ const PageLayout = ({ children }: PageLayoutProps): JSX.Element => {
                 {
                     key: 'tv-personal',
                     label: 'Personal List',
+                    onClick: () => navigateToPage('/tv/personal'),
                 },
                 {
                     key: 'tv-joint',
                     label: 'Joint List',
+                    onClick: () => navigateToPage('/tv/joint'),
+                },
+                {
+                    key: 'tv-watching',
+                    label: 'Currently Watching',
+                    onClick: () => navigateToPage('/tv/watching'),
                 },
                 {
                     key: 'tv-between',
                     label: 'Between Seasons',
+                    onClick: () => navigateToPage('/tv/between-seasons'),
                 },
                 {
-                    key: 'tv-watch',
+                    key: 'tv-watched',
                     label: 'Watched',
+                    onClick: () => navigateToPage('/tv/watched'),
                 },
                 {
                     key: 'tv-abandoned',
                     label: 'Abandoned',
+                    onClick: () => navigateToPage('/tv/abandoned'),
                 },
             ],
         });

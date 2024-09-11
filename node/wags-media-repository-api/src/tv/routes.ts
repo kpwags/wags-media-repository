@@ -1,42 +1,42 @@
 import express from 'express';
 
-import MovieRepository from './lib/MovieRepository';
+import TvRepository from './lib/TvRepository';
 
-import { Movie } from '../models/movie';
+import { TelevisionShow } from '../models/tv';
 
 const router = express.Router();
 
 router.get('/', (_, res) => {
-    MovieRepository.GetAllMovieGenreLinks((genreLinkError, genreLinks) => {
+    TvRepository.GetAllTelevisionGenreLinks((genreLinkError, genreLinks) => {
         if (genreLinkError) {
             return res.status(400).json({ genreLinkError });
         }
 
-        MovieRepository.GetAllMovieServiceLinks((serviceLinkError, serviceLinks) => {
+        TvRepository.GetAllTelevisionServiceLinks((serviceLinkError, serviceLinks) => {
             if (genreLinkError) {
                 return res.status(400).json({ serviceLinkError });
             }
 
-            MovieRepository.GetAllMovies((error, data) => {
+            TvRepository.GetAllTelevisionShows((error, data) => {
                 if (error) {
                     return res.status(400).json({ error });
                 }
 
-                const movies: Movie[] = [];
+                const tvShows: TelevisionShow[] = [];
 
-                data.forEach((m) => {
-                    m.genres = genreLinks
-                        .filter((g) => g.movieId == m.movieId)
+                data.forEach((tv) => {
+                    tv.genres = genreLinks
+                        .filter((g) => g.televisionShowId == tv.televisionShowId)
                         .map((g) => ({ videoGenreId: g.genreId, name: g.genreName, colorCode: g.genreColorCode }));
 
-                    m.services = serviceLinks
-                        .filter((s) => s.movieId == m.movieId)
+                    tv.services = serviceLinks
+                        .filter((s) => s.televisionShowId == tv.televisionShowId)
                         .map((s) => ({ videoServiceId: s.serviceId, name: s.serviceName, colorCode: s.serviceColorCode }));
 
-                    movies.push(m);
+                    tvShows.push(tv);
                 });
 
-                res.json(movies);
+                res.json(tvShows);
             });
         });
     });
@@ -45,23 +45,23 @@ router.get('/', (_, res) => {
 router.get('/:id', (req, res) => {
     const id = parseInt(req.params.id);
 
-    MovieRepository.GetServicesForMovie(id, (serviceError, services) => {
+    TvRepository.GetServicesForTelevisionShow(id, (serviceError, services) => {
         if (serviceError) {
             return res.status(400).json({ serviceError });
         }
 
-        MovieRepository.GetGenresForMovie(id, (genreError, genres) => {
+        TvRepository.GetGenresForTelevisionShow(id, (genreError, genres) => {
             if (genreError) {
                 return res.status(400).json({ genreError });
             }
 
-            MovieRepository.GetMovieById(id, (error, data) => {
+            TvRepository.GetTelevisionShowById(id, (error, data) => {
                 if (error) {
                     return res.status(400).json({ error });
                 }
 
                 if (!data) {
-                    res.status(404).json({ error: 'Movie not found' });
+                    res.status(404).json({ error: 'TV show not found' });
                 } else {
                     res.json({
                         ...data,
@@ -78,31 +78,34 @@ router.post('/', (req, res) => {
     const {
         title,
         imdbLink,
-        posterImageUrl,
-        dateWatched,
+        coverImageUrl,
         rating,
         thoughts,
         sortOrder,
         statusId,
+        currentSeasonEpisode,
+        seasonEpisodeCount,
         genres,
         services,
     } = req.body;
 
-    const movie: Movie = {
-        movieId: 0,
+    const televisionShow: TelevisionShow = {
+        televisionShowId: 0,
         title,
         imdbLink,
-        posterImageUrl,
-        dateWatched,
+        coverImageUrl,
         rating: rating ?? 0,
         thoughts: thoughts ?? '',
         sortOrder,
         statusId,
+        currentSeasonEpisode,
+        seasonEpisodeCount,
+        progress: 0,
         genres: genres.map((g: number) => ({ videoGenreId: g, name: '', colorCode: '' })),
         services: services.map((s: number) => ({ videoServiceId: s, name: '', colorCode: '' })),
     };
 
-    MovieRepository.AddMovie(movie, (error) => {
+    TvRepository.AddTelevisionShow(televisionShow, (error) => {
         if (error) {
             return res.status(400).json({ error });
         }
@@ -117,31 +120,34 @@ router.put('/:id', (req, res) => {
     const {
         title,
         imdbLink,
-        posterImageUrl,
-        dateWatched,
+        coverImageUrl,
         rating,
         thoughts,
         sortOrder,
         statusId,
+        currentSeasonEpisode,
+        seasonEpisodeCount,
         genres,
         services,
     } = req.body;
 
-    const movie: Movie = {
-        movieId: id,
+    const televisionShow: TelevisionShow = {
+        televisionShowId: id,
         title,
         imdbLink,
-        posterImageUrl,
-        dateWatched,
+        coverImageUrl,
+        currentSeasonEpisode,
+        seasonEpisodeCount,
         rating: rating ?? 0,
         thoughts: thoughts ?? '',
         sortOrder,
         statusId,
+        progress: 0,
         genres: genres.map((g: number) => ({ videoGenreId: g, name: '', colorCode: '' })),
         services: services.map((s: number) => ({ videoServiceId: s, name: '', colorCode: '' })),
     };
 
-    MovieRepository.UpdateMovie(movie, (error) => {
+    TvRepository.UpdateTelevisionShow(televisionShow, (error) => {
         if (error) {
             return res.status(400).json({ error });
         }
@@ -153,7 +159,7 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
     const id = parseInt(req.params.id);
 
-    MovieRepository.DeleteMovie(id, (error) => {
+    TvRepository.DeleteTelevisionShow(id, (error) => {
         if (error) {
             return res.status(400).json({ error });
         }

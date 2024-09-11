@@ -23,6 +23,7 @@ body {
 }
 
 h1.ant-typography {
+  margin-top: 0;
   text-align: left;
 }
 
@@ -32,6 +33,9 @@ h1.ant-typography {
   align-items: center;
   font-size: 1.5rem;
   padding: 0 16px;
+  position: fixed;
+  width: 100%;
+  z-index: 100;
 }
 
 .site-header .ant-btn {
@@ -68,7 +72,7 @@ body:has(aside.ant-layout-sider-collapsed) .main-content-area {
   bottom: 0;
   scrollbar-width: thin;
   scrollbar-color: unset;
-  z-index: 10;
+  z-index: 100;
 }
 
 .sidebar-menu {
@@ -78,6 +82,7 @@ body:has(aside.ant-layout-sider-collapsed) .main-content-area {
 
 .page-content {
   padding: 24px;
+  margin-top: 64px;
 }
 
 .full-width {

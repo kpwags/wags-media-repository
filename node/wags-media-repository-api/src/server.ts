@@ -7,6 +7,7 @@ import LinkRoutes from './links/routes';
 import MovieRoutes from './movies/routes';
 import PodcastRoutes from './podcasts/routes';
 import SystemRoutes from './system/routes';
+import TvRoutes from './tv/routes';
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use('/link', LinkRoutes);
 app.use('/movie', MovieRoutes);
 app.use('/podcast', PodcastRoutes);
 app.use('/system', SystemRoutes);
+app.use('/tv', TvRoutes);
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
