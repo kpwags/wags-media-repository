@@ -153,6 +153,11 @@ class MovieRepository {
                     rating: row.Rating,
                     thoughts: row.Thoughts,
                     sortOrder: row.SortOrder,
+                    status: {
+                        movieStatusId: row.MovieStatusId,
+                        name: row.MovieStatusName,
+                        colorCode: row.MovieStatusColor,
+                    },
                     genres: [],
                     services: [],
                 });
@@ -186,6 +191,11 @@ class MovieRepository {
                 rating: row.Rating,
                 thoughts: row.Thoughts,
                 sortOrder: row.SortOrder,
+                status: {
+                    movieStatusId: row.MovieStatusId,
+                    name: row.MovieStatusName,
+                    colorCode: row.MovieStatusColor,
+                },
                 genres: [],
                 services: [],
             });
