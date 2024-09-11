@@ -1,5 +1,11 @@
 import { VideoGenre, VideoService } from './system';
 
+export type MovieStatus = {
+    movieStatusId: number;
+    name: string;
+    colorCode: string;
+}
+
 export type Movie = {
     movieId: number;
     title: string;
@@ -10,6 +16,7 @@ export type Movie = {
     thoughts: string;
     sortOrder?: number;
     statusId: number;
+    status: MovieStatus;
     genres: VideoGenre[];
     services: VideoService[]
 }

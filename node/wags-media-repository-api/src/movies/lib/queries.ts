@@ -8,6 +8,8 @@ export type MovieQueryReturn = {
     Thoughts: string;
     Title: string;
     SortOrder: number;
+    MovieStatusName: string;
+    MovieStatusColor: string;
 }
 
 export type MovieGenreLinkQueryReturn = {
