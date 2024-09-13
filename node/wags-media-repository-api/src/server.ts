@@ -8,6 +8,7 @@ import MovieRoutes from './movies/routes';
 import PodcastRoutes from './podcasts/routes';
 import SystemRoutes from './system/routes';
 import TvRoutes from './tv/routes';
+import VideoGameRoutes from './videoGames/routes';
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use('/movie', MovieRoutes);
 app.use('/podcast', PodcastRoutes);
 app.use('/system', SystemRoutes);
 app.use('/tv', TvRoutes);
+app.use('/video-game', VideoGameRoutes);
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);

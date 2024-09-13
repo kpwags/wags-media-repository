@@ -156,16 +156,19 @@ const PageLayout = ({ children }: PageLayoutProps): JSX.Element => {
             label: 'Video Games',
             children: [
                 {
-                    key: 'video-games-reading',
-                    label: 'Currently Reading',
+                    key: 'video-games-backlog',
+                    label: 'Backlog',
+                    onClick: () => navigateToPage('/video-games/backlog'),
+                },
+                {
+                    key: 'video-games-playing',
+                    label: 'Currently Playing',
+                    onClick: () => navigateToPage('/video-games/playing'),
                 },
                 {
                     key: 'video-games-finished',
                     label: 'Finished',
-                },
-                {
-                    key: 'video-games-backlog',
-                    label: 'Backlog',
+                    onClick: () => navigateToPage('/video-games/finished'),
                 },
             ],
         });

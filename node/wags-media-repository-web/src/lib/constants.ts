@@ -13,3 +13,15 @@ export enum TvStatus {
     Finished = 5,
     CouldNotFinish = 6,
 }
+
+export enum VideoGameStatus {
+    ToPlay = 1,
+    InProgress = 2,
+    Completed = 3,
+}
+
+export enum VideoGameCompletion {
+    NotApplicable = 1,
+    Yes = 2,
+    No = 3,
+}
