@@ -13,7 +13,7 @@ router.get('/', (_, res) => {
         }
 
         TvRepository.GetAllTelevisionServiceLinks((serviceLinkError, serviceLinks) => {
-            if (genreLinkError) {
+            if (serviceLinkError) {
                 return res.status(400).json({ serviceLinkError });
             }
 

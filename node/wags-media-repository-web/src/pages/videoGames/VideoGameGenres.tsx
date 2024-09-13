@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
     Alert,
     Button,
@@ -16,23 +17,25 @@ import LeftOutlined from '@ant-design/icons/lib/icons/LeftOutlined';
 import { Api } from '@lib/api';
 
 import Confirmation from '@components/base/Confirmation';
-import LinkCategoryForm from '@components/links/LinkCategoryForm';
+import VideoGameGenreForm from '@components/videoGames/VideoGameGenreForm';
 
-import { LinkCategory } from '@models/Link';
+import { VideoGameGenre } from '@models/VideoGame';
 
+const { useBreakpoint } = Grid;
 const { Title } = Typography;
 
-const LinkCategories = (): JSX.Element => {
-    const [categories, setCategories] = useState<LinkCategory[]>([]);
+const VideoGameGenres = (): JSX.Element => {
+    const [videoGameGenres, setVideoGameGenres] = useState<VideoGameGenre[]>([]);
     const [processingMessage, setProcessingMessage] = useState<string>('Loading...');
     const [errorMessage, setErrorMessage] = useState<string>('');
     const [showFormModal, setShowFormModal] = useState<boolean>(false);
-    const [categoryToEdit, setCategoryToEdit] = useState<LinkCategory | undefined>(undefined);
+    const [genreToEdit, setGenreToEdit] = useState<VideoGameGenre | undefined>(undefined);
 
-    const screens = Grid.useBreakpoint();
+    const screens = useBreakpoint();
+    const navigate = useNavigate();
 
-    const loadCategories = async () => {
-        const [data, error] = await Api.Get<LinkCategory[]>('link/category');
+    const loadVideoGameGenres = async () => {
+        const [data, error] = await Api.Get<VideoGameGenre[]>('video-game/genre');
 
         if (error) {
             setErrorMessage(error);
@@ -40,14 +43,14 @@ const LinkCategories = (): JSX.Element => {
             return;
         }
 
-        setCategories(data ?? []);
+        setVideoGameGenres(data ?? []);
         setProcessingMessage('');
     };
 
-    const deleteLinkCategory = async (id: number) => {
-        setProcessingMessage('Deleting Category...');
+    const deleteGenre = async (id: number) => {
+        setProcessingMessage('Deleting Genre...');
 
-        const [, error] = await Api.Delete(`link/category/${id}`);
+        const [, error] = await Api.Delete(`video-game/genre/${id}`);
 
         if (error) {
             setErrorMessage(error);
@@ -55,16 +58,16 @@ const LinkCategories = (): JSX.Element => {
             return;
         }
 
-        await loadCategories();
+        await loadVideoGameGenres();
     }
 
     useEffect(() => {
-        loadCategories();
+        loadVideoGameGenres();
     }, []);
 
     const isLargeScreen = screens.md || screens.lg || screens.xl || screens.xxl;
 
-    const tableColumns: TableProps<LinkCategory>['columns'] = [
+    const tableColumns: TableProps<VideoGameGenre>['columns'] = [
         {
             key: 'name',
             title: 'Name',
@@ -76,20 +79,20 @@ const LinkCategories = (): JSX.Element => {
             title: 'Actions',
             align: 'center',
             width: '30%',
-            render: (_, category: LinkCategory) => (
+            render: (_, genre: VideoGameGenre) => (
                 <Space direction={isLargeScreen ? 'horizontal' : 'vertical'} size={isLargeScreen ? 16 : 8}>
                     <Button
                         type="link"
                         htmlType="button"
                         onClick={() => {
-                            setCategoryToEdit(category);
+                            setGenreToEdit(genre);
                             setShowFormModal(true);
                         }}
                     >
                         Edit
                     </Button>
-                    {category.linkCount > 0 ? (
-                        <Tooltip placement="top" title={`${category.name} cannot be deleted as it has ${category.linkCount} link(s) assigned to it.`}>
+                    {(genre?.videoGameCount ?? 0) > 0 ? (
+                        <Tooltip placement="top" title={`${genre.name} cannot be deleted as it has ${genre.videoGameCount} games(s) assigned to it.`}>
                             <Button
                                 type="link"
                                 htmlType="button"
@@ -100,8 +103,8 @@ const LinkCategories = (): JSX.Element => {
                         </Tooltip>
                     ) : (
                         <Confirmation
-                            text={`Are you sure you want to delete '${category.name}'`}
-                            onConfirm={() => deleteLinkCategory(category.linkCategoryId)}
+                            text={`Are you sure you want to delete '${genre.name}'`}
+                            onConfirm={() => deleteGenre(genre.videoGameGenreId)}
                         >
                             <Button
                                 type="link"
@@ -120,38 +123,41 @@ const LinkCategories = (): JSX.Element => {
         <Spin spinning={processingMessage !== ''} tip={processingMessage}>
             <Row justify="start" className="slim-table">
                 <Space direction="vertical" size={24} className="full-width">
-                    <Button icon={<LeftOutlined />} href="/links">Back to Links</Button>
-                    <Title level={1}>Link Categories</Title>
+                    <Button icon={<LeftOutlined />} onClick={() => navigate(-1)}>Back to Video Games</Button>
+
+                    <Title level={1}>Video Game Genres</Title>
+
                     {errorMessage !== '' ? <Alert type="error" message={errorMessage} /> : null}
+
                     <Row justify="end">
                         <Button
                             type="primary"
                             htmlType="button"
                             onClick={() => setShowFormModal(true)}
                         >
-                            Add New Category
+                            Add New Genre
                         </Button>
                     </Row>
                     <Table
                         columns={tableColumns}
-                        dataSource={categories}
-                        rowKey="linkCategoryId"
+                        dataSource={videoGameGenres}
+                        rowKey="videoGameGenreId"
                         pagination={false}
                         loading={processingMessage !== ''}
                     />
                 </Space>
             </Row>
 
-            <LinkCategoryForm
-                linkCategory={categoryToEdit ?? undefined}
+            <VideoGameGenreForm
+                genre={genreToEdit ?? undefined}
                 open={showFormModal}
                 onClose={() => {
-                    setCategoryToEdit(undefined);
+                    setGenreToEdit(undefined);
                     setShowFormModal(false);
                 }}
                 onSaved={() => {
-                    loadCategories();
-                    setCategoryToEdit(undefined);
+                    loadVideoGameGenres();
+                    setGenreToEdit(undefined);
                     setShowFormModal(false);
                 }}
             />
@@ -159,4 +165,4 @@ const LinkCategories = (): JSX.Element => {
     );
 }
 
-export default LinkCategories;
+export default VideoGameGenres;

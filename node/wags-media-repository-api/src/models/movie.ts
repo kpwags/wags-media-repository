@@ -16,7 +16,7 @@ export type Movie = {
     thoughts: string;
     sortOrder?: number;
     statusId: number;
-    status: MovieStatus;
+    status?: MovieStatus;
     genres: VideoGenre[];
     services: VideoService[]
 }
