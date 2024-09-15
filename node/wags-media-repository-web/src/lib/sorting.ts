@@ -9,6 +9,8 @@ export const sortByDate = (a: string | undefined, b: string | undefined) => {
     }
 }
 
+export const sortByText = (a: string, b: string) => a.localeCompare(b);
+
 export const sortByTitle = (a: string, b: string) => {
     const articles = ['a', 'an', 'the'],
         re = new RegExp('^(?:(' + articles.join('|') + ') )(.*)$'), // e.g. /^(?:(foo|bar) )(.*)$/

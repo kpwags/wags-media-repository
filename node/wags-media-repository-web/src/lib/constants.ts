@@ -25,3 +25,16 @@ export enum VideoGameCompletion {
     Yes = 2,
     No = 3,
 }
+
+export enum BookStatus {
+    ToRead = 1,
+    CurrentlyReading = 2,
+    Finished = 3,
+    Abandoned = 4,
+}
+
+export enum BookType {
+    Fiction = 1,
+    NonFiction = 2,
+    Reference = 3,
+}

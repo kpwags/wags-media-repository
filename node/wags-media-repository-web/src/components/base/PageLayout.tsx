@@ -50,16 +50,24 @@ const PageLayout = ({ children }: PageLayoutProps): JSX.Element => {
             label: 'Books',
             children: [
                 {
+                    key: 'books-backlog',
+                    label: 'Backlog',
+                    onClick: () => navigateToPage('/books/backlog'),
+                },
+                {
                     key: 'books-reading',
                     label: 'Currently Reading',
+                    onClick: () => navigateToPage('/books/current'),
                 },
                 {
                     key: 'books-finished',
                     label: 'Finished',
+                    onClick: () => navigateToPage('/books/finished'),
                 },
                 {
-                    key: 'books-backlog',
-                    label: 'Backlog',
+                    key: 'books-abandoned',
+                    label: 'Abandoned',
+                    onClick: () => navigateToPage('/books/abandoned'),
                 },
             ],
         });
