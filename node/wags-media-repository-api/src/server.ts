@@ -3,6 +3,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import config from './config';
 
+import BookRoutes from './books/routes';
 import LinkRoutes from './links/routes';
 import MovieRoutes from './movies/routes';
 import PodcastRoutes from './podcasts/routes';
@@ -24,6 +25,7 @@ app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.use('/book', BookRoutes);
 app.use('/link', LinkRoutes);
 app.use('/movie', MovieRoutes);
 app.use('/podcast', PodcastRoutes);

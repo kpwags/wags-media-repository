@@ -241,20 +241,6 @@ const VideoGameForm = ({
                     </Form.Item>
 
                     <Form.Item
-                        name="rating"
-                        label="Rating"
-                    >
-                        <Rate />
-                    </Form.Item>
-
-                    <Form.Item
-                        name="thoughts"
-                        label="Thoughts"
-                    >
-                        <TextArea placeholder="Enter Thoughts" rows={8} />
-                    </Form.Item>
-
-                    <Form.Item
                         name="sortOrder"
                         label="Sort"
                     >

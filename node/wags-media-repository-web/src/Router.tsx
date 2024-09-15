@@ -4,10 +4,14 @@ import {
     Route,
 } from 'react-router-dom';
 
-import { MovieStatus, TvStatus, VideoGameStatus } from '@lib/constants';
+import { BookStatus, MovieStatus, TvStatus, VideoGameStatus } from '@lib/constants';
 
 import PageLayout from '@components/base/PageLayout';
 import AppContainer from '@components/base/AppContainer';
+
+import BooksHome from '@pages/books/BooksHome';
+import BookGenres from '@pages/books/BookGenres';
+import BookSeries from '@pages/books/BookSeries';
 
 import LinksHome from '@pages/links/LinksHome';
 import LinkCategories from '@pages/links/LinkCategories';
@@ -31,6 +35,13 @@ const Router = (): JSX.Element => (
         <AppContainer>
             <PageLayout>
                 <Routes>
+                    <Route path="/books/backlog" element={<BooksHome status={BookStatus.ToRead} />} />
+                    <Route path="/books/current" element={<BooksHome status={BookStatus.CurrentlyReading} />} />
+                    <Route path="/books/finished" element={<BooksHome status={BookStatus.Finished} />} />
+                    <Route path="/books/abandoned" element={<BooksHome status={BookStatus.Abandoned} />} />
+                    <Route path="/books/genres" element={<BookGenres />} />
+                    <Route path="/books/series" element={<BookSeries />} />
+
                     <Route path="/links" element={<LinksHome />} />
                     <Route path="/links/categories" element={<LinkCategories />} />
 
