@@ -66,14 +66,6 @@ class BookRepository {
             }
 
             rows.forEach((row) => {
-                if (row.Title === 'The Firm') {
-                    console.log({
-                        page: row.CurrentPage,
-                        pageCount: row.PageCount,
-                        progress: calculateProgress(row.CurrentPage, row.PageCount),
-                    })
-                }
-
                 books.push({
                     bookId: row.BookId,
                     bookStatusId: row.BookStatusId,

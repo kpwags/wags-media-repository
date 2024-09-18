@@ -90,6 +90,7 @@ const PodcastForm = ({
     return (
         <Modal
             destroyOnClose
+            maskClosable={false}
             open={open}
             onOk={() => form.submit()}
             onCancel={() => onClose()}

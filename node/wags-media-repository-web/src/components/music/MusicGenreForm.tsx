@@ -13,12 +13,12 @@ import { Color } from 'antd/es/color-picker';
 
 import { Api } from '@lib/api';
 
-import { BookSeries } from '@models/Book';
+import { MusicGenre } from '@models/Music';
 
 const { useForm } = Form;
 
-interface BookSeriesFormProps extends ModalProps {
-    series?: BookSeries;
+interface MusicGenreFormProps extends ModalProps {
+    genre?: MusicGenre;
     onSaved: () => void;
     onClose: () => void;
 }
@@ -28,12 +28,12 @@ type FormValues = {
     colorCode: string | Color;
 }
 
-const BookSeriesForm = ({
-    series,
+const MusicGenreForm = ({
+    genre,
     open,
     onSaved,
     onClose,
-}: BookSeriesFormProps): JSX.Element => {
+}: MusicGenreFormProps): JSX.Element => {
     const [formError, setFormError] = useState<string>('');
     const [processingMessage, setProcessingMessage] = useState<string>('Loading...');
 
@@ -41,8 +41,8 @@ const BookSeriesForm = ({
 
     const [form] = useForm<FormValues>();
 
-    const addSeries = async (name: string, color: string): Promise<string | null> => {
-        const [, error] = await Api.Post('book/series', {
+    const addGenre = async (name: string, color: string): Promise<string | null> => {
+        const [, error] = await Api.Post('music/genre', {
             data: {
                 name,
                 colorCode: color,
@@ -52,8 +52,8 @@ const BookSeriesForm = ({
         return error;
     };
 
-    const updateSeries = async (name: string, color: string): Promise<string | null> => {
-        const [, error] = await Api.Put(`book/series/${series?.bookSeriesId}`, {
+    const updateGenre = async (name: string, color: string): Promise<string | null> => {
+        const [, error] = await Api.Put(`music/genre/${genre?.musicGenreId}`, {
             data: {
                 name,
                 colorCode: color,
@@ -63,15 +63,15 @@ const BookSeriesForm = ({
         return error;
     };
 
-    const saveSeries = async ({ name, colorCode }: FormValues) => {
+    const saveGenre = async ({ name, colorCode }: FormValues) => {
         setProcessingMessage('Saving...');
         setFormError('');
 
         const color = typeof colorCode === 'string' ? colorCode : colorCode.toHexString();
 
-        const error = series
-            ? await updateSeries(name, color)
-            : await addSeries(name, color);
+        const error = genre
+            ? await updateGenre(name, color)
+            : await addGenre(name, color);
 
         if (error) {
             setFormError(error);
@@ -79,7 +79,7 @@ const BookSeriesForm = ({
             return;
         }
 
-        queryClient.invalidateQueries({ queryKey: ['book-series'] });
+        queryClient.invalidateQueries({ queryKey: ['music-genres'] });
 
         onSaved();
     };
@@ -91,16 +91,16 @@ const BookSeriesForm = ({
             open={open}
             onOk={() => form.submit()}
             onCancel={() => onClose()}
-            okText={series ? 'Save' : 'Add'}
+            okText={genre ? 'Save' : 'Add'}
             cancelText="Cancel"
             forceRender
-            title={series ? 'Edit Series' : 'Add Series'}
+            title={genre ? 'Edit Genre' : 'Add Genre'}
             afterOpenChange={(open) => {
                 if (open) {
-                    if (series) {
+                    if (genre) {
                         form.setFieldsValue({
-                            name: series.name,
-                            colorCode: series.colorCode,
+                            name: genre.name,
+                            colorCode: genre.colorCode,
                         });
                     }
 
@@ -115,7 +115,7 @@ const BookSeriesForm = ({
             <Spin spinning={processingMessage !== ''} tip={processingMessage}>
                 {formError !== '' ? <Alert type="error" message={formError} /> : null}
 
-                <Form form={form} onFinish={saveSeries}>
+                <Form form={form} onFinish={saveGenre}>
                     <Form.Item
                         name="name"
                         label="Name"
@@ -137,4 +137,4 @@ const BookSeriesForm = ({
     );
 };
 
-export default BookSeriesForm;
+export default MusicGenreForm;
