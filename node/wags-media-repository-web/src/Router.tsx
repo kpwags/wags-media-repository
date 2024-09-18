@@ -18,6 +18,9 @@ import LinkCategories from '@pages/links/LinkCategories';
 
 import MoviesTable from '@pages/movies/MoviesTable';
 
+import MusicHome from '@pages/music/MusicHome';
+import MusicGenres from '@pages/music/MusicGenres';
+
 import PodcastsHome from '@pages/podcasts/PodcastsHome';
 import PodcastCategories from '@pages/podcasts/PodcastCategories';
 
@@ -49,6 +52,9 @@ const Router = (): JSX.Element => (
                     <Route path="/movies/joint" element={<MoviesTable status={MovieStatus.JointToWatch} />} />
                     <Route path="/movies/watched" element={<MoviesTable status={MovieStatus.Watched} />} />
                     <Route path="/movies/abandoned" element={<MoviesTable status={MovieStatus.CouldNotFinish} />} />
+
+                    <Route path="/music" element={<MusicHome />} />
+                    <Route path="/music/genres" element={<MusicGenres />} />
 
                     <Route path="/podcasts/categories" element={<PodcastCategories />} />
                     <Route path="/podcasts" element={<PodcastsHome />} />loadGenres

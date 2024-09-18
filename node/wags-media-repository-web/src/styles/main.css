@@ -166,6 +166,10 @@ div.ant-modal-body .ant-alert {
   fill: var(--blue-1);
 }
 
+.track-field {
+  margin-bottom: 16px;
+}
+
 @media (min-width: 1024px) {
   .slim-table {
     max-width: 600px;

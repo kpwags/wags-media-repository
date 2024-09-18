@@ -111,6 +111,7 @@ const PageLayout = ({ children }: PageLayoutProps): JSX.Element => {
             key: 'music',
             icon: <CustomerServiceOutlined />,
             label: 'Music',
+            onClick: () => navigateToPage('/music'),
         });
 
         menu.push({
