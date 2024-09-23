@@ -6,6 +6,56 @@ import { TelevisionShow } from '../models/tv';
 
 const router = express.Router();
 
+router.put('/update-progress/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+
+    const { currentSeasonEpisode } = req.body;
+
+    TvRepository.UpdateTelevisionShowProgress(id, currentSeasonEpisode, (error) => {
+        if (error) {
+            return res.status(400).json({ error });
+        }
+
+        res.send();
+    });
+});
+
+router.get('/current', (_, res) => {
+    TvRepository.GetAllTelevisionGenreLinks((genreLinkError, genreLinks) => {
+        if (genreLinkError) {
+            return res.status(400).json({ genreLinkError });
+        }
+
+        TvRepository.GetAllTelevisionServiceLinks((serviceLinkError, serviceLinks) => {
+            if (serviceLinkError) {
+                return res.status(400).json({ serviceLinkError });
+            }
+
+            TvRepository.GetCurrentTelevisionShows((error, data) => {
+                if (error) {
+                    return res.status(400).json({ error });
+                }
+
+                const tvShows: TelevisionShow[] = [];
+
+                data.forEach((tv) => {
+                    tv.genres = genreLinks
+                        .filter((g) => g.televisionShowId == tv.televisionShowId)
+                        .map((g) => ({ videoGenreId: g.genreId, name: g.genreName, colorCode: g.genreColorCode }));
+
+                    tv.services = serviceLinks
+                        .filter((s) => s.televisionShowId == tv.televisionShowId)
+                        .map((s) => ({ videoServiceId: s.serviceId, name: s.serviceName, colorCode: s.serviceColorCode }));
+
+                    tvShows.push(tv);
+                });
+
+                res.json(tvShows);
+            });
+        });
+    });
+});
+
 router.get('/', (_, res) => {
     TvRepository.GetAllTelevisionGenreLinks((genreLinkError, genreLinks) => {
         if (genreLinkError) {

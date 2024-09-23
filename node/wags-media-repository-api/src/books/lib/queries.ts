@@ -299,3 +299,44 @@ WHERE BookSeriesId = ?;
 export const deleteBookSeries = `
 DELETE FROM BookSeries WHERE BookSeriesId = ?;
 `;
+
+export const getCurrentlyReadingBooks = `
+SELECT
+	B.BookId,
+	B.BookStatusId,
+	B.BookTypeId,
+	B.BookSeriesId,
+	B.Title,
+	B.SubTitle,
+	B.Author,
+	B.Link,
+	B.DateStarted,
+	B.DateCompleted,
+	B.Rating,
+	B.Thoughts,
+	B.BookNotesUrl,
+	B.CoverImageUrl,
+	B.CurrentPage,
+	B.PageCount,
+	B.SortOrder,
+	B.IsAtLibrary,
+	B.IsPurchased,
+	BS.Name AS BookStatusName,
+	BS.ColorCode AS BookStatusColor,
+	BT.Name AS BookTypeName,
+	BT.ColorCode AS BookTypeColor,
+	BKS.Name AS BookSeriesName,
+	BKS.ColorCode AS BookSeriesColor
+FROM Book B
+JOIN BookStatus BS ON BS.BookStatusId = B.BookStatusId
+JOIN BookType BT ON BT.BookTypeId = B.BookTypeId
+LEFT JOIN BookSeries BKS ON BKS.BookSeriesId = B.BookSeriesId
+WHERE
+    B.BookStatusId = 2;
+`;
+
+export const updateBookProgress = `
+UPDATE Book SET
+    CurrentPage = ?
+WHERE BookId = ?;
+`;

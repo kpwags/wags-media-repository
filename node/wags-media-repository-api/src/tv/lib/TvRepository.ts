@@ -9,6 +9,7 @@ import {
     TvServiceLinkQueryReturn,
     getAllTelevisionShows,
     getTelevisionShowById,
+    getCurrentTelevisionShows,
     insertTelevsionShow,
     updateTelevisionShow,
     deleteTelevisionShow,
@@ -21,6 +22,7 @@ import {
     clearTvGenreLinks,
     clearTvServiceLinks,
     getLastInsertedId,
+    updateTelevisionShowProgress,
 } from './queries';
 
 import { VideoService, VideoGenre } from '../../models/system';
@@ -107,6 +109,45 @@ class TvRepository {
                 genres: [],
                 services: [],
             });
+        });
+    };
+
+    static readonly GetCurrentTelevisionShows = (callback: (error: string | null, televisionShows: TelevisionShow[]) => void) => {
+        const db = this.GetDatabase();
+
+        const tvShows: TelevisionShow[] = [];
+
+        db.all(getCurrentTelevisionShows, (err: any, rows: TvQueryReturn[]) => {
+            db.close();
+
+            if (err) {
+                return callback(cleanSqliteError(err), []);
+            }
+
+            rows.forEach((row) => {
+                tvShows.push({
+                    televisionShowId: row.TelevisionShowId,
+                    statusId: row.TelevisionStatusId,
+                    title: row.Title,
+                    imdbLink: row.ImdbLink,
+                    coverImageUrl: row.CoverImageUrl,
+                    sortOrder: row.SortOrder,
+                    seasonEpisodeCount: row.SeasonEpisodeCount,
+                    currentSeasonEpisode: row.CurrentSeasonEpisode,
+                    progress: calculateProgress(row.CurrentSeasonEpisode, row.SeasonEpisodeCount),
+                    rating: row.Rating,
+                    thoughts: row.Thoughts,
+                    status: {
+                        televisionStatusId: row.TelevisionStatusId,
+                        name: row.TelevsionShowStatusName,
+                        colorCode: row.TelevsionShowStatusColor,
+                    },
+                    genres: [],
+                    services: [],
+                });
+            });
+
+            return callback(null, tvShows);
         });
     };
 
@@ -344,6 +385,20 @@ class TvRepository {
             });
 
             return callback(null, services);
+        });
+    };
+
+    static readonly UpdateTelevisionShowProgress = (televisionShowId: number, currentSeasonEpisode: number, callback: (error: string | null) => void) => {
+        const db = this.GetDatabase();
+
+        db.run(updateTelevisionShowProgress, [currentSeasonEpisode, televisionShowId], (err) => {
+            db.close();
+
+            if (err) {
+                return callback(cleanSqliteError(err));
+            }
+
+            return callback(null);
         });
     };
 }

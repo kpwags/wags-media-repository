@@ -6,6 +6,44 @@ import { Movie } from '../models/movie';
 
 const router = express.Router();
 
+router.get('/recent/:days', (req, res) => {
+    const limitInDays = parseInt(req.params.days);
+
+    MovieRepository.GetAllMovieGenreLinks((genreLinkError, genreLinks) => {
+        if (genreLinkError) {
+            return res.status(400).json({ genreLinkError });
+        }
+
+        MovieRepository.GetAllMovieServiceLinks((serviceLinkError, serviceLinks) => {
+            if (genreLinkError) {
+                return res.status(400).json({ serviceLinkError });
+            }
+
+            MovieRepository.GetRecentMovies(limitInDays, (error, data) => {
+                if (error) {
+                    return res.status(400).json({ error });
+                }
+
+                const movies: Movie[] = [];
+
+                data.forEach((m) => {
+                    m.genres = genreLinks
+                        .filter((g) => g.movieId == m.movieId)
+                        .map((g) => ({ videoGenreId: g.genreId, name: g.genreName, colorCode: g.genreColorCode }));
+
+                    m.services = serviceLinks
+                        .filter((s) => s.movieId == m.movieId)
+                        .map((s) => ({ videoServiceId: s.serviceId, name: s.serviceName, colorCode: s.serviceColorCode }));
+
+                    movies.push(m);
+                });
+
+                res.json(movies);
+            });
+        });
+    });
+});
+
 router.get('/', (_, res) => {
     MovieRepository.GetAllMovieGenreLinks((genreLinkError, genreLinks) => {
         if (genreLinkError) {

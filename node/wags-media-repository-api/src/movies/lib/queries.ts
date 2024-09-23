@@ -1,6 +1,6 @@
 export type MovieQueryReturn = {
     MovieId: number;
-    DateWatched: Date;
+    DateWatched?: Date;
     ImdbLink: string;
     MovieStatusId: number;
     PosterImageUrl: string;

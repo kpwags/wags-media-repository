@@ -66,6 +66,30 @@ JOIN VideoGameStatus VGS ON VGS.VideoGameStatusId = VG.VideoGameStatusId
 JOIN VideoGameCompletion VGC ON VGC.VideoGameCompletionId = VG.VideoGameCompletionId;
 `;
 
+export const getCurrentVideoGames = `
+SELECT
+    VG.VideoGameId,
+    VG.VideoGameStatusId,
+    VG.VideoGameCompletionId,
+    VG.Title,
+    VG.Link,
+    VG.DateStarted,
+    VG.DateCompleted,
+    VG.Rating,
+    VG.Thoughts,
+    VG.CoverImageUrl,
+    VG.SortOrder,
+    VGS.Name AS VideoGameStatusName,
+    VGS.ColorCode AS VideoGameStatusColor,
+    VGC.Name AS VideoGameCompletionName,
+    VGC.ColorCode AS VideoGameCompletionColor
+FROM VideoGame VG
+JOIN VideoGameStatus VGS ON VGS.VideoGameStatusId = VG.VideoGameStatusId
+JOIN VideoGameCompletion VGC ON VGC.VideoGameCompletionId = VG.VideoGameCompletionId
+WHERE
+    VG.VideoGameStatusId = 2;
+`;
+
 export const getVideoGameById = `
 SELECT
     VG.VideoGameId,

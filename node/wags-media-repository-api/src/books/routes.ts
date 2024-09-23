@@ -162,6 +162,94 @@ router.delete('/series/:id', (req, res) => {
     res.send();
 });
 
+router.put('/update-progress/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+
+    const { currentPage } = req.body;
+
+    BookRepository.UpdateBookProgress(id, currentPage, (error) => {
+        if (error) {
+            return res.status(400).json({ error });
+        }
+
+        res.send();
+    });
+});
+
+router.get('/current', (_, res) => {
+    BookRepository.GetAllBookGenreLinks((genreLinkError, genreLinks) => {
+        if (genreLinkError) {
+            return res.status(400).json({ genreLinkError });
+        }
+
+        BookRepository.GetAllBookFormatLinks((formatLinkError, formatLinks) => {
+            if (formatLinkError) {
+                return res.status(400).json({ formatLinkError });
+            }
+
+            BookRepository.GetCurrentBooks((error, data) => {
+                if (error) {
+                    return res.status(400).json({ error });
+                }
+
+                const books: Book[] = [];
+
+                data.forEach((book) => {
+                    book.genres = genreLinks
+                        .filter((g) => g.bookId == book.bookId)
+                        .map((g) => ({ bookGenreId: g.genreId, name: g.genreName, colorCode: g.genreColorCode }));
+
+                    book.formats = formatLinks
+                        .filter((f) => f.bookId == book.bookId)
+                        .map((f) => ({ bookFormatId: f.formatId, name: f.fomatName, colorCode: f.formatColorCode }));
+
+                    books.push(book);
+                });
+
+                res.json(books);
+            });
+        });
+    });
+});
+
+router.get('/recent/:days', (req, res) => {
+    const limitInDays = parseInt(req.params.days);
+
+    BookRepository.GetAllBookGenreLinks((genreLinkError, genreLinks) => {
+        if (genreLinkError) {
+            return res.status(400).json({ genreLinkError });
+        }
+
+        BookRepository.GetAllBookFormatLinks((formatLinkError, formatLinks) => {
+            if (formatLinkError) {
+                return res.status(400).json({ formatLinkError });
+            }
+
+            BookRepository.GetRecentBooks(limitInDays, (error, data) => {
+                if (error) {
+                    return res.status(400).json({ error });
+                }
+
+                const books: Book[] = [];
+
+                data.forEach((book) => {
+                    book.genres = genreLinks
+                        .filter((g) => g.bookId == book.bookId)
+                        .map((g) => ({ bookGenreId: g.genreId, name: g.genreName, colorCode: g.genreColorCode }));
+
+                    book.formats = formatLinks
+                        .filter((f) => f.bookId == book.bookId)
+                        .map((f) => ({ bookFormatId: f.formatId, name: f.fomatName, colorCode: f.formatColorCode }));
+
+                    books.push(book);
+                });
+
+                res.json(books);
+            });
+        });
+    });
+});
+
 router.get('/', (_, res) => {
     BookRepository.GetAllBookGenreLinks((genreLinkError, genreLinks) => {
         if (genreLinkError) {

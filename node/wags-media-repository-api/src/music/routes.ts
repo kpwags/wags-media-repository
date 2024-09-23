@@ -109,6 +109,42 @@ router.put('/tracks/:id', (req, res) => {
     });
 });
 
+router.get('/now', (_, res) => {
+    MusicRepository.GetAllAlbumGenreLinks((genreLinkError, genreLinks) => {
+        if (genreLinkError) {
+            return res.status(400).json({ error: genreLinkError });
+        }
+
+        MusicRepository.GetAllAlbumFormatLinks((formatLinkError, formatLinks) => {
+            if (formatLinkError) {
+                return res.status(400).json({ error: formatLinkError });
+            }
+
+            MusicRepository.GetMusicAlbumsOnNowPage((error, data) => {
+                if (error) {
+                    return res.status(400).json({ error });
+                }
+
+                const albums: MusicAlbum[] = [];
+
+                data.forEach((album) => {
+                    album.genres = genreLinks
+                        .filter((g) => g.musicAlbumId == album.musicAlbumId)
+                        .map((g) => ({ musicGenreId: g.genreId, name: g.genreName, colorCode: g.genreColorCode }));
+
+                    album.formats = formatLinks
+                        .filter((f) => f.musicAlbumId == album.musicAlbumId)
+                        .map((f) => ({ musicFormatId: f.formatId, name: f.formatName, colorCode: f.formatColorCode }));
+
+                    albums.push(album);
+                });
+
+                res.json(albums);
+            });
+        });
+    });
+});
+
 router.get('/', (_, res) => {
     MusicRepository.GetAllAlbumGenreLinks((genreLinkError, genreLinks) => {
         if (genreLinkError) {

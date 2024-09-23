@@ -11,7 +11,7 @@ export type Movie = {
     title: string;
     imdbLink: string;
     posterImageUrl: string;
-    dateWatched: Date;
+    dateWatched?: Date;
     rating: number;
     thoughts: string;
     sortOrder?: number;

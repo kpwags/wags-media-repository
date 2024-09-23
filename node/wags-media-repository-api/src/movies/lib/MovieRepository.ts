@@ -1,4 +1,6 @@
 import sqlite3 from 'sqlite3';
+import dayjs from 'dayjs';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import config from '../../config';
 import cleanSqliteError from '../../lib/cleanSqliteError';
 import { Movie, MovieGenreLink, MovieServiceLink } from '../../models/movie';
@@ -23,6 +25,8 @@ import {
 } from './queries';
 import { VideoService, VideoGenre } from '../../models/system';
 import { VideoGenreQueryReturn, VideoServiceQueryReturn } from '../../system/lib/queries';
+
+dayjs.extend(isSameOrAfter);
 
 class MovieRepository {
     private static GetDatabase = () => {
@@ -336,6 +340,47 @@ class MovieRepository {
 
                     return callback(null);
                 });
+        });
+    };
+
+    static readonly GetRecentMovies = (days: number, callback: (error: string | null, movies: Movie[]) => void) => {
+        const db = this.GetDatabase();
+
+        const movies: Movie[] = [];
+
+        db.all(getAllMovies, (err: any, rows: MovieQueryReturn[]) => {
+            db.close();
+
+            if (err) {
+                return callback(cleanSqliteError(err), []);
+            }
+
+            rows.forEach((row) => {
+                const limit = dayjs().subtract(days, 'day');
+
+                if (row.DateWatched && dayjs(row.DateWatched).isSameOrAfter(limit)) {
+                    movies.push({
+                        movieId: row.MovieId,
+                        statusId: row.MovieStatusId,
+                        title: row.Title,
+                        imdbLink: row.ImdbLink,
+                        posterImageUrl: row.PosterImageUrl,
+                        dateWatched: row.DateWatched,
+                        rating: row.Rating,
+                        thoughts: row.Thoughts,
+                        sortOrder: row.SortOrder,
+                        status: {
+                            movieStatusId: row.MovieStatusId,
+                            name: row.MovieStatusName,
+                            colorCode: row.MovieStatusColor,
+                        },
+                        genres: [],
+                        services: [],
+                    });
+                }
+            });
+
+            return callback(null, movies);
         });
     };
 }

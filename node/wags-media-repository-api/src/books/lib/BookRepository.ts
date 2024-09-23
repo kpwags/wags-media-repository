@@ -1,4 +1,6 @@
 import sqlite3 from 'sqlite3';
+import dayjs from 'dayjs';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import config from '../../config';
 import cleanSqliteError from '../../lib/cleanSqliteError';
 import calculateProgress from '../../lib/calculateProgress';
@@ -35,6 +37,8 @@ import {
     insertBookSeries,
     updateBookSeries,
     deleteBookSeries,
+    getCurrentlyReadingBooks,
+    updateBookProgress,
 } from './queries';
 
 import {
@@ -45,6 +49,8 @@ import {
     BookFormatLink,
     BookFormat,
 } from '../../models/book';
+
+dayjs.extend(isSameOrAfter);
 
 class BookRepository {
     private static GetDatabase = () => {
@@ -162,6 +168,124 @@ class BookRepository {
                 genres: [],
                 formats: [],
             });
+        });
+    };
+
+    static readonly GetCurrentBooks = (callback: (error: string | null, books: Book[]) => void) => {
+        const db = this.GetDatabase();
+
+        const books: Book[] = [];
+
+        db.all(getCurrentlyReadingBooks, (err: any, rows: BookQueryReturn[]) => {
+            db.close();
+
+            if (err) {
+                return callback(cleanSqliteError(err), []);
+            }
+
+            rows.forEach((row) => {
+                books.push({
+                    bookId: row.BookId,
+                    bookStatusId: row.BookStatusId,
+                    bookTypeId: row.BookTypeId,
+                    bookSeriesId: row.BookSeriesId,
+                    title: row.Title,
+                    subTitle: row.SubTitle,
+                    fullTitle: buildBookTitle(row.Title, row.SubTitle),
+                    author: row.Author,
+                    link: row.Link,
+                    dateStarted: row.DateStarted,
+                    dateCompleted: row.DateCompleted,
+                    rating: row.Rating,
+                    thoughts: row.Thoughts,
+                    bookNotesUrl: row.BookNotesUrl,
+                    coverImageUrl: row.CoverImageUrl,
+                    currentPage: row.CurrentPage,
+                    pageCount: row.PageCount,
+                    progress: calculateProgress(row.CurrentPage, row.PageCount),
+                    sortOrder: row.SortOrder,
+                    isAtLibrary: row.IsAtLibrary,
+                    isPurchased: row.IsPurchased,
+                    status: {
+                        bookStatusId: row.BookStatusId,
+                        name: row.BookStatusName,
+                        colorCode: row.BookStatusColor,
+                    },
+                    type: {
+                        bookTypeId: row.BookTypeId,
+                        name: row.BookTypeName,
+                        colorCode: row.BookTypeColor,
+                    },
+                    series: row.BookSeriesId
+                        ? { bookSeriesId: row.BookSeriesId, name: row.BookSeriesName ?? '', colorCode: row.BookSeriesColor ?? '' }
+                        : undefined,
+                    genres: [],
+                    formats: [],
+                });
+            });
+
+            return callback(null, books);
+        });
+    };
+
+    static readonly GetRecentBooks = (days: number, callback: (error: string | null, books: Book[]) => void) => {
+        const db = this.GetDatabase();
+
+        const books: Book[] = [];
+
+        db.all(getAllBooks, (err: any, rows: BookQueryReturn[]) => {
+            db.close();
+
+            if (err) {
+                return callback(cleanSqliteError(err), []);
+            }
+
+            rows.forEach((row) => {
+                const limit = dayjs().subtract(days, 'day');
+
+                if (row.DateCompleted && dayjs(row.DateCompleted).isSameOrAfter(limit)) {
+                    books.push({
+                        bookId: row.BookId,
+                        bookStatusId: row.BookStatusId,
+                        bookTypeId: row.BookTypeId,
+                        bookSeriesId: row.BookSeriesId,
+                        title: row.Title,
+                        subTitle: row.SubTitle,
+                        fullTitle: buildBookTitle(row.Title, row.SubTitle),
+                        author: row.Author,
+                        link: row.Link,
+                        dateStarted: row.DateStarted,
+                        dateCompleted: row.DateCompleted,
+                        rating: row.Rating,
+                        thoughts: row.Thoughts,
+                        bookNotesUrl: row.BookNotesUrl,
+                        coverImageUrl: row.CoverImageUrl,
+                        currentPage: row.CurrentPage,
+                        pageCount: row.PageCount,
+                        progress: calculateProgress(row.CurrentPage, row.PageCount),
+                        sortOrder: row.SortOrder,
+                        isAtLibrary: row.IsAtLibrary,
+                        isPurchased: row.IsPurchased,
+                        status: {
+                            bookStatusId: row.BookStatusId,
+                            name: row.BookStatusName,
+                            colorCode: row.BookStatusColor,
+                        },
+                        type: {
+                            bookTypeId: row.BookTypeId,
+                            name: row.BookTypeName,
+                            colorCode: row.BookTypeColor,
+                        },
+                        series: row.BookSeriesId
+                            ? { bookSeriesId: row.BookSeriesId, name: row.BookSeriesName ?? '', colorCode: row.BookSeriesColor ?? '' }
+                            : undefined,
+                        genres: [],
+                        formats: [],
+                    });
+                }
+            });
+
+            return callback(null, books);
         });
     };
 
@@ -600,6 +724,20 @@ class BookRepository {
         const db = this.GetDatabase();
 
         db.run(deleteBookSeries, [seriesId], (err) => {
+            db.close();
+
+            if (err) {
+                return callback(cleanSqliteError(err));
+            }
+
+            return callback(null);
+        });
+    };
+
+    static readonly UpdateBookProgress = (bookId: number, currentPage: number, callback: (error: string | null) => void) => {
+        const db = this.GetDatabase();
+
+        db.run(updateBookProgress, [currentPage, bookId], (err) => {
             db.close();
 
             if (err) {

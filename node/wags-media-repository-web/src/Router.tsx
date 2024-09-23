@@ -13,6 +13,8 @@ import BooksHome from '@pages/books/BooksHome';
 import BookGenres from '@pages/books/BookGenres';
 import BookSeries from '@pages/books/BookSeries';
 
+import Dashboard from '@pages/dashboard/Dashboard';
+
 import LinksHome from '@pages/links/LinksHome';
 import LinkCategories from '@pages/links/LinkCategories';
 
@@ -77,7 +79,7 @@ const Router = (): JSX.Element => (
 
                     <Route
                         path="*"
-                        element={<h1>Hello</h1>}
+                        element={<Dashboard />}
                     />
                 </Routes>
             </PageLayout>

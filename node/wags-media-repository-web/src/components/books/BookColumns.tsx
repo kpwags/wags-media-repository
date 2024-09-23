@@ -1,6 +1,7 @@
 import {
     Button,
     Space,
+    TableProps,
     Tag,
     Typography,
 } from 'antd'
@@ -16,7 +17,7 @@ import { Book } from '@models/Book';
 
 const { Link } = Typography;
 
-export const BookColumns = (status: BookStatus, isLargeScreen: boolean, onEdit: (book: Book) => void, onDelete: (bookId: number) => void) => {
+export const BookColumns = (status: BookStatus, isLargeScreen: boolean, onEdit: (book: Book) => void, onDelete: (bookId: number) => void): TableProps<Book>['columns'] => {
     switch (status) {
         case BookStatus.ToRead:
             return getToReadColumns(isLargeScreen, onEdit, onDelete);
@@ -28,7 +29,7 @@ export const BookColumns = (status: BookStatus, isLargeScreen: boolean, onEdit: 
     }
 };
 
-const getToReadColumns = (isLargeScreen: boolean, onEdit: (book: Book) => void, onDelete: (bookId: number) => void) => {
+const getToReadColumns = (isLargeScreen: boolean, onEdit: (book: Book) => void, onDelete: (bookId: number) => void): TableProps<Book>['columns'] => {
     return [
         {
             key: 'sortOrder',
@@ -106,7 +107,7 @@ const getToReadColumns = (isLargeScreen: boolean, onEdit: (book: Book) => void, 
     ];
 };
 
-const getReadingColumns = (isLargeScreen: boolean, onEdit: (book: Book) => void, onDelete: (bookId: number) => void) => {
+const getReadingColumns = (isLargeScreen: boolean, onEdit: (book: Book) => void, onDelete: (bookId: number) => void): TableProps<Book>['columns'] => {
     return [
         {
             key: 'title',
@@ -186,7 +187,7 @@ const getReadingColumns = (isLargeScreen: boolean, onEdit: (book: Book) => void,
     ];
 };
 
-const getFinishedColumns = (isLargeScreen: boolean, onEdit: (book: Book) => void, onDelete: (bookId: number) => void) => {
+const getFinishedColumns = (isLargeScreen: boolean, onEdit: (book: Book) => void, onDelete: (bookId: number) => void): TableProps<Book>['columns'] => {
     return [
         {
             key: 'title',
