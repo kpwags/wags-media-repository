@@ -21,11 +21,12 @@ import useDocumentTitle from '@hooks/useDocumentTitle';
 
 import { Api } from '@lib/api';
 import { MovieStatus } from '@lib/constants';
-import { getMovieTableColumns } from '@lib/movieColumns';
 import { sortByDate } from '@lib/sorting';
 
-import { Movie } from '@models/Movie';
 import MovieForm from '@components/movies/MovieForm';
+import { getMovieTableColumns } from '@components/movies/MovieColumns';
+
+import { Movie } from '@models/Movie';
 
 const { useBreakpoint } = Grid;
 const { Text, Title } = Typography;

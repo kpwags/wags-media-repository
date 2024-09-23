@@ -5,11 +5,11 @@ import {
     Tag,
     Typography,
 } from 'antd'
+
+import { MovieStatus } from '@lib/constants';
+import { sortByDate } from '@lib/sorting';
+
 import Confirmation from '@components/base/Confirmation';
-
-import { MovieStatus } from './constants';
-
-import { sortByDate } from './sorting';
 
 import { Movie } from '@models/Movie';
 import StarRating from '@components/StarRating';

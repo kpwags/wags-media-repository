@@ -7,7 +7,7 @@ import {
 } from 'antd'
 import Confirmation from '@components/base/Confirmation';
 
-import { TvStatus } from './constants';
+import { TvStatus } from '@lib/constants';
 
 import { TelevisionShow } from '@models/Tv';
 import StarRating from '@components/StarRating';

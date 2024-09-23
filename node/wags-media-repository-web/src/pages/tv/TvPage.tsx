@@ -21,11 +21,12 @@ import useDocumentTitle from '@hooks/useDocumentTitle';
 
 import { Api } from '@lib/api';
 import { TvStatus } from '@lib/constants';
-import { getTvShowColumns } from '@lib/tvShowColumns';
 import { sortByTitle } from '@lib/sorting';
 
-import { TelevisionShow } from '@models/Tv';
+import { getTvShowColumns } from '@components/tv/TvColumns';
 import TvShowForm from '@components/tv/TvShowForm';
+
+import { TelevisionShow } from '@models/Tv';
 
 const { useBreakpoint } = Grid;
 const { Text, Title } = Typography;
