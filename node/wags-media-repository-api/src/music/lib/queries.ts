@@ -55,6 +55,21 @@ FROM MusicAlbum
 ORDER BY Artist;
 `;
 
+export const getMusicAlbumsOnNowPage = `
+SELECT
+    MusicAlbumId,
+    Title,
+    Artist,
+    Thoughts,
+    CoverImageUrl,
+    IsTopTen,
+    ShowOnNowPage
+FROM MusicAlbum
+WHERE
+    ShowOnNowPage = 1
+ORDER BY Artist;
+`;
+
 export const getMusicAlbumById = `
 SELECT
     MusicAlbumId,

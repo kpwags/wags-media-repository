@@ -32,6 +32,7 @@ import {
     insertVideoGameSystem,
     updateVideoGameSystem,
     deleteVideoGameSystem,
+    getCurrentVideoGames,
 } from './queries';
 
 import {
@@ -55,6 +56,50 @@ class VideoGameRepository {
         const videoGames: VideoGame[] = [];
 
         db.all(getAllVideoGames, (err: any, rows: VideoGameQueryReturn[]) => {
+            db.close();
+
+            if (err) {
+                return callback(cleanSqliteError(err), []);
+            }
+
+            rows.forEach((row) => {
+                videoGames.push({
+                    videoGameId: row.VideoGameId,
+                    videoGameStatusId: row.VideoGameStatusId,
+                    videoGameCompletionId: row.VideoGameCompletionId,
+                    title: row.Title,
+                    link: row.Link,
+                    dateStarted: row.DateStarted,
+                    dateCompleted: row.DateCompleted,
+                    coverImageUrl: row.CoverImageUrl,
+                    sortOrder: row.SortOrder,
+                    rating: row.Rating,
+                    thoughts: row.Thoughts,
+                    status: {
+                        videoGameStatusId: row.VideoGameStatusId,
+                        name: row.VideoGameStatusName,
+                        colorCode: row.VideoGameStatusColor,
+                    },
+                    completion: {
+                        videoGameCompletionId: row.VideoGameCompletionId,
+                        name: row.VideoGameCompletionName,
+                        colorCode: row.VideoGameCompletionColor,
+                    },
+                    genres: [],
+                    systems: [],
+                });
+            });
+
+            return callback(null, videoGames);
+        });
+    };
+
+    static readonly GetCurrentVideoGames = (callback: (error: string | null, videoGames: VideoGame[]) => void) => {
+        const db = this.GetDatabase();
+
+        const videoGames: VideoGame[] = [];
+
+        db.all(getCurrentVideoGames, (err: any, rows: VideoGameQueryReturn[]) => {
             db.close();
 
             if (err) {

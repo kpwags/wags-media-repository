@@ -41,6 +41,7 @@ import {
     updateMusicAlbum,
     updateMusicGenre,
     insertAlbumTrack,
+    getMusicAlbumsOnNowPage,
 } from './queries';
 
 class MusicRepository {
@@ -56,6 +57,37 @@ class MusicRepository {
         const albums: MusicAlbum[] = [];
 
         db.all(getAllMusicAlbums, (err: any, rows: MusicAlbumQueryReturn[]) => {
+            db.close();
+
+            if (err) {
+                return callback(cleanSqliteError(err), []);
+            }
+
+            rows.forEach((row) => {
+                albums.push({
+                    musicAlbumId: row.MusicAlbumId,
+                    title: row.Title,
+                    artist: row.Artist,
+                    coverImageUrl: row.CoverImageUrl,
+                    thoughts: row.Thoughts,
+                    isTopTen: row.IsTopTen,
+                    showOnNowPage: row.ShowOnNowPage,
+                    genres: [],
+                    formats: [],
+                    tracks: [],
+                });
+            });
+
+            return callback(null, albums);
+        });
+    };
+
+    static readonly GetMusicAlbumsOnNowPage = (callback: (error: string | null, albums: MusicAlbum[]) => void) => {
+        const db = this.GetDatabase();
+
+        const albums: MusicAlbum[] = [];
+
+        db.all(getMusicAlbumsOnNowPage, (err: any, rows: MusicAlbumQueryReturn[]) => {
             db.close();
 
             if (err) {

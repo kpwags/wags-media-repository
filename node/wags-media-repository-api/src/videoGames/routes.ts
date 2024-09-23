@@ -162,6 +162,42 @@ router.delete('/system/:id', (req, res) => {
     res.send();
 });
 
+router.get('/current', (_, res) => {
+    VideoGameRepository.GetAllVideoGameGenreLinks((genreLinkError, genreLinks) => {
+        if (genreLinkError) {
+            return res.status(400).json({ genreLinkError });
+        }
+
+        VideoGameRepository.GetAllVideoGameSystemLinks((systemLinkError, systemLinks) => {
+            if (systemLinkError) {
+                return res.status(400).json({ systemLinkError });
+            }
+
+            VideoGameRepository.GetCurrentVideoGames((error, data) => {
+                if (error) {
+                    return res.status(400).json({ error });
+                }
+
+                const videoGames: VideoGame[] = [];
+
+                data.forEach((game) => {
+                    game.genres = genreLinks
+                        .filter((g) => g.videoGameId == game.videoGameId)
+                        .map((g) => ({ videoGameGenreId: g.genreId, name: g.genreName, colorCode: g.genreColorCode }));
+
+                    game.systems = systemLinks
+                        .filter((s) => s.videoGameId == game.videoGameId)
+                        .map((s) => ({ videoGameSystemId: s.systemId, name: s.systemName, colorCode: s.systemColorCode }));
+
+                    videoGames.push(game);
+                });
+
+                res.json(videoGames);
+            });
+        });
+    });
+});
+
 router.get('/', (_, res) => {
     VideoGameRepository.GetAllVideoGameGenreLinks((genreLinkError, genreLinks) => {
         if (genreLinkError) {

@@ -143,3 +143,30 @@ VALUES (?, ?)
 export const deleteTelevisionShow = `DELETE FROM TelevisionShow WHERE TelevisionShowId = ?;`;
 
 export const getLastInsertedId = 'SELECT MAX(TelevisionShowId) AS LastInsertedId FROM TelevisionShow';
+
+export const getCurrentTelevisionShows = `
+SELECT
+    T.TelevisionShowId,
+    T.ImdbLink,
+    T.TelevisionStatusId,
+    T.CoverImageUrl,
+    T.Rating,
+    T.Thoughts,
+    T.Title,
+    T.SortOrder,
+    T.SeasonEpisodeCount,
+    T.CurrentSeasonEpisode,
+    TS.Name AS TelevsionShowStatusName,
+    TS.ColorCode AS TelevsionShowStatusColor
+FROM TelevisionShow T
+JOIN TelevisionStatus TS ON TS.TelevisionStatusId = T.TelevisionStatusId
+WHERE
+    T.TelevisionStatusId = 3
+ORDER BY T.Title DESC;
+`;
+
+export const updateTelevisionShowProgress = `
+UPDATE TelevisionShow SET
+    CurrentSeasonEpisode = ?
+WHERE TelevisionShowId = ?;
+`;
