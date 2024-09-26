@@ -403,3 +403,7 @@ FodyWeavers.xsd
 /src/WagsMediaRepository.Web/appsettings.Development.json
 tools/WagsMediaRepository.Loader/appsettings.json
 /tools/WagsMediaRepository.Generator/appsettings.json
+/node/wags-media-repository-api/data/MediaRepository.db-shm
+/node/wags-media-repository-api/data/MediaRepository.db-wal
+*dist
+.vite
