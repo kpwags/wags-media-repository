@@ -1,0 +1,111 @@
+html,
+body {
+    background: var(--background);
+    color: var(--text);
+    font-size: 100%;
+    font-family: var(--font);
+    padding: 0;
+    margin: 0;
+}
+
+button {
+    cursor: pointer;
+}
+
+header {
+    background-color: var(--blue-1);
+    color: var(--grey-1);
+    padding: 16px;
+    display: flex;
+    column-gap: 16px;
+    border-bottom: 4px solid var(--grey-3);
+    align-items: center;
+}
+
+header button {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    border: none;
+    height: auto;
+    line-height: 1;
+    cursor: pointer;
+}
+
+header button svg {
+    fill: var(--grey-1);
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+}
+
+header a {
+    color: var(--grey-1);
+    text-decoration: none;
+}
+
+header a:hover {
+    color: var(--blue-4);
+}
+
+.page-content {
+    display: flex;
+}
+
+aside {
+    height: 100%;
+    left: 0;
+    width: var(--sidebar-width);
+    position: fixed;
+    background: var(--black-4);
+    border-right: 4px solid var(--grey-3);
+    transition: transform 250ms ease-in-out;
+}
+
+aside[data-collapsed] {
+    left: calc(var(--sidebar-width) * -1);
+}
+
+aside ul {
+    margin: 0;
+    padding: 16px;
+}
+
+aside ul li {
+    margin: 16px 0;
+    list-style-type: none;;
+}
+
+aside ul li a {
+    color: var(--grey-1);
+    text-decoration: none;
+}
+
+aside ul li.active a {
+    color: var(--blue-5);
+}
+
+aside ul li a:hover {
+    color: var(--blue-4);
+}
+
+aside ul li details summary {
+    color: var(--grey-1);
+}
+
+aside details summary span {
+    padding-left: 4px;
+}
+
+aside ul.sub-list {
+    margin: 0;
+    padding: 0 0 0 16px;
+}
+
+main {
+    padding: 24px;
+}
+
+body:has(aside:not([data-collapsed])) main {
+    margin-left: var(--sidebar-width);
+}
