@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+
+        <link rel="stylesheet" type="text/css" href="styles/reset.css" />
+        <link rel="stylesheet" type="text/css" href="styles/variables.css" />
+        <link rel="stylesheet" type="text/css" href="styles/main.css" />
+
+        <script src="components/header.js"></script>
+        <script src="components/sidebar.js"></script>
+        <script src="components/star-rating.js"></script>
+
+        <script src="scripts/main.js"></script>
+
+        <style>
+            @font-face {
+                font-family: 'inconsolata';
+                src: url('fonts/inconsolata/inconsolata.ttf') format('truetype');
+                font-weight: 200 900;
+                font-display: swap;
+            }
+        </style>
+
+        <script>
+            window.addEventListener('load', function () {
+                document.querySelector('#open-dialog').addEventListener('click', function () {
+                    document.querySelector('dialog.form-dialog').showModal();
+                });
+
+                document.querySelector('#form-dialog-cancel').addEventListener('click', function () {
+                    document.querySelector('dialog.form-dialog').close();
+                });
+            });
+        </script>
+
+        <title>Components - Wags Media Repository</title>
+    </head>
+    <body>
+        <wags-media-header></wags-media-header>
+        <div class="page-content">
+            <wags-media-sidebar></wags-media-sidebar>
+            <main>
+                <h1>Components</h1>
+
+                <section>
+                    <h2>BUTTONS<h2>
+
+                    <div style="margin: 24px 0;"><button type="button" class="btn-primary">Primary</button></div>
+                    <div style="margin: 24px 0;">
+                        <button type="button" class="btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M10.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0"/>
+                                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
+                            </svg>
+                            Primary
+                        </button>
+                    </div>
+
+                    <div style="margin: 24px 0;"><button type="button" class="btn-ghost">Ghost</button></div>
+                    <div style="margin: 24px 0;">
+                        <button type="button" class="btn-ghost">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M10.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0"/>
+                                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
+                            </svg>
+                            Ghost
+                        </button>
+                    </div>
+
+                    <div style="margin: 24px 0;"><button type="button" class="btn-danger">Danger</button></div>
+                    <div style="margin: 24px 0;">
+                        <button type="button" class="btn-danger">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M10.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0"/>
+                                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
+                            </svg>
+                            Danger
+                        </button>
+                    </div>
+
+                    <div style="margin: 24px 0;"><button type="button" class="btn-danger-ghost">Danger Ghost</button></div>
+                    <div style="margin: 24px 0;">
+                        <button type="button" class="btn-danger-ghost">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M10.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0"/>
+                                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
+                            </svg>
+                            Danger Ghost
+                        </button>
+                    </div>
+
+                    <div style="margin: 24px 0;"><button type="button" class="btn-link">Link</button></div>
+                    <div style="margin: 24px 0;">
+                        <button type="button" class="btn-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M10.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0"/>
+                                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
+                            </svg>
+                            Link
+                        </button>
+                    </div>
+
+                    <div style="margin: 24px 0;">
+                        <button type="button" class="btn-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>TABLE</h2>
+
+                    <div style="margin: 24px 0;" class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th scope="column">Sort</th>
+                                    <th scope="column" class="sticky">Title</th>
+                                    <th scope="column">Author</th>
+                                    <th scope="column">Genre(s)</th>
+                                    <th scope="column">Series</th>
+                                    <th scope="column">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="center-align">1</td>
+                                    <td class="sticky">Wanderers</td>
+                                    <td>Chuck Wendig</td>
+                                    <td>Horror, Thriller</td>
+                                    <td>Wanderers</td>
+                                    <td>
+                                        <button type="button" class="btn-link">Edit</button>
+                                        <button type="button" class="btn-link">Delete</button>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="center-align">2</td>
+                                    <td class="sticky">Wayward</td>
+                                    <td>Chuck Wendig</td>
+                                    <td>Horror, Thriller</td>
+                                    <td>Wanderers</td>
+                                    <td>
+                                        <button type="button" class="btn-link">Edit</button>
+                                        <button type="button" class="btn-link">Delete</button>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="center-align">3</td>
+                                    <td class="sticky">Station Eleven</td>
+                                    <td>Emily St. John Mandel</td>
+                                    <td>Science Fiction</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        <button type="button" class="btn-link">Edit</button>
+                                        <button type="button" class="btn-link">Delete</button>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="center-align">4</td>
+                                    <td class="sticky">The Good Neighbor</td>
+                                    <td>Maxwell King</td>
+                                    <td>Biography</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        <button type="button" class="btn-link">Edit</button>
+                                        <button type="button" class="btn-link">Delete</button>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="center-align">5</td>
+                                    <td class="sticky">Zero Days</td>
+                                    <td>Ruth Ware</td>
+                                    <td>Science Fiction</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        <button type="button" class="btn-link">Edit</button>
+                                        <button type="button" class="btn-link">Delete</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Form Dialog</h2>
+
+                    <div style="margin: 24px 0;"><button type="button" class="btn-primary" id="open-dialog">Open Dialog</button></div>
+
+                    <dialog class="form-dialog">
+                        <h3>DIALOG</h3>
+
+                        <form>
+                            <div class="form-field">
+                                <label for="title">
+                                    <span class="required">*</span>Title
+                                    <input type="text" name="title" id="title" />
+                                </label>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="sortOrder">
+                                    <span class="required">*</span>Sort Order
+                                    <input type="text" name="sortOrder" id="sortOrder" inputmode="numeric" pattern="[0-9]*" />
+                                </label>
+                            </div>
+
+                            <div class="form-field">
+                                <fieldset>
+                                    <legend><span class="required">*</span>Status</legend>
+                                    <div class="radio-group">
+                                        <label for="toRead">
+                                            <input type="radio" name="bookStatus" id="toRead" value="1" checked />
+                                            To Read
+                                        </label>
+
+                                        <label for="currentlyReading">
+                                            <input type="radio" name="bookStatus" id="currentlyReading" value="2" />
+                                            Currently Reading
+                                        </label>
+
+                                        <label for="finished">
+                                            <input type="radio" name="bookStatus" id="finished" value="3" />
+                                            Finished
+                                        </label>
+
+                                        <label for="abandoned">
+                                            <input type="radio" name="bookStatus" id="abandoned" value="4" />
+                                            Abandoned
+                                        </label>
+                                    </div>
+                                </fieldset>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="thoughts">
+                                    Thoughts
+                                    <textarea name="thoughts" id="thoughts"></textarea>
+                                </label>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="series">
+                                    Series
+                                    <select name="series" id="series">
+                                        <option></option>
+                                        <option value="1">Wanderers</option>
+                                        <option value="2">Murderbot</option>
+                                        <option value="3">Halo</option>
+                                    </select>
+                                </label>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="dateStarted">
+                                    Date Started
+                                    <input type="date" name="dateStarted" id="dateStarted" />
+                                </label>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="dateCompleted">
+                                    Date Completed
+                                    <input type="date" name="dateCompleted" id="dateCompleted" />
+                                </label>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="isPurchased">
+                                    <input type="checkbox" name="isPurchased" id="isPurchased" value="true" switch />
+                                    Purchased
+                                </label>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="rating">
+                                    Rating
+                                    <wags-media-star-rating id="rating" rating="3"></wags-media-star-rating>
+                                </label>
+                            </div>
+
+                            <div class="actions">
+                                <button type="button" class="btn-ghost" id="form-dialog-cancel">Cancel</button>
+                                <button type="button" class="btn-primary">Save</button>
+                            </div>
+                        </form>
+                    </dialog>
+                </section>
+            </main>
+        </div>
+    </body>
+</html>

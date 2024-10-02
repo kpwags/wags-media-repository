@@ -8,10 +8,6 @@ body {
     margin: 0;
 }
 
-button {
-    cursor: pointer;
-}
-
 header {
     background-color: var(--blue-1);
     color: var(--grey-1);
@@ -20,6 +16,10 @@ header {
     column-gap: 16px;
     border-bottom: 4px solid var(--grey-3);
     align-items: center;
+    position: fixed;
+    width: 100%;
+    height: 60px;
+    z-index: 20;
 }
 
 header button {
@@ -54,6 +54,7 @@ header a:hover {
 
 aside {
     height: 100%;
+    top: 60px;
     left: 0;
     width: var(--sidebar-width);
     position: fixed;
@@ -103,9 +104,333 @@ aside ul.sub-list {
 }
 
 main {
+    margin-top: 60px;
     padding: 24px;
+    width: 100%;
 }
 
 body:has(aside:not([data-collapsed])) main {
     margin-left: var(--sidebar-width);
 }
+
+/* BUTTONS */
+button {
+    border-radius: 6px;
+    border-width: 1px;
+    border-style: solid;
+    padding: 8px 16px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+button:has(svg) {
+    display: flex;
+    column-gap: 8px;
+    align-items: center;
+}
+
+.btn-primary{
+    background-color: var(--blue-3);
+    border-color: var(--blue-2);
+    color: var(--grey-1);
+
+    svg {
+        fill: var(--grey-1);
+    }
+
+    &:hover {
+        background-color: var(--blue-2);
+    }
+}
+
+.btn-ghost {
+    background-color: transparent;
+    border-color: var(--blue-3);
+    color: var(--blue-3);
+
+    svg {
+        fill: var(--blue-3);
+    }
+
+    &:hover {
+        border-color: var(--blue-2);
+        color: var(--blue-2);
+
+        svg {
+            fill: var(--blue-2);
+        }
+    }
+}
+
+.btn-danger {
+    background-color: var(--danger-2);
+    border-color: var(--danger-1);
+    color: var(--grey-1);
+
+    svg {
+        fill: var(--grey-1);
+    }
+
+    &:hover {
+        background-color: var(--danger-1);
+    }
+}
+
+.btn-danger-ghost {
+    background-color: transparent;
+    border-color: var(--danger-2);
+    color: var(--danger-2);
+
+    svg {
+        fill: var(--danger-2);
+    }
+
+    &:hover {
+        border-color: var(--danger-1);
+        color: var(--danger-1);
+
+        svg {
+            fill: var(--danger-1);
+        }
+    }
+}
+
+.btn-link {
+    border: none;
+    color: var(--blue-3);
+    text-decoration: underline;
+    background-color: transparent;
+
+    svg {
+        fill: var(--blue-3);
+    }
+
+    &:hover {
+        color: var(--blue-2);
+
+        svg {
+            fill: var(--blue-2);
+        }
+    }
+}
+
+.btn-icon {
+    border: none;
+    color: var(--blue-3);
+    text-decoration: underline;
+    background-color: transparent;
+
+    &.padding-none {
+        padding: 0;
+    }
+
+    svg {
+        fill: var(--blue-3);
+    }
+
+    &:hover {
+        svg {
+            fill: var(--blue-2);
+        }
+    }
+}
+/* END BUTTONS */
+
+/* TABLES */
+.table-wrapper {
+    overflow: scroll;
+}
+
+table {
+    display: table;
+    border-spacing: 2px;
+    border-collapse: separate;
+    box-sizing: border-box;
+    text-indent: 0;
+    text-align: left;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+thead {
+	border-block-end: 2px solid;
+	background: var(--grey-3);
+}
+
+tr {
+	border-bottom: 1px solid;
+}
+
+thead tr th {
+    background: var(--grey-3);
+}
+
+th,
+td {
+	border: 1px solid var(--grey-4);
+	padding: 0.25rem 0.75rem;
+}
+
+thead tr th.sticky,
+tbody tr td.sticky {
+    position: sticky;
+	inset-inline-start: 0;
+}
+
+tbody tr td {
+    background-color: var(--grey-1);
+}
+
+tbody tr:nth-child(even) td {
+	background: var(--grey-3);
+}
+
+th.left-align,
+td.left-align {
+    text-align: left;
+}
+
+th.center-align,
+td.center-align {
+    text-align: center;
+}
+
+th.right-align,
+td.right-align {
+    text-align: right;
+}
+/* END TABLES */
+
+/* FORM DIALOG */
+dialog.form-dialog {
+    border: 1px solid var(--blue-1);
+    border-radius: 4px;
+    width: 300px;
+}
+
+@media (min-width: 501px) {
+    dialog.form-dialog {
+        width: 650px;
+    }
+}
+
+dialog.form-dialog h3 {
+    margin: 0;
+    padding: 0;
+}
+
+dialog.form-dialog .actions {
+    display: flex;
+    justify-content: flex-end;
+    column-gap: 16px;
+    margin-top: 24px;
+}
+/* END FORM DIALOG */
+
+/* FORMS */
+.form-field {
+    margin: 16px 0;
+}
+
+.form-field label {
+    font-weight: 600;
+}
+
+.form-field label span.required,
+.form-field legend span.required {
+    color: var(--danger-1);
+    font-size: 0.75rem;
+    vertical-align: super;
+    padding-right: 2px;
+}
+
+input {
+    accent-color: var(--blue-3);
+}
+
+input[type="text"] {
+    border: 1px solid var(--grey-5);
+    padding: 8px;
+    width: 100%;
+    margin-top: 4px;
+    font-weight: 400;
+}
+
+fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+legend {
+    font-weight: 600;
+}
+
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
+    margin-top: 4px;
+}
+
+@media (min-width: 501px) {
+    .radio-group {
+        gap: 24px;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+}
+
+textarea {
+    border: 1px solid var(--grey-5);
+    padding: 8px;
+    width: 100%;
+    font-weight: 400;
+    height: 140px;
+}
+
+select {
+    background: var(--grey-1);
+    border-radius: 0;
+    width: 100%;
+    border: 1px solid var(--grey-5);
+    padding: 8px;
+    width: 100%;
+    margin-top: 4px;
+    font-weight: 400;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='%23636363'><polygon points='0,0 100,0 50,50'/></svg>") no-repeat;
+    background-size: 12px;
+    background-position: calc(100% - 10px) 60%;
+    background-repeat: no-repeat;
+}
+
+input[type="date"] {
+    border: 1px solid var(--grey-5);
+    padding: 8px;
+    width: 100%;
+    margin-top: 4px;
+    font-weight: 400;
+}
+/* END FORMS */
+
+/* STAR RATING */
+.star-controls {
+    display: flex;
+    column-gap: 8px;
+    margin-top: 8px;
+    align-items: center;
+}
+
+.star-controls .btn-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.star-controls .btn-icon.clear-rating svg {
+    width: 16px;
+    height: 16px;
+}
+/* END STAR RATING */
