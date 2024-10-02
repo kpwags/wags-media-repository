@@ -119,7 +119,7 @@ const PodcastCategories = (): JSX.Element => {
         <Spin spinning={processingMessage !== ''} tip={processingMessage}>
             <Row justify="start" className="slim-table">
                 <Space direction="vertical" size={24} className="full-width">
-                    <Button icon={<LeftOutlined />} href="/podcasts">Back to Podcasts</Button>
+                    <Button icon={<LeftOutlined />} href="/#podcasts">Back to Podcasts</Button>
                     <Title level={1}>Podcast Categories</Title>
                     {errorMessage !== '' ? <Alert type="error" message={errorMessage} /> : null}
                     <Row justify="end">
