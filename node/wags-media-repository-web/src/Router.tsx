@@ -1,5 +1,5 @@
 import {
-    BrowserRouter,
+    HashRouter,
     Routes,
     Route,
 } from 'react-router-dom';
@@ -36,7 +36,7 @@ import VideoGameGenres from '@pages/videoGames/VideoGameGenres';
 import VideoGameSystems from '@pages/videoGames/VideoGameSystems';
 
 const Router = (): JSX.Element => (
-    <BrowserRouter>
+    <HashRouter>
         <AppContainer>
             <PageLayout>
                 <Routes>
@@ -84,7 +84,7 @@ const Router = (): JSX.Element => (
                 </Routes>
             </PageLayout>
         </AppContainer>
-    </BrowserRouter>
+    </HashRouter>
 );
 
 export default Router;
