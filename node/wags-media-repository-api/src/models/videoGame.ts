@@ -30,8 +30,8 @@ export type VideoGame = {
     videoGameCompletionId: number;
     title: string;
     link: string;
-    dateStarted?: Date;
-    dateCompleted?: Date;
+    dateStarted?: Date | string | null;
+    dateCompleted?: Date | string | null;
     rating: number;
     thoughts: string;
     coverImageUrl: string;

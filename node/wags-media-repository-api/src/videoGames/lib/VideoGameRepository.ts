@@ -1,6 +1,7 @@
 import sqlite3 from 'sqlite3';
 import config from '../../config';
 import cleanSqliteError from '../../lib/cleanSqliteError';
+import convertDateToJsonDate from '../../lib/convertDateToJsonDate';
 
 import {
     VideoGameQueryReturn,
@@ -69,8 +70,8 @@ class VideoGameRepository {
                     videoGameCompletionId: row.VideoGameCompletionId,
                     title: row.Title,
                     link: row.Link,
-                    dateStarted: row.DateStarted,
-                    dateCompleted: row.DateCompleted,
+                    dateStarted: convertDateToJsonDate(row.DateStarted),
+                    dateCompleted: convertDateToJsonDate(row.DateCompleted),
                     coverImageUrl: row.CoverImageUrl,
                     sortOrder: row.SortOrder,
                     rating: row.Rating,
@@ -113,8 +114,8 @@ class VideoGameRepository {
                     videoGameCompletionId: row.VideoGameCompletionId,
                     title: row.Title,
                     link: row.Link,
-                    dateStarted: row.DateStarted,
-                    dateCompleted: row.DateCompleted,
+                    dateStarted: convertDateToJsonDate(row.DateStarted),
+                    dateCompleted: convertDateToJsonDate(row.DateCompleted),
                     coverImageUrl: row.CoverImageUrl,
                     sortOrder: row.SortOrder,
                     rating: row.Rating,
@@ -158,8 +159,8 @@ class VideoGameRepository {
                 videoGameCompletionId: row.VideoGameCompletionId,
                 title: row.Title,
                 link: row.Link,
-                dateStarted: row.DateStarted,
-                dateCompleted: row.DateCompleted,
+                dateStarted: convertDateToJsonDate(row.DateStarted),
+                dateCompleted: convertDateToJsonDate(row.DateCompleted),
                 coverImageUrl: row.CoverImageUrl,
                 sortOrder: row.SortOrder,
                 rating: row.Rating,

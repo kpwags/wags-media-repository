@@ -74,6 +74,27 @@ JOIN LinkType LT ON LT.LinkTypeId = L.LinkTypeId
 ORDER BY L.LinkDate DESC;
 `;
 
+export const getLinksForReadingLogIssue = `
+SELECT
+    L.LinkId,
+    L.LinkTypeId,
+    L.LinkCategoryId,
+    L.Title,
+    L.Url,
+    L.Author,
+    L.LinkDate,
+    L.ReadingLogIssueNumber,
+    LC.Name AS LinkCategoryName,
+    LC.ColorCode AS LinkCategoryColor,
+    LT.Name AS LinkTypeName,
+    LT.ColorCode AS LinkTypeColor
+FROM Link L
+JOIN LinkCategory LC ON LC.LinkCategoryId = L.LinkCategoryId
+JOIN LinkType LT ON LT.LinkTypeId = L.LinkTypeId
+WHERE L.ReadingLogIssueNumber = ?
+ORDER BY L.LinkDate DESC;
+`;
+
 export const getLinkById = `
 SELECT
     LinkId,
