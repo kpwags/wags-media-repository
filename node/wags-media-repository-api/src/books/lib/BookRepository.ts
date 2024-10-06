@@ -5,6 +5,8 @@ import config from '../../config';
 import cleanSqliteError from '../../lib/cleanSqliteError';
 import calculateProgress from '../../lib/calculateProgress';
 import buildBookTitle from '../../lib/buildBookTitle';
+import convertDateToJsonDate from '../../lib/convertDateToJsonDate';
+import convertToBoolean from '../../lib/convertToBoolean';
 
 import {
     BookQueryReturn,
@@ -82,8 +84,8 @@ class BookRepository {
                     fullTitle: buildBookTitle(row.Title, row.SubTitle),
                     author: row.Author,
                     link: row.Link,
-                    dateStarted: row.DateStarted,
-                    dateCompleted: row.DateCompleted,
+                    dateStarted: convertDateToJsonDate(row.DateStarted),
+                    dateCompleted: convertDateToJsonDate(row.DateCompleted),
                     rating: row.Rating,
                     thoughts: row.Thoughts,
                     bookNotesUrl: row.BookNotesUrl,
@@ -92,8 +94,8 @@ class BookRepository {
                     pageCount: row.PageCount,
                     progress: calculateProgress(row.CurrentPage, row.PageCount),
                     sortOrder: row.SortOrder,
-                    isAtLibrary: row.IsAtLibrary,
-                    isPurchased: row.IsPurchased,
+                    isAtLibrary: convertToBoolean(row.IsAtLibrary),
+                    isPurchased: convertToBoolean(row.IsPurchased),
                     status: {
                         bookStatusId: row.BookStatusId,
                         name: row.BookStatusName,
@@ -140,8 +142,8 @@ class BookRepository {
                 fullTitle: buildBookTitle(row.Title, row.SubTitle),
                 author: row.Author,
                 link: row.Link,
-                dateStarted: row.DateStarted,
-                dateCompleted: row.DateCompleted,
+                dateStarted: convertDateToJsonDate(row.DateStarted),
+                dateCompleted: convertDateToJsonDate(row.DateCompleted),
                 rating: row.Rating,
                 thoughts: row.Thoughts,
                 bookNotesUrl: row.BookNotesUrl,
@@ -150,8 +152,8 @@ class BookRepository {
                 pageCount: row.PageCount,
                 progress: calculateProgress(row.CurrentPage, row.PageCount),
                 sortOrder: row.SortOrder,
-                isAtLibrary: row.IsAtLibrary,
-                isPurchased: row.IsPurchased,
+                isAtLibrary: convertToBoolean(row.IsAtLibrary),
+                isPurchased: convertToBoolean(row.IsPurchased),
                 status: {
                     bookStatusId: row.BookStatusId,
                     name: row.BookStatusName,
@@ -194,8 +196,8 @@ class BookRepository {
                     fullTitle: buildBookTitle(row.Title, row.SubTitle),
                     author: row.Author,
                     link: row.Link,
-                    dateStarted: row.DateStarted,
-                    dateCompleted: row.DateCompleted,
+                    dateStarted: convertDateToJsonDate(row.DateStarted),
+                    dateCompleted: convertDateToJsonDate(row.DateCompleted),
                     rating: row.Rating,
                     thoughts: row.Thoughts,
                     bookNotesUrl: row.BookNotesUrl,
@@ -204,8 +206,8 @@ class BookRepository {
                     pageCount: row.PageCount,
                     progress: calculateProgress(row.CurrentPage, row.PageCount),
                     sortOrder: row.SortOrder,
-                    isAtLibrary: row.IsAtLibrary,
-                    isPurchased: row.IsPurchased,
+                    isAtLibrary: convertToBoolean(row.IsAtLibrary),
+                    isPurchased: convertToBoolean(row.IsPurchased),
                     status: {
                         bookStatusId: row.BookStatusId,
                         name: row.BookStatusName,
@@ -254,8 +256,8 @@ class BookRepository {
                         fullTitle: buildBookTitle(row.Title, row.SubTitle),
                         author: row.Author,
                         link: row.Link,
-                        dateStarted: row.DateStarted,
-                        dateCompleted: row.DateCompleted,
+                        dateStarted: convertDateToJsonDate(row.DateStarted),
+                        dateCompleted: convertDateToJsonDate(row.DateCompleted),
                         rating: row.Rating,
                         thoughts: row.Thoughts,
                         bookNotesUrl: row.BookNotesUrl,
@@ -264,8 +266,8 @@ class BookRepository {
                         pageCount: row.PageCount,
                         progress: calculateProgress(row.CurrentPage, row.PageCount),
                         sortOrder: row.SortOrder,
-                        isAtLibrary: row.IsAtLibrary,
-                        isPurchased: row.IsPurchased,
+                        isAtLibrary: convertToBoolean(row.IsAtLibrary),
+                        isPurchased: convertToBoolean(row.IsPurchased),
                         status: {
                             bookStatusId: row.BookStatusId,
                             name: row.BookStatusName,

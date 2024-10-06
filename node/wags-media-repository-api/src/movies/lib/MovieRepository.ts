@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import config from '../../config';
 import cleanSqliteError from '../../lib/cleanSqliteError';
+import convertDateToJsonDate from '../../lib/convertDateToJsonDate';
 import { Movie, MovieGenreLink, MovieServiceLink } from '../../models/movie';
 import {
     MovieQueryReturn,
@@ -153,7 +154,7 @@ class MovieRepository {
                     title: row.Title,
                     imdbLink: row.ImdbLink,
                     posterImageUrl: row.PosterImageUrl,
-                    dateWatched: row.DateWatched,
+                    dateWatched: convertDateToJsonDate(row.DateWatched),
                     rating: row.Rating,
                     thoughts: row.Thoughts,
                     sortOrder: row.SortOrder,
@@ -191,7 +192,7 @@ class MovieRepository {
                 title: row.Title,
                 imdbLink: row.ImdbLink,
                 posterImageUrl: row.PosterImageUrl,
-                dateWatched: row.DateWatched,
+                dateWatched: convertDateToJsonDate(row.DateWatched),
                 rating: row.Rating,
                 thoughts: row.Thoughts,
                 sortOrder: row.SortOrder,
@@ -365,7 +366,7 @@ class MovieRepository {
                         title: row.Title,
                         imdbLink: row.ImdbLink,
                         posterImageUrl: row.PosterImageUrl,
-                        dateWatched: row.DateWatched,
+                        dateWatched: convertDateToJsonDate(row.DateWatched),
                         rating: row.Rating,
                         thoughts: row.Thoughts,
                         sortOrder: row.SortOrder,

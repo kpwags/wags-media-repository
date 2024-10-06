@@ -120,7 +120,7 @@ const LinkCategories = (): JSX.Element => {
         <Spin spinning={processingMessage !== ''} tip={processingMessage}>
             <Row justify="start" className="slim-table">
                 <Space direction="vertical" size={24} className="full-width">
-                    <Button icon={<LeftOutlined />} href="/links">Back to Links</Button>
+                    <Button icon={<LeftOutlined />} href="/#links">Back to Links</Button>
                     <Title level={1}>Link Categories</Title>
                     {errorMessage !== '' ? <Alert type="error" message={errorMessage} /> : null}
                     <Row justify="end">

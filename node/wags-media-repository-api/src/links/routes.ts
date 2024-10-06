@@ -82,6 +82,18 @@ router.delete('/category/:id', (req, res) => {
     res.send();
 });
 
+router.get('/reading-log/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+
+    linkRepository.GetLinksForReadingLogIssue(id, (error, data) => {
+        if (error) {
+            return res.status(400).json({ error });
+        }
+
+        res.json(data);
+    });
+});
+
 router.get('/', (_, res) => {
     linkRepository.GetAllLinks((error, data) => {
         if (error) {

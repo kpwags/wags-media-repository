@@ -123,7 +123,7 @@ const MusicGenres = (): JSX.Element => {
         <Spin spinning={processingMessage !== ''} tip={processingMessage}>
             <Row justify="start" className="slim-table">
                 <Space direction="vertical" size={24} className="full-width">
-                    <Button icon={<LeftOutlined />} onClick={() => navigate(-1)}>Back to Video Games</Button>
+                    <Button icon={<LeftOutlined />} onClick={() => navigate(-1)}>Back to Music</Button>
 
                     <Title level={1}>Music Genres</Title>
 
