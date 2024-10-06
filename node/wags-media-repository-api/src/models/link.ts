@@ -18,7 +18,7 @@ export type Link = {
     title: string;
     url: string;
     author: string;
-    linkDate: Date;
+    linkDate: Date | string | null;
     readingLogIssueNumber: number;
     category?: LinkCategory;
     type?: LinkType;

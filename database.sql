@@ -325,9 +325,9 @@ CREATE UNIQUE INDEX "UQ_Videogame_VideoGameToVideoGameSystem_VideoGameId_VideoGa
 
 -- BookStatus
 INSERT INTO BookStatus (BookStatusId, Name, ColorCode) VALUES (1, 'To Read', '#313ca2');
-INSERT INTO BookStatus (BookStatusId, Name, ColorCode) VALUES (2, 'To Read', '#6a208f');
-INSERT INTO BookStatus (BookStatusId, Name, ColorCode) VALUES (3, 'To Read', '#0e6532');
-INSERT INTO BookStatus (BookStatusId, Name, ColorCode) VALUES (4, 'To Read', '#791b1e');
+INSERT INTO BookStatus (BookStatusId, Name, ColorCode) VALUES (2, 'Reading', '#6a208f');
+INSERT INTO BookStatus (BookStatusId, Name, ColorCode) VALUES (3, 'Finished', '#0e6532');
+INSERT INTO BookStatus (BookStatusId, Name, ColorCode) VALUES (4, 'Abandoned', '#791b1e');
 
 -- BookFormat
 INSERT INTO BookFormat (BookFormatId, Name, ColorCode) VALUES (1, 'Hardcover', '#a0175f');

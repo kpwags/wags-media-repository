@@ -1,6 +1,7 @@
 import sqlite3 from 'sqlite3';
 import config from '../../config';
 import cleanSqliteError from '../../lib/cleanSqliteError';
+import convertToBoolean from '../../lib/convertToBoolean';
 
 import {
     MusicAlbum,
@@ -70,8 +71,8 @@ class MusicRepository {
                     artist: row.Artist,
                     coverImageUrl: row.CoverImageUrl,
                     thoughts: row.Thoughts,
-                    isTopTen: row.IsTopTen,
-                    showOnNowPage: row.ShowOnNowPage,
+                    isTopTen: convertToBoolean(row.IsTopTen),
+                    showOnNowPage: convertToBoolean(row.ShowOnNowPage),
                     genres: [],
                     formats: [],
                     tracks: [],
@@ -101,8 +102,8 @@ class MusicRepository {
                     artist: row.Artist,
                     coverImageUrl: row.CoverImageUrl,
                     thoughts: row.Thoughts,
-                    isTopTen: row.IsTopTen,
-                    showOnNowPage: row.ShowOnNowPage,
+                    isTopTen: convertToBoolean(row.IsTopTen),
+                    showOnNowPage: convertToBoolean(row.ShowOnNowPage),
                     genres: [],
                     formats: [],
                     tracks: [],
@@ -133,8 +134,8 @@ class MusicRepository {
                 artist: row.Artist,
                 coverImageUrl: row.CoverImageUrl,
                 thoughts: row.Thoughts,
-                isTopTen: row.IsTopTen,
-                showOnNowPage: row.ShowOnNowPage,
+                isTopTen: convertToBoolean(row.IsTopTen),
+                showOnNowPage: convertToBoolean(row.ShowOnNowPage),
                 genres: [],
                 formats: [],
                 tracks: [],
