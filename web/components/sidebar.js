@@ -19,7 +19,7 @@ class Sidebar extends HTMLElement {
                         <a href="#">Home</a>
                     </li>
                     <li>
-                        <details ${this.activeLink.startsWith('books') ? 'open' : ''}">
+                        <details ${this.activeLink.startsWith('books') ? 'open' : ''}>
                             <summary><span>Books</span></summary>
                             <ul class="sub-list">
                                 <li class="${this.activeLink === 'books-backlog' ? 'active' : ''}"><a href="/books/backlog.html">Backlog</a></li>
@@ -31,7 +31,7 @@ class Sidebar extends HTMLElement {
                     </li>
                     <li class="${this.activeLink === 'links' ? 'active' : ''}"><a href="#">Links</a></li>
                     <li>
-                        <details ${this.activeLink.startsWith('movies') ? 'open' : ''}">
+                        <details ${this.activeLink.startsWith('movies') ? 'open' : ''}>
                             <summary><span>Movies</span></summary>
                             <ul class="sub-list">
                                 <li class="${this.activeLink === 'movies-personal' ? 'active' : ''}"><a href="/movies/personal.html">Personal List</a></li>
@@ -43,7 +43,7 @@ class Sidebar extends HTMLElement {
                     </li>
                     <li class="${this.activeLink === 'music' ? 'active' : ''}"><a href="#">Music</a></li>
                     <li>
-                        <details ${this.activeLink.startsWith('tv') ? 'open' : ''}">
+                        <details ${this.activeLink.startsWith('tv') ? 'open' : ''}>
                             <summary><span>TV</span></summary>
                             <ul class="sub-list">
                                 <li class="${this.activeLink === 'tv-personal' ? 'active' : ''}"><a href="/tv/personal.html">Personal List</a></li>
@@ -56,7 +56,7 @@ class Sidebar extends HTMLElement {
                         </details>
                     </li>
                     <li>
-                        <details ${this.activeLink.startsWith('video-games') ? 'open' : ''}">
+                        <details ${this.activeLink.startsWith('video-games') ? 'open' : ''}>
                             <summary><span>Video Games</span></summary>
                             <ul class="sub-list">
                                 <li class="${this.activeLink === 'video-games-backlog' ? 'active' : ''}"><a href="/video-games/backlog.html">Backlog</a></li>
@@ -67,7 +67,7 @@ class Sidebar extends HTMLElement {
                         </details>
                     </li>
                     <li>
-                        <details ${this.activeLink.startsWith('system') ? 'open' : ''}">
+                        <details ${this.activeLink.startsWith('system') ? 'open' : ''}>
                             <summary><span>System</span></summary>
                             <ul class="sub-list">
                                 <li class="${this.activeLink === 'system-video-genres' ? 'active' : ''}"><a href="/system/video-genres.html">Video Genres</a></li>
