@@ -7,6 +7,7 @@ import {
 } from 'react';
 import {
     Alert,
+    Button,
     Col,
     Divider,
     Empty,
@@ -34,6 +35,9 @@ import DashboardTelevisionShow from '@components/tv/DashboardTelevisionShow';
 import DashboardVideoGame from '@components/videoGames/DashboardVideoGame';
 import DashboardMusic from '@pages/music/DashboardMusic';
 import DashboardMovie from '@components/movies/DashboardMovie';
+import UpdateBookProgressForm from '@components/books/UpdateBookProgressForm';
+import UpdateTelevisionShowProgressForm from '@components/tv/UpdateTelevisionShowProgressForm';
+import LinkForm from '@components/links/LinkForm';
 
 import { Book } from '@models/Book';
 import { Movie } from '@models/Movie';
@@ -41,8 +45,6 @@ import { TelevisionShow } from '@models/Tv';
 import { Link } from '@models/Link';
 import { VideoGame } from '@models/VideoGame';
 import { MusicAlbum } from '@models/Music';
-import UpdateBookProgressForm from '@components/books/UpdateBookProgressForm';
-import UpdateTelevisionShowProgressForm from '@components/tv/UpdateTelevisionShowProgressForm';
 
 const Dashboard = (): JSX.Element => {
     const [processingMessage, setProcessingMessage] = useState<string>('Loading...');
@@ -57,6 +59,8 @@ const Dashboard = (): JSX.Element => {
 
     const [bookToUpdateProgress, setBookToUpdateProgress] = useState<Book | undefined>(undefined);
     const [tvShowToUpdateProgress, setTvShowToUpdateProgress] = useState<TelevisionShow | undefined>(undefined);
+
+    const [showLinkForm, setShowLinkForm] = useState<boolean>(false);
 
     const { setSidebarItem } = useContext(AppContext);
 
@@ -303,7 +307,10 @@ const Dashboard = (): JSX.Element => {
                         </div>
 
                         <div className="dashboard-section">
-                            <div className="title">Recent Links</div>
+                            <div className="title has-action">
+                                <span>Recent Links</span>
+                                <Button type="link" htmlType="button" onClick={() => setShowLinkForm(true)}>Add New</Button>
+                            </div>
                             <div>
                                 {recentLinks.length > 0 ? (
                                     <List
@@ -352,6 +359,19 @@ const Dashboard = (): JSX.Element => {
                     setProcessingMessage('Refreshing TV Shows...');
                     loadCurrentTelevision(true);
                     setTvShowToUpdateProgress(undefined);
+                }}
+            />
+
+            <LinkForm
+                link={undefined}
+                currentIssueNumber={recentLinks.length > 0 ? recentLinks[0]?.readingLogIssueNumber : undefined}
+                open={showLinkForm}
+                onClose={() => {
+                    setShowLinkForm(false);
+                }}
+                onSaved={() => {
+                    loadRecentLinks();
+                    setShowLinkForm(false);
                 }}
             />
         </>
