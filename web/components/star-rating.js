@@ -89,4 +89,4 @@ class StarRating extends HTMLElement {
     }
 }
 
-customElements.define('wags-media-star-rating', StarRating);
+customElements.define('star-rating', StarRating);

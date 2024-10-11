@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<base href="file:///Users/keith/Developer/wags-media-repository/web/" />
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+
+		<link rel="stylesheet" type="text/css" href="styles/reset.css" />
+		<link rel="stylesheet" type="text/css" href="styles/variables.css" />
+		<link rel="stylesheet" type="text/css" href="styles/main.css" />
+		<link rel="stylesheet" type="text/css" href="styles/video-services.css" />
+
+		<script src="components/header.js"></script>
+		<script src="components/sidebar.js"></script>
+		<script src="components/loading-spinner.js"></script>
+		<script src="components/confirm-dialog.js"></script>
+
+		<script src="scripts/main.js"></script>
+		<script src="scripts/api.js"></script>
+		<script src="scripts/video-services.js"></script>
+
+		<style>
+			@font-face {
+				font-family: 'inconsolata';
+				src: url('fonts/inconsolata/inconsolata.ttf') format('truetype');
+				font-weight: 200 900;
+				font-display: swap;
+			}
+		</style>
+
+		<title>Video Services - Wags Media Repository</title>
+	</head>
+	<body>
+		<wags-media-header></wags-media-header>
+
+		<div class="page-content">
+			<wags-media-sidebar activeLink="system-video-services"></wags-media-sidebar>
+			<main>
+				<div class="video-services">
+					<h1>Video Services</h1>
+
+					<div id="page-error" class="alert error hidden"></div>
+
+					<div class="table-actions">
+						<button type="button" class="btn-primary" id="add-new-video-service">Add New Video Service</button>
+					</div>
+					<div class="table-wrapper">
+						<table>
+							<thead>
+								<tr>
+									<th scope="column" class="sticky name">Name</th>
+									<th scope="column">Actions</th>
+								</tr>
+							</thead>
+							<tbody id="video-service-table-body">
+								<tr class="loading">
+									<td colspan="2"><loading-spinner></loading-spinner></td>
+								</tr>
+								<tr class="no-content hidden">
+									<td colspan="2">No Video Services</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</main>
+		</div>
+
+		<dialog class="form-dialog">
+			<h3>Edit Video Service</h3>
+
+			<div id="modal-error" class="alert error hidden"></div>
+
+			<form>
+				<fieldset>
+					<input type="hidden" id="videoServiceId" name="videoServiceId" value="0" />
+
+					<div class="form-field">
+						<label for="name">
+							<span class="required">*</span>Name
+							<input type="text" name="name" id="name" required />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="colorCode">
+							<span class="required">*</span>Color
+							<input type="text" name="colorCode" id="colorCode" required />
+						</label>
+					</div>
+
+					<div class="actions">
+	                    <button type="button" class="btn-ghost" id="form-dialog-cancel">Cancel</button>
+	                    <button type="submit" class="btn-primary">Save</button>
+	                </div>
+	            </fieldset>
+			</form>    
+		</dialog>
+
+		<input type="hidden" id="delete-video-service-id" value="0" />
+		<confirm-dialog></confirm-dialog>
+	</body>
+</html>
