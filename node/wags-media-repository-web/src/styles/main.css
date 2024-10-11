@@ -185,6 +185,12 @@ div.ant-modal-body .ant-alert {
   border-bottom: 1px solid var(--grey-3);
 }
 
+.dashboard-section .title.has-action {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .dashboard-section .content {
   padding: 24px 16px;
 }
