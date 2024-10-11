@@ -1,6 +1,7 @@
 import sqlite3 from 'sqlite3';
 import config from '../../config';
 import cleanSqliteError from '../../lib/cleanSqliteError';
+import convertDateToJsonDate from '../../lib/convertDateToJsonDate';
 import { Link, LinkCategory } from '../../models/link';
 import {
     LinkCategoryQueryReturn,
@@ -11,6 +12,7 @@ import {
     updateLinkCategory,
     deleteLinkCategory,
     getLinks,
+    getLinksForReadingLogIssue,
     getLinkById,
     insertLink,
     updateLink,
@@ -134,7 +136,46 @@ class LinkRepository {
                     title: row.Title,
                     author: row.Author,
                     url: row.Url,
-                    linkDate: row.LinkDate,
+                    linkDate: convertDateToJsonDate(row.LinkDate),
+                    readingLogIssueNumber: row.ReadingLogIssueNumber,
+                    category: {
+                        linkCategoryId: row.LinkCategoryId,
+                        name: row.LinkCategoryName,
+                        colorCode: row.LinkCategoryColor,
+                    },
+                    type: {
+                        linkTypeId: row.LinkTypeId,
+                        name: row.LinkTypeName,
+                        colorCode: row.LinkTypeColor,
+                    },
+                });
+            });
+
+            return callback(null, links);
+        });
+    };
+
+    static readonly GetLinksForReadingLogIssue = (id: number, callback: (error: string | null, links: Link[]) => void) => {
+        const db = this.GetDatabase();
+
+        const links: Link[] = [];
+
+        db.all(getLinksForReadingLogIssue, [id], (err: any, rows: LinkQueryReturn[]) => {
+            db.close();
+
+            if (err) {
+                return callback(cleanSqliteError(err), []);
+            }
+
+            rows.forEach((row) => {
+                links.push({
+                    linkId: row.LinkId,
+                    linkTypeId: row.LinkTypeId,
+                    linkCategoryId: row.LinkCategoryId,
+                    title: row.Title,
+                    author: row.Author,
+                    url: row.Url,
+                    linkDate: convertDateToJsonDate(row.LinkDate),
                     readingLogIssueNumber: row.ReadingLogIssueNumber,
                     category: {
                         linkCategoryId: row.LinkCategoryId,
@@ -174,7 +215,7 @@ class LinkRepository {
                 title: row.Title,
                 author: row.Author,
                 url: row.Url,
-                linkDate: row.LinkDate,
+                linkDate: convertDateToJsonDate(row.LinkDate),
                 readingLogIssueNumber: row.ReadingLogIssueNumber,
                 category: {
                     linkCategoryId: row.LinkCategoryId,

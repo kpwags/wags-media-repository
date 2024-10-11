@@ -262,7 +262,7 @@ const LinksHome = (): JSX.Element => {
                         </Space>
 
                         <Space direction="horizontal" size={16}>
-                            <Button href="/links/categories">
+                            <Button href="/#links/categories">
                                 Categories
                             </Button>
                             <Button

@@ -236,7 +236,7 @@ const MusicHome = (): JSX.Element => {
                             </Form.Item>
                         </Space>
                         <Space direction="horizontal" size={16}>
-                            <Button href="/music/genres">
+                            <Button href="/#music/genres">
                                 Genres
                             </Button>
                             <Button

@@ -192,7 +192,7 @@ const PodcastsHome = (): JSX.Element => {
                             </Form.Item>
                         </Space>
                         <Space direction="horizontal" size={16}>
-                            <Button href="/podcasts/categories">
+                            <Button href="/#podcasts/categories">
                                 Categories
                             </Button>
                             <Button

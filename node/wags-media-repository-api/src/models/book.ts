@@ -41,8 +41,8 @@ export type Book = {
     fullTitle?: string;
     author: string;
     link: string;
-    dateStarted?: Date;
-    dateCompleted?: Date;
+    dateStarted?: Date | string | null;
+    dateCompleted?: Date | string | null;
     rating: number;
     thoughts: string;
     bookNotesUrl?: string;
