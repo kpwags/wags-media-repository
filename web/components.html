@@ -36,6 +36,15 @@
                 document.querySelector('#form-dialog-cancel').addEventListener('click', function () {
                     document.querySelector('dialog.form-dialog').close();
                 });
+
+                document.querySelectorAll('button[data-type="star-rating"]').forEach((btn) => {
+                    btn.addEventListener('click', function () {
+                        const fieldId = btn.getAttribute('data-field');
+                        const rateValue = btn.getAttribute('data-rating');
+
+                        document.getElementById(fieldId).setAttribute('rating', rateValue);
+                    });
+                });
             });
         </script>
 
@@ -200,7 +209,7 @@
 
                     <div style="margin: 24px 0;"><button type="button" class="btn-primary" id="open-dialog">Open Dialog</button></div>
 
-                    <dialog class="form-dialog">
+                    <dialog class="form-dialog" open>
                         <h3>DIALOG</h3>
 
                         <form>
@@ -265,6 +274,28 @@
                             </div>
 
                             <div class="form-field">
+                                <fieldset>
+                                    <legend>Format(s)</legend>
+                                    <div class="radio-group">
+                                        <label for="hardcover">
+                                            <input type="checkbox" name="format" id="hardcover" value="1" />
+                                            Hardcover
+                                        </label>
+
+                                        <label for="paperback">
+                                            <input type="checkbox" name="format" id="paperback" value="2" />
+                                            Paperback
+                                        </label>
+
+                                        <label for="digital">
+                                            <input type="checkbox" name="format" id="digital" value="3" />
+                                            Digital
+                                        </label>
+                                    </div>
+                                </fieldset>
+                            </div>
+
+                            <div class="form-field">
                                 <label for="dateStarted">
                                     Date Started
                                     <input type="date" name="dateStarted" id="dateStarted" />
@@ -288,7 +319,7 @@
                             <div class="form-field">
                                 <label for="rating">
                                     Rating
-                                    <wags-media-star-rating id="rating" rating="3"></wags-media-star-rating>
+                                    <wags-media-star-rating id="component-rating" fieldid="component-rating" rating="4"></wags-media-star-rating>
                                 </label>
                             </div>
 

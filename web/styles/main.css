@@ -332,6 +332,10 @@ dialog.form-dialog .actions {
     margin: 16px 0;
 }
 
+.form-field:has(div.radio-group) {
+    margin: 32px 0;
+}
+
 .form-field label {
     font-weight: 600;
 }
@@ -434,3 +438,7 @@ input[type="date"] {
     height: 16px;
 }
 /* END STAR RATING */
+
+/* UTILITY CLASSES */
+.hidden { display: none; }
+/* END UTILITY CLASSES */
