@@ -407,3 +407,5 @@ tools/WagsMediaRepository.Loader/appsettings.json
 /node/wags-media-repository-api/data/MediaRepository.db-wal
 *dist
 .vite
+
+node/wags-media-repository-api/data/MediaRepository.db
