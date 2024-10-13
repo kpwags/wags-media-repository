@@ -30,8 +30,18 @@ const PageLayout = ({ children }: PageLayoutProps): JSX.Element => {
     const navigate = useNavigate();
     const screens = useBreakpoint();
 
+    const isLargeScreen = screens.lg || screens.xl || screens.xxl;
+
+    useEffect(() => {
+        setSidebarCollapsed(!isLargeScreen);
+    }, [isLargeScreen]);
+
     const navigateToPage = (url: string) => {
         navigate(url);
+
+        if (!isLargeScreen) {
+            setSidebarCollapsed(true);
+        }
     };
 
     const BuildMenu = (): MenuProps['items'] => {
@@ -202,12 +212,6 @@ const PageLayout = ({ children }: PageLayoutProps): JSX.Element => {
 
         return menu;
     }
-
-    const isLargeScreen = screens.lg || screens.xl || screens.xxl;
-
-    useEffect(() => {
-        setSidebarCollapsed(!isLargeScreen);
-    }, [isLargeScreen]);
 
     const getOpenedKeys = (): string[] => {
         const keys: string[] = [];
