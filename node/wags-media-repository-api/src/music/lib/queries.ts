@@ -91,7 +91,6 @@ VALUES (?, ?, ?, ?, ?, ?);
 
 export const updateMusicAlbum = `
 UPDATE MusicAlbum SET
-    MusicAlbumId = ?,
     Title = ?,
     Artist = ?,
     Thoughts = ?,
