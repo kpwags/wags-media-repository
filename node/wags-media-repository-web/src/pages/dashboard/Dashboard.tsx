@@ -28,7 +28,7 @@ import CustomerServiceOutlined from '@ant-design/icons/lib/icons/CustomerService
 import AppContext from '@contexts/AppContext';
 
 import { Api } from '@lib/api';
-import { sortByTitle } from '@lib/sorting';
+import { sortByDate, sortByTitle } from '@lib/sorting';
 
 import DashboardBook from '@components/books/DashboardBook';
 import DashboardTelevisionShow from '@components/tv/DashboardTelevisionShow';
@@ -87,7 +87,7 @@ const Dashboard = (): JSX.Element => {
             return;
         }
 
-        setRecentBooks(data ?? []);
+        setRecentBooks(data?.sort((a, b) => sortByDate((a.dateCompleted ?? new Date(1900, 0, 1)).toString(), (b.dateCompleted ?? new Date(1900, 0, 1)).toString())) ?? []);
     };
 
     const loadRecentMovies = async () => {
