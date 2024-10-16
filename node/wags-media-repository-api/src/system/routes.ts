@@ -69,7 +69,7 @@ router.put('/video-genre/:id', (req, res) => {
     });
 });
 
-router.delete('/video-genres/:id', (req, res) => {
+router.delete('/video-genre/:id', (req, res) => {
     const id = parseInt(req.params.id);
 
     SystemRepository.DeleteVideoGenre(id, (error) => {
