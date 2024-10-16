@@ -1,0 +1,8 @@
+.video-genres {
+	width: 500px;
+	margin: 32px auto;
+}
+
+.video-genres th.name {
+	width: 300px;
+}

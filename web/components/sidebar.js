@@ -16,7 +16,7 @@ class Sidebar extends HTMLElement {
 			<aside id="sidebar" ${window.innerWidth <= 500 ? 'data-collapsed' : ''}>
                 <ul>
                     <li class="${this.activeLink === 'home' ? 'active' : ''}">
-                        <a href="#">Home</a>
+                        <a href="/">Home</a>
                     </li>
                     <li>
                         <details ${this.activeLink.startsWith('books') ? 'open' : ''}>
