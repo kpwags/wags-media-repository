@@ -1,0 +1,12 @@
+{
+  "name": "wags-media-repository-website",
+  "version": "1.0.0",
+  "description": "The frontend of wags media repository",
+  "main": "index.js",
+  "scripts": {
+    "dev": "http-server ./ -p 3009",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Keith Wagner",
+  "license": "MIT"
+}

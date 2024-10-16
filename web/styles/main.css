@@ -1,3 +1,10 @@
+@font-face {
+    font-family: 'inconsolata';
+    src: url('/fonts/inconsolata/inconsolata.ttf') format('truetype');
+    font-weight: 200 900;
+    font-display: swap;
+}
+
 html,
 body {
     background: var(--background);

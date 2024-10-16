@@ -5,13 +5,13 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-		<link rel="icon" type="image/png" sizes="32x32" href="f/avicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
 		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
 
 		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
 		<link rel="stylesheet" type="text/css" href="/styles/variables.css" />
 		<link rel="stylesheet" type="text/css" href="/styles/main.css" />
-		<link rel="stylesheet" type="text/css" href="/styles/video-services.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/video-genres.css" />
 
 		<script src="/components/header.js"></script>
 		<script src="/components/sidebar.js"></script>
@@ -20,23 +20,23 @@
 
 		<script src="/scripts/main.js"></script>
 		<script src="/scripts/api.js"></script>
-		<script src="/scripts/video-services.js"></script>
+		<script src="/scripts/video-genres.js"></script>
 
-		<title>Video Services - Wags Media Repository</title>
+		<title>Video Genres - Wags Media Repository</title>
 	</head>
 	<body>
 		<wags-media-header></wags-media-header>
 
 		<div class="page-content">
-			<wags-media-sidebar activeLink="system-video-services"></wags-media-sidebar>
+			<wags-media-sidebar activeLink="system-video-genres"></wags-media-sidebar>
 			<main>
-				<div class="video-services">
-					<h1>Video Services</h1>
+				<div class="video-genres">
+					<h1>Video Genres</h1>
 
 					<div id="page-error" class="alert error hidden"></div>
 
 					<div class="table-actions">
-						<button type="button" class="btn-primary" id="add-new-video-service">Add New Video Service</button>
+						<button type="button" class="btn-primary" id="add-new-video-genre">Add New Video Genre</button>
 					</div>
 					<div class="table-wrapper">
 						<table>
@@ -46,12 +46,12 @@
 									<th scope="column">Actions</th>
 								</tr>
 							</thead>
-							<tbody id="video-service-table-body">
+							<tbody id="video-genre-table-body">
 								<tr class="loading">
 									<td colspan="2"><loading-spinner></loading-spinner></td>
 								</tr>
 								<tr class="no-content hidden">
-									<td colspan="2">No Video Services</td>
+									<td colspan="2">No Video Genres</td>
 								</tr>
 							</tbody>
 						</table>
@@ -61,13 +61,13 @@
 		</div>
 
 		<dialog class="form-dialog">
-			<h3>Edit Video Service</h3>
+			<h3>Edit Video Genre</h3>
 
 			<div id="modal-error" class="alert error hidden"></div>
 
 			<form>
 				<fieldset>
-					<input type="hidden" id="videoServiceId" name="videoServiceId" value="0" />
+					<input type="hidden" id="videoGenreId" name="videoGenreId" value="0" />
 
 					<div class="form-field">
 						<label for="name">
@@ -91,7 +91,7 @@
 			</form>    
 		</dialog>
 
-		<input type="hidden" id="delete-video-service-id" value="0" />
+		<input type="hidden" id="delete-video-genre-id" value="0" />
 		<confirm-dialog></confirm-dialog>
 	</body>
 </html>
