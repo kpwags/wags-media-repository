@@ -9,6 +9,17 @@ export const sortByDate = (a: string | undefined, b: string | undefined) => {
     }
 }
 
+export const sortByDateAsc = (a: string | undefined, b: string | undefined) => {
+    try {
+        const date1 = new Date(a ?? '1/1/1900');
+        const date2 = new Date(b ?? '1/1/1900');
+
+        return date1.getTime() - date2.getTime();
+    } catch {
+        return 0;
+    }
+}
+
 export const sortByText = (a: string, b: string) => a.localeCompare(b);
 
 export const sortByTitle = (a: string, b: string) => {
