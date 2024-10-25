@@ -35,20 +35,20 @@ function hidePageError(error) {
     }
 }
 
-function showModalError(error) {
-    const pageError = document.getElementById('modal-error');
+function showModalError(error, elementId = 'modal-error') {
+    const modalError = document.getElementById(elementId);
 
-    if (pageError) {
-        pageError.textContent = error;
-        pageError.classList.remove('hidden');
+    if (modalError) {
+        modalError.textContent = error;
+        modalError.classList.remove('hidden');
     }
 }
 
-function hideModalError(error) {
-    const pageError = document.getElementById('modal-error');
+function hideModalError(elementId = 'modal-error') {
+    const modalError = document.getElementById(elementId);
 
-    if (pageError) {
-        pageError.classList.add('hidden');
+    if (modalError) {
+        modalError.classList.add('hidden');
     }
 }
 
@@ -63,4 +63,49 @@ function enableFieldset() {
 function clearTableRows(rowSelector = 'tr.data-row') {
     const rows = document.querySelectorAll(rowSelector);
     rows.forEach((row) => row.remove());
+}
+
+function calculateProgress(current, final) {
+    const currentNumber = current ?? 0;
+    const finalNumber = final ?? 0;
+
+    if (finalNumber === 0) {
+        return 0;
+    }
+
+    return Math.round((currentNumber / finalNumber) * 100);
+}
+
+function sortByTitle(a, b) {
+    const articles = ['a', 'an', 'the'],
+        re = new RegExp('^(?:(' + articles.join('|') + ') )(.*)$'), // e.g. /^(?:(foo|bar) )(.*)$/
+        replacor = function (_, $1, $2) {
+            return $2 + ', ' + $1;
+        };
+    a = a.toLowerCase().replace(re, replacor);
+    b = b.toLowerCase().replace(re, replacor);
+
+    return a === b ? 0 : a < b ? -1 : 1;
+}
+
+function sortByDate(a, b) {
+    try {
+        const date1 = new Date(a ?? '1/1/1900');
+        const date2 = new Date(b ?? '1/1/1900');
+
+        return date2.getTime() - date1.getTime();
+    } catch {
+        return 0;
+    }
+}
+
+function sortByDateAsc(a, b) {
+    try {
+        const date1 = new Date(a ?? '1/1/1900');
+        const date2 = new Date(b ?? '1/1/1900');
+
+        return date1.getTime() - date2.getTime();
+    } catch {
+        return 0;
+    }
 }

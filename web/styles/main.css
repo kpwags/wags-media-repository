@@ -20,6 +20,10 @@ h1 {
     margin-bottom: 24px;
 }
 
+a {
+    color: var(--blue-3);
+}
+
 header {
     background-color: var(--blue-1);
     color: var(--grey-1);
@@ -124,6 +128,13 @@ main {
 body:has(aside:not([data-collapsed])) main {
     margin-left: var(--sidebar-width);
 }
+
+/* TEXT */
+.metadata {
+    color: var(--grey-5);
+    font-style: italic;
+}
+/* END TEXT */
 
 /* BUTTONS */
 button {
@@ -571,6 +582,58 @@ input[type="date"] {
     gap: 16px;
 }
 /* END CONFIRM DIALOG */
+
+/* PROGRESS BAR */
+.progress-bar {
+    width: 100%;
+    margin: 24px auto;
+}
+
+.progress-bar .bar {
+    height: 24px;
+    border: 1px solid var(--border-color);
+}
+
+.progress-bar .inner-bar {
+    height: 100%;
+    background-color: var(--blue-3);
+}
+/* END PROGRESS BAR */
+
+/* RATING DISPLAY */
+.rating-display {
+    margin: 24px 0;
+}
+
+.star {
+    display: inline-block;
+    fill: var(--blue-3);
+    stroke: var(--blue-3);
+    margin: 0;
+}
+
+.star-sm {
+    width: 16px;
+    height: 16px;
+}
+
+.star-md {
+    width: 24px;
+    height: 24px;
+}
+
+.star-lg {
+    width: 32px;
+    height: 32px;
+}
+
+.empty-star {
+    display: inline-block;
+    fill: none;
+    stroke: var(--blue-3);
+    margin: 0;
+}
+/* END RATING DISPLAY */
 
 /* UTILITY CLASSES */
 .hidden { display: none; }
