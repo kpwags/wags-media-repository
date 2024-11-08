@@ -94,6 +94,18 @@ router.get('/reading-log/:id', (req, res) => {
     });
 });
 
+router.get('/limit/:count', (req, res) => {
+    const count = parseInt(req.params.count);
+
+    linkRepository.GetAllLinks((error, data) => {
+        if (error) {
+            return res.status(400).json({ error });
+        }
+
+        res.json(data.slice(0, count));
+    });
+});
+
 router.get('/', (_, res) => {
     linkRepository.GetAllLinks((error, data) => {
         if (error) {

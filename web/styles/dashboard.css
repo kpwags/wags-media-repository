@@ -208,6 +208,12 @@
 	width: 500px;
 }
 
+@media (max-width 500px) {
+	.add-link-modal {
+		width: 390px;
+	}
+}
+
 .add-link-modal h2 {
 	margin: 0 0 32px;
 	padding: 0;
