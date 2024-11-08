@@ -1,0 +1,56 @@
+th.title-col {
+	min-width: 400px;
+}
+
+th.author-col {
+	min-width: 150px;
+}
+
+th.date-col {
+	min-width: 130px;
+}
+
+th.issue-col {
+	min-width: 80px;
+}
+
+th.type-col {
+	min-width: 120px;
+}
+
+th.category-col {
+	min-width: 150px;
+}
+
+th.actions-col {
+	min-width: 175px;
+}
+
+@media (max-width: 500px) {
+	th.title-col {
+		min-width: 200px;
+	}
+}
+
+.link-modal {
+	width: 500px;
+}
+
+@media (max-width 500px) {
+	.link-modal {
+		width: 390px;
+	}
+}
+
+.link-modal h2 {
+	margin: 0 0 32px;
+	padding: 0;
+}
+
+.link-modal .form-field:first-of-type {
+	margin-top: 0;
+}
+
+.link-modal .actions {
+	margin: 32px 0 0;
+}

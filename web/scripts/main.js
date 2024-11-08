@@ -109,3 +109,11 @@ function sortByDateAsc(a, b) {
         return 0;
     }
 }
+
+function cancelOutOfConfirmDialog(keyFieldSelector = undefined) {
+    if (keyFieldSelector) {
+        document.querySelector(keyFieldSelector).value = 0;
+    }
+    
+    document.querySelector('dialog.confirm-dialog').close();
+}

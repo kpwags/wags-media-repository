@@ -113,7 +113,7 @@ async function loadCurrentBooks() {
 async function loadRecentLinks() {
 	clearTableRows('ul#recent-links li[data-link]');
 
-	const [data, error] = await Api.Get('link');
+	const [data, error] = await Api.Get('link/limit/10');
 
 	if (error) {
 		showPageError(error);
@@ -130,7 +130,7 @@ async function loadRecentLinks() {
 		return;
 	}
 
-	const recentLinks = data.slice(0, 10);
+	const recentLinks = data;
 
 	const fragment = document.createDocumentFragment();
 

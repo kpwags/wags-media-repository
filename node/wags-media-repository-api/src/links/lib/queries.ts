@@ -71,7 +71,7 @@ SELECT
 FROM Link L
 JOIN LinkCategory LC ON LC.LinkCategoryId = L.LinkCategoryId
 JOIN LinkType LT ON LT.LinkTypeId = L.LinkTypeId
-ORDER BY L.LinkDate DESC;
+ORDER BY L.ReadingLogIssueNumber DESC, L.LinkDate DESC;
 `;
 
 export const getLinksForReadingLogIssue = `
