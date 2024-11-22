@@ -476,7 +476,8 @@ input {
     accent-color: var(--blue-3);
 }
 
-input[type="text"] {
+input[type="text"],
+input[type="url"] {
     border: 1px solid var(--grey-5);
     padding: 8px;
     width: 100%;
@@ -677,6 +678,20 @@ input[type="date"] {
     border-radius: 6px;
     background: var(--blue-1);
     color: var(--grey-1);
+}
+
+ul.tag-list {
+    margin: 0;
+    padding: 0;
+}
+
+ul.tag-list li {
+    list-style-type: none;
+    display: inline-block;
+    color: var(--grey-1);
+    padding: 4px 8px;
+    border-radius: 6px;
+    margin-right: 8px;
 }
 /* END TAG */
 

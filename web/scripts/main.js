@@ -110,10 +110,29 @@ function sortByDateAsc(a, b) {
     }
 }
 
+function sortBySortOrder(a, b) {
+    return (a ?? Number.MAX_SAFE_INTEGER) - (b ?? Number.MAX_SAFE_INTEGER);
+}
+
 function cancelOutOfConfirmDialog(keyFieldSelector = undefined) {
     if (keyFieldSelector) {
         document.querySelector(keyFieldSelector).value = 0;
     }
     
     document.querySelector('dialog.confirm-dialog').close();
+}
+
+function buildTagList() {
+    const ul = document.createElement('ul');
+    ul.classList.add('tag-list');
+
+    return ul;
+}
+
+function buildTagListItem(text, color) {
+    const li = document.createElement('li');
+    li.setAttribute('style', `background: ${color};`);
+    li.textContent = text;
+
+    return li;
 }
