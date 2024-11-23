@@ -330,6 +330,7 @@ const BookForm = ({
                                 { label: 'Hardcover', value: 1 },
                                 { label: 'Paperback', value: 2 },
                                 { label: 'eBook', value: 3 },
+                                { label: 'Audiobook', value: 4 },
                             ]} />
                     </Form.Item>
 
