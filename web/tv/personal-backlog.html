@@ -13,12 +13,12 @@
 		<link rel="stylesheet" type="text/css" href="/styles/variables.css" />
 		<link rel="stylesheet" type="text/css" href="/styles/main.css" />
 		<link rel="stylesheet" type="text/css" href="/styles/tv.css" />
-		<link rel="stylesheet" type="text/css" href="/styles/multiselect.css" />
 
 		<script src="/components/header.js"></script>
 		<script src="/components/sidebar.js"></script>
 		<script src="/components/loading-spinner.js"></script>
 		<script src="/components/confirm-dialog.js"></script>
+		<script src="/components/star-rating.js"></script>
 
 		<script src="/scripts/main.js"></script>
 		<script src="/scripts/api.js"></script>
@@ -44,7 +44,7 @@
 						<button type="button" class="btn-danger-ghost hidden" id="clear-filters">Clear Filters</button>
 					</div>
 					<div class="column">
-						<button type="button" class="btn-primary" id="add-new-link" data-statusid="1">Add New TV Show</button>
+						<button type="button" class="btn-primary" id="add-new-tv-show" data-statusid="1">Add New TV Show</button>
 					</div>
 				</div>
 
@@ -52,7 +52,7 @@
 					<table>
 						<thead>
 							<tr>
-                                <th scope="column" class="sort-col">Sort</th>
+								<th scope="column" class="sort-col">Sort</th>
 								<th scope="column" class="title-col">Title</th>
 								<th scope="column" class="service-col">Service(s)</th>
 								<th scope="column" class="genre-col">Genre(s)</th>
@@ -72,17 +72,17 @@
 			</main>
 		</div>
 
-		<dialog id="add-tv-show" class="tv-modal" open>
+		<dialog id="add-tv-show" class="tv-modal">
 			<div class="container">
 				<h2>Add TV Show</h2>
 
 				<div id="add-tv-modal-error" class="alert error hidden"></div>
 
-				<form name="add-link">
+				<form name="add-tv-show">
 					<input type="hidden" id="televisionShowId" name="televisionShowId" value="0" />
 
 					<div class="form-field">
-						<label for="link-title">
+						<label for="tv-title">
 							<span class="required">*</span>Title
 							<input type="text" name="tv-title" id="tv-title" required />
 						</label>
@@ -126,9 +126,40 @@
 
 					<div class="form-field">
 						<label for="tv-genre">
-							Genre
-							<select id="tv-genre" name="genres" data-placeholder="Select genres" multiple data-multi-select>
-							</select>
+							Genre(s)
+							<select id="tv-genre" name="genres" multiple></select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="tv-service">
+							Service(s)
+							<select id="tv-service" name="services" multiple></select>
+						</label>
+					</div>
+
+					<div class="form-field dual">
+						<label for="current-episode">
+							Current Episode/Season
+							<input type="text" name="current-episode" id="current-episode" />
+						</label>
+						<label for="episode-count">
+							Episode/Season Count
+							<input type="text" id="episode-count" name="episode-count" />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label>
+							Rating
+							<star-rating id="tv-rating" fieldid="tv-rating" rating="0"></star-rating>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="tv-thoughts">
+							Thoughts
+							<textarea id="tv-thoughts" name="thoughts"></textarea>
 						</label>
 					</div>
 

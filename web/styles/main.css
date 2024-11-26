@@ -460,6 +460,16 @@ dialog.form-dialog .actions {
     margin: 32px 0;
 }
 
+.form-field.dual {
+    display: flex;
+    gap: 24px;
+}
+
+.form-field.dual label {
+    display: block;
+    width: 100%;
+}
+
 .form-field label {
     font-weight: 600;
 }
@@ -528,7 +538,7 @@ textarea {
     height: 140px;
 }
 
-select {
+select:not([multiple]) {
     background: var(--grey-1);
     border-radius: 0;
     width: 100%;
@@ -544,6 +554,17 @@ select {
     background-size: 12px;
     background-position: calc(100% - 10px) 60%;
     background-repeat: no-repeat;
+}
+
+select[multiple] {
+    background: var(--grey-1);
+    border-radius: 0;
+    width: 100%;
+    border: 1px solid var(--grey-5);
+    padding: 8px;
+    width: 100%;
+    margin-top: 4px;
+    font-weight: 400;
 }
 
 input[type="date"] {

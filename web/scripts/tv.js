@@ -8,6 +8,20 @@ let tvStatusIds = [];
 window.addEventListener('load', function () {
 	tvStatusIds = document.querySelector('body').getAttribute('data-statusid').split(',').map((x) => parseInt(x));
 
+	document.getElementById('add-new-tv-show').addEventListener('click', function () {
+		document.querySelector('dialog#add-tv-show').showModal();
+	});
+
+	document.getElementById('tv-form-dialog-cancel').addEventListener('click', function () {
+		closeAddTvShowForm();
+	});
+
+	document.querySelector('form[name="add-tv-show"]').addEventListener('submit', function(e) {
+		e.preventDefault();
+
+		console.log(buildTvFromForm());
+	});
+
 	loadVideoGenres();
 	loadVideoServices();
 	loadTelevisionShows();
@@ -35,6 +49,8 @@ async function loadVideoServices() {
 	}
 
 	videoServiceData = data;
+
+	document.getElementById('tv-service').appendChild(buildVideoServiceSelectList(videoServiceData));
 }
 
 async function loadTelevisionShows() {
@@ -168,4 +184,26 @@ function buildVideoServiceSelectList(services) {
 	});
 
 	return fragment;
+}
+
+function closeAddTvShowForm() {
+	document.querySelector('form[name="add-tv-show"]').reset();
+	document.querySelector('dialog#add-tv-show').close();
+}
+
+function buildTvFromForm() {
+	return {
+		televisionShowId: parseInt(document.querySelector('#televisionShowId').value),
+		title: document.querySelector('#tv-title').value,
+		status: parseInt(document.querySelector('#tv-status').value),
+		imdbLink: document.querySelector('#tv-imdblink').value,
+		coverImageUrl: document.querySelector('#tv-cover-url').value,
+		sortOrder: parseInt(document.querySelector('#tv-sort').value),
+		genreIds: getValuesFromMultiSelect('#tv-genre'),
+		serviceIds: getValuesFromMultiSelect('#tv-service'),
+		currentSeasonEpisode: parseInt(document.querySelector('#current-episode').value),
+		seasonEpisodeCount: parseInt(document.querySelector('#episode-count').value),
+		rating: parseInt(document.querySelector('#tv-rating-value').value),
+		thoughts: document.querySelector('#tv-thoughts').value,
+	};
 }

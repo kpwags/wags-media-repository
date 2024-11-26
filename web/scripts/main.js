@@ -5,6 +5,15 @@ window.addEventListener('load', () => {
     const mainMenu = document.querySelector('header button.menu-button');
 
     mainMenu?.addEventListener('click', toggleSidebar);
+
+    document.querySelectorAll('button[data-type="star-rating"]').forEach((btn) => {
+        btn.addEventListener('click', function () {
+            const fieldId = btn.getAttribute('data-field');
+            const rateValue = btn.getAttribute('data-rating');
+
+            document.getElementById(fieldId).setAttribute('rating', rateValue);
+        });
+    });
 });
 
 function toggleSidebar() {
@@ -135,4 +144,16 @@ function buildTagListItem(text, color) {
     li.textContent = text;
 
     return li;
+}
+
+function getValuesFromMultiSelect(querySelector) {
+    const selectedOptions = document.querySelector(querySelector).selectedOptions;
+
+    const values = [];
+
+    for (const option of selectedOptions) {
+        values.push(parseInt(option.value));
+    }
+
+    return values;
 }
