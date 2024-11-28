@@ -24,29 +24,14 @@
 		<script src="/scripts/api.js"></script>
 		<script src="/scripts/tv.js"></script>
 
-		<title>TV - Personal Backlog - Wags Media Repository</title>
+		<title>TV - Abandoned - Wags Media Repository</title>
 	</head>
-	<body data-statusid="1">
+	<body data-statusid="6">
 		<wags-media-header></wags-media-header>
 		<div class="page-content">
-			<wags-media-sidebar activeLink="tv-personal"></wags-media-sidebar>
+			<wags-media-sidebar activeLink="tv-abandoned"></wags-media-sidebar>
 			<main class="links-page">
-				<h1>TV - Personal Backlog</h1>
-
-				<div class="table-actions two-column">
-					<div class="column">
-						<button type="button" class="btn-ghost" id="open-tv-filter">
-							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-								<path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5"/>
-							</svg>
-							Filter
-						</button>
-						<button type="button" class="btn-danger-ghost hidden" id="clear-filters">Clear Filters</button>
-					</div>
-					<div class="column">
-						<button type="button" class="btn-primary" id="add-new-tv-show" data-statusid="1">Add New TV Show</button>
-					</div>
-				</div>
+				<h1>TV - Abandoned</h1>
 
 				<div class="table-wrapper">
 					<table>
@@ -93,7 +78,7 @@
 							<span class="required">*</span>Status
 							<select name="tv-status" id="tv-status" required>
 								<option></option>
-								<option value="1" selected>Personal Backlog</option>
+								<option value="1">Personal Backlog</option>
 								<option value="2">Joint Backlog</option>
 								<option value="3">Watching</option>
 								<option value="4">Between Seasons</option>
@@ -166,44 +151,6 @@
 					<div class="actions">
 						<button type="submit" class="btn-primary">Save</button>
 						<button type="button" class="btn-ghost" id="tv-form-dialog-cancel">Cancel</button>
-					</div>
-				</form>
-			</div>
-		</dialog>
-
-		<dialog id="filter-tv" class="tv-modal">
-			<div class="container">
-				<h2>Filter TV Shows</h2>
-
-				<form name="filter-tv">
-					<div class="form-field">
-						<label for="filter-tv-title">
-							Title
-							<input type="text" name="tv-title" id="filter-tv-title" />
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="filter-tv-genre">
-							Genre
-							<select name="tv-genre" id="filter-tv-genre">
-								<option value="0">All</option>
-							</select>
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="filter-tv-service">
-							Service
-							<select name="tv-service" id="filter-tv-service">
-								<option value="0">All</option>
-							</select>
-						</label>
-					</div>
-
-					<div class="actions">
-						<button type="submit" class="btn-primary">Filter</button>
-						<button type="button" class="btn-ghost" id="tv-filter-cancel">Cancel</button>
 					</div>
 				</form>
 			</div>

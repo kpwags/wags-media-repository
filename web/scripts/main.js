@@ -5,15 +5,6 @@ window.addEventListener('load', () => {
     const mainMenu = document.querySelector('header button.menu-button');
 
     mainMenu?.addEventListener('click', toggleSidebar);
-
-    document.querySelectorAll('button[data-type="star-rating"]').forEach((btn) => {
-        btn.addEventListener('click', function () {
-            const fieldId = btn.getAttribute('data-field');
-            const rateValue = btn.getAttribute('data-rating');
-
-            document.getElementById(fieldId).setAttribute('rating', rateValue);
-        });
-    });
 });
 
 function toggleSidebar() {
@@ -127,7 +118,7 @@ function cancelOutOfConfirmDialog(keyFieldSelector = undefined) {
     if (keyFieldSelector) {
         document.querySelector(keyFieldSelector).value = 0;
     }
-    
+
     document.querySelector('dialog.confirm-dialog').close();
 }
 
@@ -156,4 +147,22 @@ function getValuesFromMultiSelect(querySelector) {
     }
 
     return values;
+}
+
+function setMultiselectValues(querySelector, values) {
+    const options = document.querySelectorAll(`${querySelector} option`);
+
+    for (const option of options) {
+        if (values.includes(parseInt(option.value))) {
+            option.setAttribute('selected', true);
+        }
+    }
+}
+
+function resetMultiselect(querySelector) {
+    const options = document.querySelectorAll(`${querySelector} option`);
+
+    for (const option of options) {
+        option.removeAttribute('selected');
+    }
 }

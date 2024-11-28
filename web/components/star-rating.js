@@ -11,12 +11,12 @@ const filledStar = (id, hidden) => `
 `;
 
 class StarRating extends HTMLElement {
-    static observedAttributes = ["fieldid", "rating"];
+    static observedAttributes = ['fieldid', 'rating'];
 
     constructor() {
         super();
 
-        this.fieldid = "star-rating";
+        this.fieldid = 'star-rating';
         this.rating = 0;
     }
 
@@ -48,11 +48,17 @@ class StarRating extends HTMLElement {
         this[property] = newValue;
     }
 
+    disconnectedCallback() {
+        this.querySelectorAll('button[data-type="star-rating"]').forEach((btn) => {
+            btn.removeEventListener('click');
+        });
+    }
+
     connectedCallback() {
         this.innerHTML = `
 			<div class="star-controls">
                 <input type="hidden" name="${this.fieldid}-value" id="${this.fieldid}-value" value="${this.rating}" />
-                
+
                 <button type="button" class="btn-icon padding-none" data-field="${this.fieldid}" data-type="star-rating" data-rating="1">
                     ${emptyStar(`${this.fieldid}-1-filled`, this.rating >= 1)}
                     ${filledStar(`${this.fieldid}-1-empty`, this.rating < 1)}
@@ -86,6 +92,15 @@ class StarRating extends HTMLElement {
                 </button>
             </div>
 		`;
+
+        this.querySelectorAll('button[data-type="star-rating"]').forEach((btn) => {
+            btn.addEventListener('click', function () {
+                const fieldId = btn.getAttribute('data-field');
+                const rateValue = btn.getAttribute('data-rating');
+
+                document.getElementById(fieldId).setAttribute('rating', rateValue);
+            });
+        });
     }
 }
 

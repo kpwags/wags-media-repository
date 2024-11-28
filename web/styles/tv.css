@@ -14,15 +14,31 @@ th.genre-col {
 	min-width: 100px;
 }
 
+th.status-col {
+	min-width: 100px;
+}
+
+th.progress-col {
+	min-width: 100px;
+}
+
+th.rating-col {
+	min-width: 150px;
+}
+
 th.actions-col {
 	width: 200px;
+}
+
+td .rating-display {
+	margin: 0;
 }
 
 .tv-modal {
 	width: 500px;
 }
 
-@media (max-width 500px) {
+@media (max-width: 500px) {
 	.tv-modal {
 		width: 390px;
 	}
