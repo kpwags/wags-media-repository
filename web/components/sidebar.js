@@ -46,10 +46,9 @@ class Sidebar extends HTMLElement {
                         <details ${this.activeLink.startsWith('tv') ? 'open' : ''}>
                             <summary><span>TV</span></summary>
                             <ul class="sub-list">
-                                <li class="${this.activeLink === 'tv-personal' ? 'active' : ''}"><a href="/tv/personal.html">Personal List</a></li>
-                                <li class="${this.activeLink === 'tv-joint' ? 'active' : ''}"><a href="/tv/joint.html">Joint List</a></li>
+                                <li class="${this.activeLink === 'tv-personal' ? 'active' : ''}"><a href="/tv/personal-backlog.html">Personal Backlog</a></li>
+                                <li class="${this.activeLink === 'tv-joint' ? 'active' : ''}"><a href="/tv/joint-backlog.html">Joint Backlog</a></li>
                                 <li class="${this.activeLink === 'tv-current' ? 'active' : ''}"><a href="/tv/current.html">Currently Watching</a></li>
-                                <li class="${this.activeLink === 'tv-between-seasons' ? 'active' : ''}"><a href="/tv/between-seasons.html">In-Between Seasons</a></li>
                                 <li class="${this.activeLink === 'tv-finished' ? 'active' : ''}"><a href="/tv/finished.html">Finished</a></li>
                                 <li class="${this.activeLink === 'tv-abandoned' ? 'active' : ''}"><a href="/tv/abandoned.html">Abandoned</a></li>
                             </ul>

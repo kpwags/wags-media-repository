@@ -311,7 +311,7 @@ a.btn-ghost {
 }
 
 .table-wrapper {
-    overflow: scroll;
+    overflow: auto;
 }
 
 table {
@@ -460,6 +460,16 @@ dialog.form-dialog .actions {
     margin: 32px 0;
 }
 
+.form-field.dual {
+    display: flex;
+    gap: 24px;
+}
+
+.form-field.dual label {
+    display: block;
+    width: 100%;
+}
+
 .form-field label {
     font-weight: 600;
 }
@@ -476,7 +486,8 @@ input {
     accent-color: var(--blue-3);
 }
 
-input[type="text"] {
+input[type="text"],
+input[type="url"] {
     border: 1px solid var(--grey-5);
     padding: 8px;
     width: 100%;
@@ -527,7 +538,7 @@ textarea {
     height: 140px;
 }
 
-select {
+select:not([multiple]) {
     background: var(--grey-1);
     border-radius: 0;
     width: 100%;
@@ -543,6 +554,17 @@ select {
     background-size: 12px;
     background-position: calc(100% - 10px) 60%;
     background-repeat: no-repeat;
+}
+
+select[multiple] {
+    background: var(--grey-1);
+    border-radius: 0;
+    width: 100%;
+    border: 1px solid var(--grey-5);
+    padding: 8px;
+    width: 100%;
+    margin-top: 4px;
+    font-weight: 400;
 }
 
 input[type="date"] {
@@ -677,6 +699,20 @@ input[type="date"] {
     border-radius: 6px;
     background: var(--blue-1);
     color: var(--grey-1);
+}
+
+ul.tag-list {
+    margin: 0;
+    padding: 0;
+}
+
+ul.tag-list li {
+    list-style-type: none;
+    display: inline-block;
+    color: var(--grey-1);
+    padding: 4px 8px;
+    border-radius: 6px;
+    margin-right: 8px;
 }
 /* END TAG */
 
