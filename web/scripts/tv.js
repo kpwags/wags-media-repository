@@ -287,6 +287,7 @@ function loadFinishedTelevisionRows(tvShows) {
         tr.appendChild(titleCell);
 
         const ratingCell = document.createElement('td');
+        ratingCell.classList.add('center-align');
 
         const ratingDisplay = document.createElement('rating-display');
         ratingDisplay.setAttribute('data-rating', tv.rating);
