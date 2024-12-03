@@ -78,8 +78,6 @@ router.delete('/category/:id', (req, res) => {
 
         res.send();
     });
-
-    res.send();
 });
 
 router.get('/', (_, res) => {
@@ -130,7 +128,6 @@ router.post('/', (req, res) => {
 
         res.send();
     });
-    res.send();
 });
 
 router.put('/:id', (req, res) => {
@@ -157,7 +154,6 @@ router.put('/:id', (req, res) => {
 
         res.send();
     });
-    res.send();
 });
 
 router.delete('/:id', (req, res) => {
@@ -170,8 +166,6 @@ router.delete('/:id', (req, res) => {
 
         res.send();
     });
-
-    res.send();
 });
 
 export default router;
