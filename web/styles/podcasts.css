@@ -1,0 +1,16 @@
+th.title-col {
+	min-width: 400px;
+}
+
+th.category-col {
+	min-width: 150px;
+}
+
+th.actions-col {
+	min-width: 175px;
+}
+
+.podcasts-page {
+	width: 800px;
+	margin: 0 auto;
+}

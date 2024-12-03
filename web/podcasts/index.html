@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="theme-color" content="#053673" />
+
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+
+		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/variables.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/main.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/podcasts.css" />
+
+		<script src="/components/header.js"></script>
+		<script src="/components/sidebar.js"></script>
+		<script src="/components/loading-spinner.js"></script>
+		<script src="/components/confirm-dialog.js"></script>
+
+		<script src="/scripts/main.js"></script>
+		<script src="/scripts/api.js"></script>
+		<script src="/scripts/podcasts.js"></script>
+
+		<title>Podcasts - Wags Media Repository</title>
+	</head>
+	<body>
+		<wags-media-header></wags-media-header>
+		<div class="page-content">
+			<wags-media-sidebar activeLink="podcasts"></wags-media-sidebar>
+			<main>
+				<div class="podcasts-page">
+					<h1>Podcasts</h1>
+
+					<div class="table-actions two-column">
+						<div class="column">
+							<button type="button" class="btn-ghost" id="open-podcasts-filter">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+									<path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5"/>
+								</svg>
+								Filter
+							</button>
+							<button type="button" class="btn-danger-ghost hidden" id="clear-filters">Clear Filters</button>
+						</div>
+						<div class="column">
+							<a class="btn-ghost" href="/podcasts/categories.html">Edit Categories</a>
+							<button type="button" class="btn-primary" id="add-new-podcast">Add New Podcast</button>
+						</div>
+					</div>
+
+					<div class="table-wrapper">
+						<table>
+							<thead>
+								<tr>
+									<th scope="column" class="title-col">Name</th>
+									<th scope="column" class="category-col">Category</th>
+									<th scope="column" class="actions-col">Actions</th>
+								</tr>
+							</thead>
+							<tbody id="podcast-table-body">
+								<tr class="loading">
+									<td colspan="3"><loading-spinner></loading-spinner></td>
+								</tr>
+								<tr class="no-content hidden">
+									<td colspan="3">No Podcasts</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</main>
+		</div>
+
+		<dialog id="add-podcast" class="standard-modal">
+			<div class="container">
+				<h2>Add Podcast</h2>
+
+				<div id="add-podcast-modal-error" class="alert error hidden"></div>
+
+				<form name="add-podcast">
+					<input type="hidden" id="podcastId" name="podcastId" value="0" />
+
+					<div class="form-field">
+						<label for="podcast-name">
+							<span class="required">*</span>Name
+							<input type="text" name="podcast-name" id="podcast-name" required />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="podcast-link">
+							<span class="required">*</span>Link
+							<input type="text" name="podcast-link" id="podcast-link" required />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="podcast-image">
+							<span class="required">*</span>Image
+							<input type="text" name="podcast-image" id="podcast-image" required />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="podcast-category">
+							<span class="required">*</span>Category
+							<select name="podcast-category" id="podcast-category">
+								<option></option>
+							</select>
+						</label>
+					</div>
+
+					<div class="actions">
+						<button type="submit" class="btn-primary">Save</button>
+						<button type="button" class="btn-ghost" id="podcast-form-dialog-cancel">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</dialog>
+
+		<dialog id="filter-podcasts" class="standard-modal">
+			<div class="container">
+				<h2>Filter Podcasts</h2>
+
+				<form name="filter-podcasts">
+					<div class="form-field">
+						<label for="filter-podcast-name">
+							Name
+							<input type="text" name="podcast-name" id="filter-podcast-name" />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="filter-podcast-category">
+							Category
+							<select name="podcast-category" id="filter-podcast-category">
+								<option value="0">All</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="actions">
+						<button type="submit" class="btn-primary">Filter</button>
+						<button type="button" class="btn-ghost" id="podcast-filter-cancel">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</dialog>
+
+		<input type="hidden" id="delete-podcast-id" value="0" />
+		<confirm-dialog></confirm-dialog>
+	</body>
+</html>

@@ -395,13 +395,13 @@ async function deleteLink() {
 
 	const [, error] = await Api.Delete(`link/${linkId}`);
 
-    if (error) {
-        showPageError(error);
+	if (error) {
+		showPageError(error);
 		document.querySelector('dialog.confirm-dialog').close();
-        return;
-    }
+		return;
+	}
 
-    await loadLinks();
-    
+	await loadLinks();
+	
 	document.querySelector('dialog.confirm-dialog').close();
 }
