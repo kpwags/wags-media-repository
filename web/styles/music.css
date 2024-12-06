@@ -1,0 +1,72 @@
+th.artist-col {
+	min-width: 200px;
+}
+
+th.album-col {
+	min-width: 200px;
+}
+
+th.format-col {
+	min-width: 200px;
+}
+
+th.genre-col {
+	min-width: 200px;
+}
+
+th.actions-col {
+	min-width: 260px;
+}
+
+th.name-col {
+	min-width: 200px;
+}
+
+th.genre-actions-col {
+	min-width: 175px;
+}
+
+.music-genres-page {
+	width: 800px;
+	margin: 0 auto;
+}
+
+.edit-tracks-modal {
+	width: 800px;
+}
+
+.edit-tracks-modal .form-content {
+	margin: 32px 0;
+}
+
+.track-row {
+	display: flex;
+	column-gap: 24px;
+	align-items: center;
+	justify-content: space-evenly;
+	margin: 12px 0;
+}
+
+.track-row .track-number {
+	width: 100px;
+}
+
+.track-row .track-title {
+	flex-grow: 1;
+}
+
+.track-row button.btn-danger {
+	height: 35px;
+	align-self: flex-end;
+	line-height: 1;
+}
+
+@media (max-width: 500px) {
+	.track-row {
+		column-gap: 8px;
+	}
+
+	.track-row .track-number {
+		width: 115px;
+	}
+}

@@ -41,7 +41,7 @@ class Sidebar extends HTMLElement {
                             </ul>
                         </details>
                     </li>
-                    <li class="${this.activeLink === 'music' ? 'active' : ''}"><a href="#">Music</a></li>
+                    <li class="${this.activeLink === 'music' ? 'active' : ''}"><a href="/music/">Music</a></li>
                     <li class="${this.activeLink === 'podcasts' ? 'active' : ''}"><a href="/podcasts">Podcasts</a></li>
                     <li>
                         <details ${this.activeLink.startsWith('tv') ? 'open' : ''}>

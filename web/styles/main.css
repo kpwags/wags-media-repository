@@ -737,6 +737,10 @@ input[type="date"] {
 ul.tag-list {
 	margin: 0;
 	padding: 0;
+	display: flex;
+	gap: 8px;
+	align-items: flex-start;
+	flex-wrap: wrap;
 }
 
 ul.tag-list li {
@@ -745,7 +749,6 @@ ul.tag-list li {
 	color: var(--grey-1);
 	padding: 4px 8px;
 	border-radius: 6px;
-	margin-right: 8px;
 }
 /* END TAG */
 
