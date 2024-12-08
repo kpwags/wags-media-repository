@@ -1,0 +1,41 @@
+th.sort-col {
+	width: 80px;
+}
+
+th.title-col {
+	min-width: 200px;
+}
+
+th.system-col,
+th.genre-col {
+	min-width: 175px;
+}
+
+th.rating-col {
+	min-width: 150px;
+}
+
+th.date-col {
+	min-width: 150px;
+}
+
+th.actions-col {
+	width: 200px;
+}
+
+td .rating-display {
+	margin: 0;
+}
+
+th.name-col {
+	min-width: 200px;
+}
+
+th.genre-actions-col {
+	min-width: 175px;
+}
+
+.video-game-slim-page {
+	width: 800px;
+	margin: 0 auto;
+}

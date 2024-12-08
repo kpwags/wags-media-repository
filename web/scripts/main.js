@@ -193,3 +193,11 @@ function createLinkElement(title, url, openInNewWindow = false) {
 
 	return linkAnchor;
 }
+
+function displayDate(val, format = 'MM/DD/YYYY') {
+	try {
+		return dayjs.tz(val, 'UTC').format(format);
+	} catch {
+		return '';
+	}
+}

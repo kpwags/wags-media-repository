@@ -103,8 +103,6 @@ router.put('/tracks/:id', (req, res) => {
             return res.status(400).json({ error });
         }
 
-        console.log('all good');
-
         res.send();
     });
 });

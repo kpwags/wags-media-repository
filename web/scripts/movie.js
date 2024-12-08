@@ -65,7 +65,7 @@ async function loadVideoGenres() {
 	videoGenreData = data;
 
 	document.getElementById("movie-genre")?.appendChild(buildVideoGenreSelectList(videoGenreData));
-	documentgetElementById("filter-movie-genre")?.appendChild(buildVideoGenreSelectList(videoGenreData));
+	document.getElementById("filter-movie-genre")?.appendChild(buildVideoGenreSelectList(videoGenreData));
 }
 
 async function loadVideoServices() {
