@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="theme-color" content="#053673" />
+
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+
+		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/variables.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/main.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/video-games.css" />
+
+		<script src="/components/header.js"></script>
+		<script src="/components/sidebar.js"></script>
+		<script src="/components/loading-spinner.js"></script>
+		<script src="/components/confirm-dialog.js"></script>
+		<script src="/components/star-rating.js"></script>
+
+		<script src="/scripts/main.js"></script>
+		<script src="/scripts/api.js"></script>
+		<script src="/scripts/lib/dayjs.min.js"></script>
+		<script src="/scripts/lib/dayjs.timezone.js"></script>
+		<script src="/scripts/lib/dayjs.utc.js"></script>
+		<script src="/scripts/video-games.js"></script>
+
+		<script>
+			dayjs.extend(window.dayjs_plugin_utc);
+			dayjs.extend(window.dayjs_plugin_timezone);
+		</script>
+
+		<title>Video Games - Currently Playing - Wags Media Repository</title>
+	</head>
+	<body data-statusid="2">
+		<wags-media-header></wags-media-header>
+		<div class="page-content">
+			<wags-media-sidebar activeLink="video-games-current"></wags-media-sidebar>
+			<main class="links-page">
+				<h1>Video Games - Currently Playing</h1>
+
+				<div class="table-actions two-column">
+					<div class="column">
+						<button type="button" class="btn-ghost" id="open-video-game-filter">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+								<path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5"/>
+							</svg>
+							Filter
+						</button>
+						<button type="button" class="btn-danger-ghost hidden" id="clear-filters">Clear Filters</button>
+					</div>
+					<div class="column">
+						<button type="button" class="btn-primary" id="add-new-video-game">Add New Game</button>
+					</div>
+				</div>
+
+				<div class="table-wrapper">
+					<table>
+						<thead>
+							<tr>
+								<th scope="column" class="title-col">Title</th>
+								<th scope="column" class="system-col">System</th>
+								<th scope="column" class="date-col">Date Started</th>
+								<th scope="column" class="actions-col">Actions</th>
+							</tr>
+						</thead>
+						<tbody id="video-game-table-body">
+							<tr class="loading">
+								<td colspan="4"><loading-spinner></loading-spinner></td>
+							</tr>
+							<tr class="no-content hidden">
+								<td colspan="4">No Video Games</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</main>
+		</div>
+
+		<dialog id="add-video-game" class="standard-modal">
+			<div class="container">
+				<h2>Add Game</h2>
+
+				<div id="add-video-game-modal-error" class="alert error hidden"></div>
+
+				<form name="add-video-game">
+					<input type="hidden" id="videoGameId" name="videoGameId" value="0" />
+
+					<div class="form-field">
+						<label for="video-game-title">
+							<span class="required">*</span>Title
+							<input type="text" name="video-game-title" id="video-game-title" required />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="video-game-status">
+							<span class="required">*</span>Status
+							<select name="video-game-status" id="video-game-status" required>
+								<option value="1">Backlog</option>
+								<option value="2" selected>Currently Playing</option>
+								<option value="3">Finished</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="video-game-completion-status">
+							<span class="required">*</span>Completion Status
+							<select name="video-game-completion-status" id="video-game-completion-status" required>
+								<option value="1">N/A</option>
+								<option value="2">Yes</option>
+								<option value="3">No</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="video-game-link">
+							<span class="required">*</span>Link
+							<input type="url" name="video-game-link" id="video-game-link" required />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="video-game-cover-url">
+							Cover
+							<input type="url" name="video-game-cover-url" id="video-game-cover-url" />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="video-game-sort">
+							Sort Order
+							<input type="text" name="video-game-sort" id="video-game-sort" />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="video-game-genre">
+							Genre(s)
+							<select id="video-game-genre" name="video-game-genre" multiple></select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="video-game-system">
+							System(s)
+							<select id="video-game-system" name="video-game-system" multiple></select>
+						</label>
+					</div>
+
+					<div class="form-field dual">
+						<label for="video-game-date-started">
+							Date Started
+							<input type="date" name="video-game-date-started" id="video-game-date-started" />
+						</label>
+						<label for="video-game-date-completed">
+							Date Completed
+							<input type="date" name="video-game-date-started" id="video-game-date-completed" />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label>
+							Rating
+							<star-rating id="video-game-rating" fieldid="video-game-rating" rating="0"></star-rating>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="video-game-thoughts">
+							Thoughts
+							<textarea id="video-game-thoughts" name="video-game-thoughts"></textarea>
+						</label>
+					</div>
+
+					<div class="actions">
+						<button type="submit" class="btn-primary">Save</button>
+						<button type="button" class="btn-ghost" id="video-game-form-dialog-cancel">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</dialog>
+
+		<dialog id="filter-video-game" class="standard-modal">
+			<div class="container">
+				<h2>Filter Games</h2>
+
+				<form name="filter-video-game">
+					<div class="form-field">
+						<label for="filter-video-game-title">
+							Title
+							<input type="text" name="video-game-title" id="filter-video-game-title" />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="filter-video-game-genre">
+							Genre
+							<select name="video-game-genre" id="filter-video-game-genre">
+								<option value="0">All</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="filter-video-game-system">
+							System
+							<select name="video-game-system" id="filter-video-game-system">
+								<option value="0">All</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="actions">
+						<button type="submit" class="btn-primary">Filter</button>
+						<button type="button" class="btn-ghost" id="video-game-filter-cancel">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</dialog>
+
+		<input type="hidden" id="delete-video-game-id" value="0" />
+		<confirm-dialog></confirm-dialog>
+	</body>
+</html>
