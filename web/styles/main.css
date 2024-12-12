@@ -758,4 +758,9 @@ ul.tag-list li {
 .flex-reverse {
 	flex-direction: column-reverse;
 }
+
+.slim-page {
+	width: 800px;
+	margin: 0 auto;
+}
 /* END UTILITY CLASSES */

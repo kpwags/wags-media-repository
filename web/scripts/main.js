@@ -194,10 +194,20 @@ function createLinkElement(title, url, openInNewWindow = false) {
 	return linkAnchor;
 }
 
-function displayDate(val, format = 'MM/DD/YYYY') {
+function displayDate(val, format = 'M/DD/YYYY') {
 	try {
 		return dayjs.tz(val, 'UTC').format(format);
 	} catch {
 		return '';
 	}
+}
+
+function getNumericValueFromInput(querySelector, fallback = 0) {
+	const val = parseInt(document.querySelector(querySelector).value);
+
+	if (Number.isNaN(val)) {
+		return fallback;
+	}
+
+	return val;
 }

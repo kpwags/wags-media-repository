@@ -6,7 +6,11 @@ th.title-col {
 	min-width: 200px;
 }
 
-th.system-col,
+th.type-col {
+	min-width: 135px;
+}
+
+th.series-col,
 th.genre-col {
 	min-width: 175px;
 }
@@ -16,6 +20,10 @@ th.rating-col {
 }
 
 th.date-col {
+	min-width: 150px;
+}
+
+th.author-col {
 	min-width: 150px;
 }
 
@@ -37,9 +45,4 @@ th.name-col {
 
 th.genre-actions-col {
 	min-width: 175px;
-}
-
-.video-game-slim-page {
-	width: 800px;
-	margin: 0 auto;
 }
