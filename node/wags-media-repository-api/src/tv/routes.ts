@@ -143,7 +143,7 @@ router.post('/', (req, res) => {
         televisionShowId: 0,
         title,
         imdbLink,
-        coverImageUrl,
+        coverImageUrl: coverImageUrl ?? '',
         rating: rating ?? 0,
         thoughts: thoughts ?? '',
         sortOrder,

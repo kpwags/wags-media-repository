@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="theme-color" content="#053673" />
+
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+
+		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/variables.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/main.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/books.css" />
+
+		<script src="/components/header.js"></script>
+		<script src="/components/sidebar.js"></script>
+		<script src="/components/loading-spinner.js"></script>
+		<script src="/components/confirm-dialog.js"></script>
+		<script src="/components/star-rating.js"></script>
+
+		<script src="/scripts/main.js"></script>
+		<script src="/scripts/api.js"></script>
+		<script src="/scripts/lib/dayjs.min.js"></script>
+		<script src="/scripts/lib/dayjs.timezone.js"></script>
+		<script src="/scripts/lib/dayjs.utc.js"></script>
+		<script src="/scripts/books.js"></script>
+
+		<script>
+			dayjs.extend(window.dayjs_plugin_utc);
+			dayjs.extend(window.dayjs_plugin_timezone);
+		</script>
+
+		<title>Books - Currently Reading - Wags Media Repository</title>
+	</head>
+	<body data-statusid="2">
+		<wags-media-header></wags-media-header>
+		<div class="page-content">
+			<wags-media-sidebar activeLink="books-current"></wags-media-sidebar>
+			<main>
+				<h1>Books - Currently Reading</h1>
+
+				<div class="table-actions two-column">
+					<div class="column">
+						<button type="button" class="btn-ghost" id="open-book-filter">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+								<path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5"/>
+							</svg>
+							Filter
+						</button>
+						<button type="button" class="btn-danger-ghost hidden" id="clear-filters">Clear Filters</button>
+					</div>
+					<div class="column">
+						<a class="btn-ghost" href="/books/series.html">Edit Series</a>
+						<a class="btn-ghost" href="/books/genres.html">Edit Genres</a>
+						<button type="button" class="btn-primary" id="add-new-book">Add New Book</button>
+					</div>
+				</div>
+
+				<div class="table-wrapper">
+					<table>
+						<thead>
+							<tr>
+								<th scope="column" class="title-col">Title</th>
+								<th scope="column" class="author-col">Author</th>
+								<th scope="column" class="type-col">Type</th>
+								<th scope="column" class="series-col">Series</th>
+								<th scope="column" class="date-col">Date Started</th>
+								<th scope="column" class="actions-col">Actions</th>
+							</tr>
+						</thead>
+						<tbody id="book-table-body">
+							<tr class="loading">
+								<td colspan="6"><loading-spinner></loading-spinner></td>
+							</tr>
+							<tr class="no-content hidden">
+								<td colspan="6">No Books</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</main>
+		</div>
+
+		<dialog id="add-book" class="standard-modal">
+			<div class="container">
+				<h2>Add Book</h2>
+
+				<div id="add-book-modal-error" class="alert error hidden"></div>
+
+				<form name="add-book">
+					<input type="hidden" id="bookId" name="bookId" value="0" />
+
+					<div class="form-field">
+						<label for="book-title">
+							<span class="required">*</span>Title
+							<input type="text" name="book-title" id="book-title" required />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="book-subtitle">
+							Subtitle
+							<input type="text" name="book-subtitle" id="book-subtitle" />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="book-author">
+							<span class="required">*</span>Author
+							<input type="text" name="book-author" id="book-author" required />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="book-status">
+							<span class="required">*</span>Status
+							<select name="book-status" id="book-status" required>
+								<option value="1">Backlog</option>
+								<option value="2" selected>Currently Reading</option>
+								<option value="3">Finished</option>
+								<option value="4">Abandoned</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="book-type">
+							<span class="required">*</span>Type
+							<select name="book-type" id="book-type" required>
+								<option></option>
+								<option value="1">Fiction</option>
+								<option value="2">Non-Fiction</option>
+								<option value="3">Reference</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="book-series">
+							Series
+							<select id="book-series" name="book-series">
+								<option></option>
+							</select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="book-link">
+							<span class="required">*</span>Link
+							<input type="url" name="book-link" id="book-link" required />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="book-cover-url">
+							Cover
+							<input type="url" name="book-cover-url" id="book-cover-url" />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="book-sort">
+							Sort Order
+							<input type="text" name="book-sort" id="book-sort" />
+						</label>
+					</div>
+
+					<div class="form-field dual">
+						<label for="is-purchased">
+							<input type="checkbox" name="is-purchased" id="is-purchased" value="true" switch />
+							Purchased
+						</label>
+						<label for="at-library">
+							<input type="checkbox" name="at-library" id="at-library" value="true" switch />
+							At Library
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="book-genre">
+							Genre(s)
+							<select id="book-genre" name="book-genre" multiple></select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="book-format">
+							Format(s)
+							<select id="book-format" name="book-format" multiple>
+								<option value="1">Harcover</option>
+								<option value="2">Paperback</option>
+								<option value="3">eBook</option>
+								<option value="4">Audiobook</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="form-field dual">
+						<label for="book-date-started">
+							Date Started
+							<input type="date" name="book-date-started" id="book-date-started" />
+						</label>
+						<label for="book-date-completed">
+							Date Completed
+							<input type="date" name="book-date-started" id="book-date-completed" />
+						</label>
+					</div>
+
+					<div class="form-field dual">
+						<label for="book-current-page">
+							Current Page
+							<input type="text" name="book-current-page" id="book-current-page" />
+						</label>
+						<label for="book-page-count">
+							Page Count
+							<input type="text" id="book-page-count" name="book-page-count" />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label>
+							Rating
+							<star-rating id="book-rating" fieldid="book-rating" rating="0"></star-rating>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="book-thoughts">
+							Thoughts
+							<textarea id="book-thoughts" name="book-thoughts"></textarea>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="book-notes-url">
+							Notes URL
+							<input type="text" name="book-notes-url" id="book-notes-url" />
+						</label>
+					</div>
+
+					<div class="actions">
+						<button type="submit" class="btn-primary">Save</button>
+						<button type="button" class="btn-ghost" id="book-form-dialog-cancel">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</dialog>
+
+		<dialog id="filter-book" class="standard-modal">
+			<div class="container">
+				<h2>Filter Games</h2>
+
+				<form name="filter-book">
+					<div class="form-field">
+						<label for="filter-book-title">
+							Title / Author
+							<input type="text" name="book-title" id="filter-book-title" />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="filter-book-genre">
+							Genre
+							<select name="book-genre" id="filter-book-genre">
+								<option value="0">All</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="filter-book-series">
+							Series
+							<select name="book-series" id="filter-book-series">
+								<option value="0">All</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="filter-book-type">
+							Type
+							<select name="book-type" id="filter-book-type">
+								<option value="0">All</option>
+								<option value="1">Fiction</option>
+								<option value="2">Non-Fiction</option>
+								<option value="3">Reference</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="filter-is-purchased">
+							<input type="checkbox" name="filter-is-purchased" id="filter-is-purchased" value="true" switch />
+							Purchased
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="filter-at-library">
+							<input type="checkbox" name="filter-at-library" id="filter-at-library" value="true" switch />
+							At Library
+						</label>
+					</div>
+
+					<div class="actions">
+						<button type="submit" class="btn-primary">Filter</button>
+						<button type="button" class="btn-ghost" id="book-filter-cancel">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</dialog>
+
+		<input type="hidden" id="delete-book-id" value="0" />
+		<confirm-dialog></confirm-dialog>
+	</body>
+</html>
