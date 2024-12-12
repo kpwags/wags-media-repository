@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="theme-color" content="#053673" />
+
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+
+		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/variables.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/main.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/movie.css" />
+
+		<script src="/components/header.js"></script>
+		<script src="/components/sidebar.js"></script>
+		<script src="/components/loading-spinner.js"></script>
+		<script src="/components/confirm-dialog.js"></script>
+		<script src="/components/star-rating.js"></script>
+
+		<script src="/scripts/main.js"></script>
+		<script src="/scripts/api.js"></script>
+		<script src="/scripts/movie.js"></script>
+
+		<script src="/scripts/lib/dayjs.min.js"></script>
+
+		<title>Movies - Personal Backlog - Wags Media Repository</title>
+	</head>
+	<body data-statusid="1">
+		<wags-media-header></wags-media-header>
+		<div class="page-content">
+			<wags-media-sidebar activeLink="movies-personal"></wags-media-sidebar>
+			<main class="movies-page">
+				<h1>Movies - Personal Backlog</h1>
+
+				<div class="table-actions two-column">
+					<div class="column">
+						<button type="button" class="btn-ghost" id="open-movie-filter">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+								<path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5" />
+							</svg>
+							Filter
+						</button>
+						<button type="button" class="btn-danger-ghost hidden" id="clear-filters">
+							Clear Filters
+						</button>
+					</div>
+					<div class="column">
+						<button type="button" class="btn-primary" id="add-new-movie" data-statusid="1">
+							Add New Movie
+						</button>
+					</div>
+				</div>
+
+				<div class="table-wrapper">
+					<table>
+						<thead>
+							<tr>
+								<th scope="column" class="sort-col">Sort</th>
+								<th scope="column" class="title-col">Title</th>
+								<th scope="column" class="service-col">
+									Service(s)
+								</th>
+								<th scope="column" class="genre-col">
+									Genre(s)
+								</th>
+								<th scope="column" class="actions-col">
+									Actions
+								</th>
+							</tr>
+						</thead>
+						<tbody id="movie-table-body">
+							<tr class="loading">
+								<td colspan="5">
+									<loading-spinner></loading-spinner>
+								</td>
+							</tr>
+							<tr class="no-content hidden">
+								<td colspan="5">No Movies</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</main>
+		</div>
+
+		<dialog id="add-movie" class="movie-modal">
+			<div class="container">
+				<h2>Add Movie</h2>
+
+				<div id="add-movie-modal-error" class="alert error hidden"></div>
+
+				<form name="add-movie">
+					<input type="hidden" id="movieId" name="movieId" value="0" />
+
+					<div class="form-field">
+						<label for="movie-title">
+							<span class="required">*</span>Title
+							<input type="text" name="movie-title" id="movie-title" required
+							/>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="movie-status">
+							<span class="required">*</span>Status
+							<select name="movie-status" id="movie-status" required>
+								<option></option>
+								<option value="1" selected>Personal Backlog</option>
+								<option value="2">Joint Backlog</option>
+								<option value="3">Finished</option>
+								<option value="4">Abandoned</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="movie-imdblink">
+							<span class="required">*</span>IMDb Link
+							<input type="url" name="movie-imdblink" id="movie-imdblink" required />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="movie-cover-url">
+							Cover URL
+							<input type="url" name="movie-cover-url" id="movie-cover-url" />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="movie-sort">
+							Sort Order
+							<input type="text" name="movie-sort" id="movie-sort" />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="movie-genre">
+							Genre(s)
+							<select id="movie-genre" name="genres" multiple></select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="movie-service">
+							Service(s)
+							<select id="movie-service" name="services" multiple></select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="movie-date">
+							Date Watched
+							<input type="date" name="movie-date" id="movie-date" />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label>
+							Rating
+							<star-rating id="movie-rating" fieldid="movie-rating" rating="0"></star-rating>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="movie-thoughts">
+							Thoughts
+							<textarea id="movie-thoughts" name="movie-thoughts"></textarea>
+						</label>
+					</div>
+
+					<div class="actions">
+						<button type="submit" class="btn-primary">Save</button>
+						<button type="button" class="btn-ghost" id="movie-form-dialog-cancel">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</dialog>
+
+		<dialog id="filter-movie" class="movie-modal">
+			<div class="container">
+				<h2>Filter Movies</h2>
+
+				<form name="filter-movie">
+					<div class="form-field">
+						<label for="filter-movie-title">
+							Title
+							<input
+								type="text"
+								name="movie-title"
+								id="filter-movie-title"
+							/>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="filter-movie-genre">
+							Genre
+							<select name="movie-genre" id="filter-movie-genre">
+								<option value="0">All</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="filter-movie-service">
+							Service
+							<select name="movie-service" id="filter-movie-service">
+								<option value="0">All</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="actions">
+						<button type="submit" class="btn-primary">
+							Filter
+						</button>
+						<button type="button" class="btn-ghost" id="movie-filter-cancel">
+							Cancel
+						</button>
+					</div>
+				</form>
+			</div>
+		</dialog>
+
+		<input type="hidden" id="delete-movie-id" value="0" />
+		<confirm-dialog></confirm-dialog>
+	</body>
+</html>

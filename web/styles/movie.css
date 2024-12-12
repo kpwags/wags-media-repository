@@ -1,0 +1,54 @@
+th.sort-col {
+	width: 80px;
+}
+
+th.title-col {
+	min-width: 200px;
+}
+
+th.service-col {
+	min-width: 150px;
+}
+
+th.genre-col {
+	min-width: 100px;
+}
+
+th.rating-col {
+	min-width: 185px;
+}
+
+th.date-col {
+	min-width: 150px;
+}
+
+th.actions-col {
+	width: 200px;
+}
+
+td .rating-display {
+	margin: 0;
+}
+
+.movie-modal {
+	width: 500px;
+}
+
+@media (max-width: 500px) {
+	.movie-modal {
+		width: 390px;
+	}
+}
+
+.movie-modal h2 {
+	margin: 0 0 32px;
+	padding: 0;
+}
+
+.movie-modal .form-field:first-of-type {
+	margin-top: 0;
+}
+
+.movie-modal .actions {
+	margin: 32px 0 0;
+}

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="theme-color" content="#053673" />
+
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+
+		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/variables.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/main.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/links.css" />
+
+		<script src="/components/header.js"></script>
+		<script src="/components/sidebar.js"></script>
+		<script src="/components/loading-spinner.js"></script>
+		<script src="/components/confirm-dialog.js"></script>
+
+		<script src="/scripts/main.js"></script>
+		<script src="/scripts/api.js"></script>
+		<script src="/scripts/link-categories.js"></script>
+
+		<title>Link Categories - Wags Media Repository</title>
+	</head>
+	<body>
+		<wags-media-header></wags-media-header>
+
+		<div class="page-content">
+			<wags-media-sidebar activeLink="links"></wags-media-sidebar>
+			<main>
+				<div class="video-genres">
+					<h1>Link Categories</h1>
+
+					<div id="page-error" class="alert error hidden"></div>
+
+					<div class="table-actions">
+						<button type="button" class="btn-primary" id="add-new-category">Add New Category</button>
+					</div>
+					<div class="table-wrapper">
+						<table>
+							<thead>
+								<tr>
+									<th scope="column" class="sticky name">Name</th>
+									<th scope="column">Actions</th>
+								</tr>
+							</thead>
+							<tbody id="link-category-table-body">
+								<tr class="loading">
+									<td colspan="2"><loading-spinner></loading-spinner></td>
+								</tr>
+								<tr class="no-content hidden">
+									<td colspan="2">No Categories</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</main>
+		</div>
+
+		<dialog class="form-dialog">
+			<h3>Edit Category</h3>
+
+			<div id="modal-error" class="alert error hidden"></div>
+
+			<form>
+				<fieldset>
+					<legend hidden>Edit Cagtegory</legend>
+					<input type="hidden" id="linkCategoryId" name="linkCategoryId" value="0" />
+
+					<div class="form-field">
+						<label for="name">
+							<span class="required">*</span>Name
+							<input type="text" name="name" id="name" required />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="colorCode">
+							<span class="required">*</span>Color
+							<input type="color" name="colorCode" id="colorCode" required />
+						</label>
+					</div>
+
+					<div class="actions">
+	                    <button type="button" class="btn-ghost" id="form-dialog-cancel">Cancel</button>
+	                    <button type="submit" class="btn-primary">Save</button>
+	                </div>
+	            </fieldset>
+			</form>    
+		</dialog>
+
+		<input type="hidden" id="delete-link-category-id" value="0" />
+		<confirm-dialog></confirm-dialog>
+	</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="theme-color" content="#053673" />
+
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+
+		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/variables.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/main.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/music.css" />
+
+		<script src="/components/header.js"></script>
+		<script src="/components/sidebar.js"></script>
+		<script src="/components/loading-spinner.js"></script>
+		<script src="/components/confirm-dialog.js"></script>
+
+		<script src="/scripts/main.js"></script>
+		<script src="/scripts/api.js"></script>
+		<script src="/scripts/music.js"></script>
+
+		<title>Music - Wags Media Repository</title>
+	</head>
+	<body>
+		<wags-media-header></wags-media-header>
+		<div class="page-content">
+			<wags-media-sidebar activeLink="music"></wags-media-sidebar>
+			<main>
+				<h1>Music</h1>
+
+				<div class="table-actions two-column">
+					<div class="column">
+						<button type="button" class="btn-ghost" id="open-music-filter">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+								<path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5"/>
+							</svg>
+							Filter
+						</button>
+						<button type="button" class="btn-danger-ghost hidden" id="clear-filters">Clear Filters</button>
+					</div>
+					<div class="column">
+						<a class="btn-ghost" href="/music/genres.html">Edit Genres</a>
+						<button type="button" class="btn-primary" id="add-new-album">Add New Album</button>
+					</div>
+				</div>
+
+				<div class="table-wrapper">
+					<table>
+						<thead>
+							<tr>
+								<th scope="column" class="artist-col">Artist</th>
+								<th scope="column" class="album-col">Album</th>
+								<th scope="column" class="format-col">Format(s)</th>
+								<th scope="column" class="genre-col">Genre(s)</th>
+								<th scope="column" class="actions-col">Actions</th>
+							</tr>
+						</thead>
+						<tbody id="music-table-body">
+							<tr class="loading">
+								<td colspan="5"><loading-spinner></loading-spinner></td>
+							</tr>
+							<tr class="no-content hidden">
+								<td colspan="5">No Albums</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</main>
+		</div>
+
+		<dialog id="add-album" class="standard-modal">
+			<div class="container">
+				<h2>Add Album</h2>
+
+				<div id="add-album-modal-error" class="alert error hidden"></div>
+
+				<form name="add-album">
+					<input type="hidden" id="musicAlbumId" name="musicAlbumId" value="0" />
+
+					<div class="form-field">
+						<label for="album-title">
+							<span class="required">*</span>Title
+							<input type="text" name="album-title" id="album-title" required />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="album-artist">
+							<span class="required">*</span>Artist
+							<input type="text" name="album-artist" id="album-artist" required />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="album-cover">
+							<span class="required">*</span>Cover
+							<input type="text" name="album-cover" id="album-cover" required />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="music-format">
+							Format(s)
+							<select name="music-format" id="music-format" multiple>
+								<option value="1">CD</option>
+								<option value="2">Digital</option>
+								<option value="3">Vinyl</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="music-genre">
+							Genre(s)
+							<select name="music-genre" id="music-genre" multiple>
+							</select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="album-thoughts">
+							Thoughts
+							<textarea id="album-thoughts" name="album-thoughts"></textarea>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="is-top-ten">
+							<input type="checkbox" name="is-top-ten" id="is-top-ten" value="true" switch />
+							Top 10
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="show-on-now">
+							<input type="checkbox" name="show-on-now" id="show-on-now" value="true" switch />
+							Show on Now Page
+						</label>
+					</div>
+
+					<div class="actions">
+						<button type="submit" class="btn-primary">Save</button>
+						<button type="button" class="btn-ghost" id="album-form-dialog-cancel">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</dialog>
+
+		<dialog id="filter-music" class="standard-modal">
+			<div class="container">
+				<h2>Filter Music</h2>
+
+				<form name="filter-music">
+					<div class="form-field">
+						<label for="filter-name">
+							Artist/Album
+							<input type="text" name="filter-name" id="filter-name" />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="filter-format">
+							Format
+							<select name="filter-format" id="filter-format">
+								<option value="0">All</option>
+								<option value="1">CD</option>
+								<option value="2">Digital</option>
+								<option value="3">Vinyl</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="filter-genre">
+							Genre
+							<select name="filter-genre" id="filter-genre">
+								<option value="0">All</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="actions">
+						<button type="submit" class="btn-primary">Filter</button>
+						<button type="button" class="btn-ghost" id="filter-music-cancel">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</dialog>
+
+		<dialog id="edit-album-tracks" class="edit-tracks-modal">
+			<div class="container">
+				<h2>Edit Tracks</h2>
+
+				<h3></h3>
+
+				<div id="edit-tracks-modal-error" class="alert error hidden"></div>
+
+				<form name="edit-tracks">
+					<input type="hidden" id="edit-tracks-album-id" name="edit-tracks-album-id" value="0" />
+
+					<div class="form-content" id="tracks">
+
+					</div>
+
+					<div class="form-content">
+						<button type="button" class="btn-primary" id="edit-tracks-form-add-track">Add Track</button>
+					</div>
+
+					<div class="actions">
+						<button type="submit" class="btn-primary">Save</button>
+						<button type="button" class="btn-ghost" id="edit-tracks-form-dialog-cancel">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</dialog>
+
+		<input type="hidden" id="delete-album-id" value="0" />
+		<confirm-dialog></confirm-dialog>
+	</body>
+</html>

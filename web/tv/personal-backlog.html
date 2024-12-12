@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="theme-color" content="#053673" />
+
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+
+		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/variables.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/main.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/tv.css" />
+
+		<script src="/components/header.js"></script>
+		<script src="/components/sidebar.js"></script>
+		<script src="/components/loading-spinner.js"></script>
+		<script src="/components/confirm-dialog.js"></script>
+		<script src="/components/star-rating.js"></script>
+
+		<script src="/scripts/main.js"></script>
+		<script src="/scripts/api.js"></script>
+		<script src="/scripts/tv.js"></script>
+
+		<title>TV - Personal Backlog - Wags Media Repository</title>
+	</head>
+	<body data-statusid="1">
+		<wags-media-header></wags-media-header>
+		<div class="page-content">
+			<wags-media-sidebar activeLink="tv-personal"></wags-media-sidebar>
+			<main class="links-page">
+				<h1>TV - Personal Backlog</h1>
+
+				<div class="table-actions two-column">
+					<div class="column">
+						<button type="button" class="btn-ghost" id="open-tv-filter">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+								<path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5"/>
+							</svg>
+							Filter
+						</button>
+						<button type="button" class="btn-danger-ghost hidden" id="clear-filters">Clear Filters</button>
+					</div>
+					<div class="column">
+						<button type="button" class="btn-primary" id="add-new-tv-show" data-statusid="1">Add New TV Show</button>
+					</div>
+				</div>
+
+				<div class="table-wrapper">
+					<table>
+						<thead>
+							<tr>
+								<th scope="column" class="sort-col">Sort</th>
+								<th scope="column" class="title-col">Title</th>
+								<th scope="column" class="service-col">Service(s)</th>
+								<th scope="column" class="genre-col">Genre(s)</th>
+								<th scope="column" class="actions-col">Actions</th>
+							</tr>
+						</thead>
+						<tbody id="tv-table-body">
+							<tr class="loading">
+								<td colspan="7"><loading-spinner></loading-spinner></td>
+							</tr>
+							<tr class="no-content hidden">
+								<td colspan="7">No TV Shows</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</main>
+		</div>
+
+		<dialog id="add-tv-show" class="tv-modal">
+			<div class="container">
+				<h2>Add TV Show</h2>
+
+				<div id="add-tv-modal-error" class="alert error hidden"></div>
+
+				<form name="add-tv-show">
+					<input type="hidden" id="televisionShowId" name="televisionShowId" value="0" />
+
+					<div class="form-field">
+						<label for="tv-title">
+							<span class="required">*</span>Title
+							<input type="text" name="tv-title" id="tv-title" required />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="tv-status">
+							<span class="required">*</span>Status
+							<select name="tv-status" id="tv-status" required>
+								<option></option>
+								<option value="1" selected>Personal Backlog</option>
+								<option value="2">Joint Backlog</option>
+								<option value="3">Watching</option>
+								<option value="4">Between Seasons</option>
+								<option value="5">Finished</option>
+								<option value="6">Abandoned</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="tv-imdblink">
+							<span class="required">*</span>IMDb Link
+							<input type="url" name="tv-imdblink" id="tv-imdblink" required />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="tv-cover-url">
+							Cover URL
+							<input type="url" name="tv-cover-url" id="tv-cover-url" />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="tv-sort">
+							Sort Order
+							<input type="text" name="tv-sort" id="tv-sort" />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="tv-genre">
+							Genre(s)
+							<select id="tv-genre" name="genres" multiple></select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="tv-service">
+							Service(s)
+							<select id="tv-service" name="services" multiple></select>
+						</label>
+					</div>
+
+					<div class="form-field dual">
+						<label for="tv-current-episode">
+							Current Episode/Season
+							<input type="text" name="tv-current-episode" id="tv-current-episode" />
+						</label>
+						<label for="tv-episode-count">
+							Episode/Season Count
+							<input type="text" id="tv-episode-count" name="tv-episode-count" />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label>
+							Rating
+							<star-rating id="tv-rating" fieldid="tv-rating" rating="0"></star-rating>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="tv-thoughts">
+							Thoughts
+							<textarea id="tv-thoughts" name="tv-thoughts"></textarea>
+						</label>
+					</div>
+
+					<div class="actions">
+						<button type="submit" class="btn-primary">Save</button>
+						<button type="button" class="btn-ghost" id="tv-form-dialog-cancel">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</dialog>
+
+		<dialog id="filter-tv" class="tv-modal">
+			<div class="container">
+				<h2>Filter TV Shows</h2>
+
+				<form name="filter-tv">
+					<div class="form-field">
+						<label for="filter-tv-title">
+							Title
+							<input type="text" name="tv-title" id="filter-tv-title" />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="filter-tv-genre">
+							Genre
+							<select name="tv-genre" id="filter-tv-genre">
+								<option value="0">All</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="filter-tv-service">
+							Service
+							<select name="tv-service" id="filter-tv-service">
+								<option value="0">All</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="actions">
+						<button type="submit" class="btn-primary">Filter</button>
+						<button type="button" class="btn-ghost" id="tv-filter-cancel">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</dialog>
+
+		<input type="hidden" id="delete-tv-id" value="0" />
+		<confirm-dialog></confirm-dialog>
+	</body>
+</html>

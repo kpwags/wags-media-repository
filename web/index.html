@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="theme-color" content="#053673" />
+
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+
+		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/variables.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/main.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/dashboard.css" />
+
+		<script src="/components/header.js"></script>
+		<script src="/components/sidebar.js"></script>
+		<script src="/components/loading-spinner.js"></script>
+		<script src="/components/progress-bar.js"></script>
+		<script src="/components/rating-display.js"></script>
+
+		<script src="/scripts/main.js"></script>
+		<script src="/scripts/api.js"></script>
+		<script src="/scripts/dashboard.js"></script>
+
+		<script src="/scripts/lib/dayjs.min.js"></script>
+
+		<title>Wags Media Repository</title>
+	</head>
+	<body>
+		<wags-media-header></wags-media-header>
+		<div class="page-content">
+			<wags-media-sidebar></wags-media-sidebar>
+			<main>
+				<h1 class="hidden">Wags Media Repository</h1>
+
+				<section class="dashboard">
+					<div class="dashboard-column">
+						<div class="dashboard-card">
+							<div class="title"><h2>Currently Reading</h2></div>
+							<ul class="cover-list" id="currently-reading">
+								<li class="currently-loading">
+									<loading-spinner></loading-spinner>
+								</li>
+								<li class="no-content hidden">Nothing Here...</li>
+							</ul>
+						</div>
+
+						<div class="dashboard-card">
+							<div class="title"><h2>Currently Watching</h2></div>
+							<ul class="cover-list" id="currently-watching">
+								<li class="currently-loading">
+									<loading-spinner></loading-spinner>
+								</li>
+								<li class="no-content hidden">Nothing Here...</li>
+							</ul>
+						</div>
+
+						<div class="dashboard-card">
+							<div class="title"><h2>Currently Playing</h2></div>
+							<ul class="vertical-list" id="currently-playing">
+								<li class="currently-loading">
+									<loading-spinner></loading-spinner>
+								</li>
+								<li class="no-content hidden">Nothing Here...</li>
+							</ul>
+						</div>
+
+						<div class="dashboard-card">
+							<div class="title"><h2>Currently Listening To</h2></div>
+							<ul class="vertical-list" id="currently-listening-to">
+								<li class="currently-loading">
+									<loading-spinner></loading-spinner>
+								</li>
+								<li class="no-content hidden">Nothing Here...</li>
+							</ul>
+						</div>
+					</div>
+					<div class="dashboard-column">
+						<div class="dashboard-card">
+							<div class="title with-action">
+								<h2>Recent Links</h2>
+								<button type="button" class="btn-link" id="dashboard-add-link">Add Link</button>
+							</div>
+							<ul class="dashboard-list" id="recent-links">
+								<li class="currently-loading">
+									<loading-spinner></loading-spinner>
+								</li>
+								<li class="no-content hidden">Nothing Here...</li>
+							</ul>
+						</div>
+
+						<div class="dashboard-card">
+							<div class="title"><h2>Recent Books</h2></div>
+							<ul class="cover-list" id="recent-books">
+								<li class="currently-loading">
+									<loading-spinner></loading-spinner>
+								</li>
+								<li class="no-content hidden">Nothing Here...</li>
+							</ul>
+						</div>
+
+						<div class="dashboard-card">
+							<div class="title"><h2>Recent Movies</h2></div>
+							<ul class="cover-list" id="recent-movies">
+								<li class="currently-loading">
+									<loading-spinner></loading-spinner>
+								</li>
+								<li class="no-content hidden">Nothing Here...</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+			</main>
+
+			<dialog id="update-progress" class="progress-updater">
+				<div class="container">
+					<div id="modal-error" class="alert error hidden"></div>
+
+					<img src="" alt="" width="200" height="300" />
+
+					<h2></h2>
+
+					<progress-bar data-progress="0"></progress-bar>
+
+					<form class="update-progress-form" name="update-progress">
+						<input type="hidden" name="total-count" id="total-count" />
+						<input type="hidden" name="object-type" id="object-type" />
+						<input type="hidden" name="object-id" id="object-id" />
+
+						<div class="form-field">
+							<label for="progress">
+								<span class="required">*</span><span class="label-text"></span>
+								<input type="text" name="progress" id="progress" required />
+							</label>
+						</div>
+
+						<div class="actions">
+							<button type="button" class="btn-ghost" id="progress-form-dialog-cancel">Cancel</button>
+							<button type="submit" class="btn-primary">Save</button>
+						</div>
+					</form>
+				</div>
+			</dialog>
+
+			<dialog id="add-link" class="add-link-modal">
+				<div class="container">
+					<h2>Add Link</h2>
+
+					<div id="add-link-modal-error" class="alert error hidden"></div>
+
+					<form name="add-link">
+						<div class="form-field">
+							<label for="link-title">
+								<span class="required">*</span>Title
+								<input type="text" name="link-title" id="link-title" required />
+							</label>
+						</div>
+
+						<div class="form-field">
+							<label for="link-url">
+								<span class="required">*</span>URL
+								<input type="text" name="link-url" id="link-url" required />
+							</label>
+						</div>
+
+						<div class="form-field">
+							<label for="link-author">
+								<span class="required">*</span>Author
+								<input type="text" name="link-author" id="link-author" required />
+							</label>
+						</div>
+
+						<div class="form-field">
+							<label for="link-date">
+								<span class="required">*</span>Date
+								<input type="date" name="link-date" id="link-date" />
+							</label>
+						</div>
+
+						<div class="form-field">
+							<label for="link-issue-number">
+								<span class="required">*</span>Issue #
+								<input type="text" name="link-issue-number" id="link-issue-number" required />
+							</label>
+						</div>
+
+						<div class="form-field">
+							<label for="link-type">
+								<span class="required">*</span>Type
+								<select name="link-type" id="link-type">
+									<option></option>
+									<option value="1">Link</option>
+									<option value="2">Podcast</option>
+									<option value="3">Video</option>
+								</select>
+							</label>
+						</div>
+
+						<div class="form-field">
+							<label for="link-category">
+								<span class="required">*</span>Category
+								<select name="link-category" id="link-category">
+									<option></option>
+								</select>
+							</label>
+						</div>
+
+						<div class="actions">
+							<button type="button" class="btn-ghost" id="link-form-dialog-cancel">Cancel</button>
+							<button type="submit" class="btn-primary">Save</button>
+						</div>
+					</form>
+				</div>
+			</dialog>
+		</div>
+	</body>
+</html>

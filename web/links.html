@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="theme-color" content="#053673" />
+
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+
+		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/variables.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/main.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/links.css" />
+
+		<script src="/components/header.js"></script>
+		<script src="/components/sidebar.js"></script>
+		<script src="/components/loading-spinner.js"></script>
+		<script src="/components/confirm-dialog.js"></script>
+
+		<script src="/scripts/main.js"></script>
+		<script src="/scripts/api.js"></script>
+		<script src="/scripts/links.js"></script>
+
+		<script src="/scripts/lib/dayjs.min.js"></script>
+
+		<title>Links - Wags Media Repository</title>
+	</head>
+	<body>
+		<wags-media-header></wags-media-header>
+		<div class="page-content">
+			<wags-media-sidebar activeLink="links"></wags-media-sidebar>
+			<main class="links-page">
+				<h1>Links</h1>
+
+				<div class="table-actions two-column">
+					<div class="column">
+						<button type="button" class="btn-ghost" id="open-links-filter">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+								<path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5"/>
+							</svg>
+							Filter
+						</button>
+						<button type="button" class="btn-danger-ghost hidden" id="clear-filters">Clear Filters</button>
+					</div>
+					<div class="column">
+						<a class="btn-ghost" href="/links/categories.html">Edit Categories</a>
+						<button type="button" class="btn-primary" id="add-new-link">Add New Link</button>
+					</div>
+				</div>
+
+				<div class="table-wrapper">
+					<table>
+						<thead>
+							<tr>
+								<th scope="column" class="title-col">Title</th>
+								<th scope="column" class="author-col">Author</th>
+								<th scope="column" class="date-col">Date</th>
+								<th scope="column" class="issue-col">Issue</th>
+								<th scope="column" class="type-col">Type</th>
+								<th scope="column" class="category-col">Category</th>
+								<th scope="column" class="actions-col">Actions</th>
+							</tr>
+						</thead>
+						<tbody id="link-table-body">
+							<tr class="loading">
+								<td colspan="7"><loading-spinner></loading-spinner></td>
+							</tr>
+							<tr class="no-content hidden">
+								<td colspan="7">No Links</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="table-pagination">
+					<button type="button" class="btn-link previous-page">&larr; Previous</button>
+					<button type="button" class="btn-link next-page">Next &rarr;</button>
+				</div>
+			</main>
+		</div>
+
+		<dialog id="add-link" class="link-modal">
+			<div class="container">
+				<h2>Add Link</h2>
+
+				<div id="add-link-modal-error" class="alert error hidden"></div>
+
+				<form name="add-link">
+					<input type="hidden" id="linkId" name="linkId" value="0" />
+
+					<div class="form-field">
+						<label for="link-title">
+							<span class="required">*</span>Title
+							<input type="text" name="link-title" id="link-title" required />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="link-url">
+							<span class="required">*</span>URL
+							<input type="text" name="link-url" id="link-url" required />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="link-author">
+							<span class="required">*</span>Author
+							<input type="text" name="link-author" id="link-author" required />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="link-date">
+							<span class="required">*</span>Date
+							<input type="date" name="link-date" id="link-date" />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="link-issue-number">
+							<span class="required">*</span>Issue #
+							<input type="text" name="link-issue-number" id="link-issue-number" required />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="link-type">
+							<span class="required">*</span>Type
+							<select name="link-type" id="link-type">
+								<option></option>
+								<option value="1">Link</option>
+								<option value="2">Podcast</option>
+								<option value="3">Video</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="link-category">
+							<span class="required">*</span>Category
+							<select name="link-category" id="link-category">
+								<option></option>
+							</select>
+						</label>
+					</div>
+
+					<div class="actions">
+						<button type="submit" class="btn-primary">Save</button>
+						<button type="button" class="btn-ghost" id="link-form-dialog-cancel">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</dialog>
+
+		<dialog id="filter-links" class="link-modal">
+			<div class="container">
+				<h2>Filter Links</h2>
+
+				<form name="filter-links">
+					<div class="form-field">
+						<label for="filter-link-title">
+							Title or Author
+							<input type="text" name="link-title" id="filter-link-title" />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="filter-link-issue-number">
+							Issue #
+							<input type="text" name="link-issue-number" id="filter-link-issue-number" />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="filter-link-type">
+							Type
+							<select name="link-type" id="filter-link-type">
+								<option value="0">All</option>
+								<option value="1">Link</option>
+								<option value="2">Podcast</option>
+								<option value="3">Video</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="filter-link-category">
+							Category
+							<select name="link-category" id="filter-link-category">
+								<option value="0">All</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="actions">
+						<button type="submit" class="btn-primary">Filter</button>
+						<button type="button" class="btn-ghost" id="link-filter-cancel">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</dialog>
+
+		<input type="hidden" id="delete-link-id" value="0" />
+		<confirm-dialog></confirm-dialog>
+	</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="theme-color" content="#053673" />
+
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+
+		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/variables.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/main.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/books.css" />
+
+		<script src="/components/header.js"></script>
+		<script src="/components/sidebar.js"></script>
+		<script src="/components/loading-spinner.js"></script>
+		<script src="/components/confirm-dialog.js"></script>
+
+		<script src="/scripts/main.js"></script>
+		<script src="/scripts/api.js"></script>
+		<script src="/scripts/books.js"></script>
+
+		<title>Books - Abandoned - Wags Media Repository</title>
+	</head>
+	<body data-statusid="4">
+		<wags-media-header></wags-media-header>
+		<div class="page-content">
+			<wags-media-sidebar activeLink="books-abandoned"></wags-media-sidebar>
+			<main>
+				<h1>Books - Abandoned</h1>
+
+				<div class="table-actions two-column">
+					<div class="column">
+						<button type="button" class="btn-ghost" id="open-book-filter">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+								<path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5"/>
+							</svg>
+							Filter
+						</button>
+						<button type="button" class="btn-danger-ghost hidden" id="clear-filters">Clear Filters</button>
+					</div>
+				</div>
+
+				<div class="table-wrapper">
+					<table>
+						<thead>
+							<tr>
+								<th scope="column" class="title-col">Title</th>
+								<th scope="column" class="author-col">Author</th>
+								<th scope="column" class="type-col">Type</th>
+								<th scope="column" class="series-col">Series</th>
+								<th scope="column" class="genre-col">Genre(s)</th>
+								<th scope="column" class="actions-col">Actions</th>
+							</tr>
+						</thead>
+						<tbody id="book-table-body">
+							<tr class="loading">
+								<td colspan="6"><loading-spinner></loading-spinner></td>
+							</tr>
+							<tr class="no-content hidden">
+								<td colspan="6">No Books</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</main>
+		</div>
+
+		<dialog id="filter-book" class="standard-modal">
+			<div class="container">
+				<h2>Filter Games</h2>
+
+				<form name="filter-book">
+					<div class="form-field">
+						<label for="filter-book-title">
+							Title / Author
+							<input type="text" name="book-title" id="filter-book-title" />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="filter-book-genre">
+							Genre
+							<select name="book-genre" id="filter-book-genre">
+								<option value="0">All</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="filter-book-series">
+							Series
+							<select name="book-series" id="filter-book-series">
+								<option value="0">All</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="filter-book-type">
+							Type
+							<select name="book-type" id="filter-book-type">
+								<option value="0">All</option>
+								<option value="1">Fiction</option>
+								<option value="2">Non-Fiction</option>
+								<option value="3">Reference</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="filter-is-purchased">
+							<input type="checkbox" name="filter-is-purchased" id="filter-is-purchased" value="true" switch />
+							Purchased
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="filter-at-library">
+							<input type="checkbox" name="filter-at-library" id="filter-at-library" value="true" switch />
+							At Library
+						</label>
+					</div>
+
+					<div class="actions">
+						<button type="submit" class="btn-primary">Filter</button>
+						<button type="button" class="btn-ghost" id="book-filter-cancel">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</dialog>
+
+		<input type="hidden" id="delete-book-id" value="0" />
+		<confirm-dialog></confirm-dialog>
+	</body>
+</html>

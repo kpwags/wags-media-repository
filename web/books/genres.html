@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="theme-color" content="#053673" />
+
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+
+		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/variables.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/main.css" />
+		<link rel="stylesheet" type="text/css" href="/styles/books.css" />
+
+		<script src="/components/header.js"></script>
+		<script src="/components/sidebar.js"></script>
+		<script src="/components/loading-spinner.js"></script>
+		<script src="/components/confirm-dialog.js"></script>
+
+		<script src="/scripts/main.js"></script>
+		<script src="/scripts/api.js"></script>
+		<script src="/scripts/book-genres.js"></script>
+
+		<title>Book Genres - Wags Media Repository</title>
+	</head>
+	<body>
+		<wags-media-header></wags-media-header>
+		<div class="page-content">
+			<wags-media-sidebar activeLink="books"></wags-media-sidebar>
+			<main>
+				<div class="slim-page">
+					<h1>Book Genres</h1>
+
+					<div class="table-actions two-column">
+						<div class="column">
+							<a class="btn-ghost" href="/books/backlog.html">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+									<path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
+								</svg>
+								Back to Books
+							</a>
+						</div>
+						<div class="column">
+							<button type="button" class="btn-primary" id="add-new-genre">Add New Genre</button>
+						</div>
+					</div>
+
+					<div class="table-wrapper">
+						<table>
+							<thead>
+								<tr>
+									<th scope="column" class="name-col">Name</th>
+									<th scope="column" class="genre-actions-col">Actions</th>
+								</tr>
+							</thead>
+							<tbody id="genre-table-body">
+								<tr class="loading">
+									<td colspan="2"><loading-spinner></loading-spinner></td>
+								</tr>
+								<tr class="no-content hidden">
+									<td colspan="2">No Book Genres</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</main>
+		</div>
+
+		<dialog id="add-book-genre" class="standard-modal">
+			<div class="container">
+				<h2>Add Genre</h2>
+
+				<div id="add-book-genre-modal-error" class="alert error hidden"></div>
+
+				<form name="add-genre">
+					<input type="hidden" id="bookGenreId" name="bookGenreId" value="0" />
+
+					<div class="form-field">
+						<label for="name">
+							<span class="required">*</span>Name
+							<input type="text" name="name" id="name" required />
+						</label>
+					</div>
+
+					<div class="form-field">
+						<label for="colorCode">
+							<span class="required">*</span>Color
+							<input type="color" name="colorCode" id="colorCode" required />
+						</label>
+					</div>
+
+					<div class="actions">
+						<button type="submit" class="btn-primary">Save</button>
+						<button type="button" class="btn-ghost" id="book-genre-form-dialog-cancel">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</dialog>
+
+		<input type="hidden" id="delete-genre-id" value="0" />
+		<confirm-dialog></confirm-dialog>
+	</body>
+</html>
