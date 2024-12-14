@@ -408,4 +408,6 @@ tools/WagsMediaRepository.Loader/appsettings.json
 *dist
 .vite
 
-node/wags-media-repository-api/data/MediaRepository.db
+MediaRepository.db
+*.db
+api/data/MediaRepository.db
