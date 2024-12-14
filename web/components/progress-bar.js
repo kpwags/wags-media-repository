@@ -22,7 +22,7 @@ class ProgressBar extends HTMLElement {
 		this.innerHTML = `
 			<div class="progress-bar" title="${this.progress}% Complete">
 				<div class="bar">
-					<div class="inner-bar" style="width: ${this.progress}%;"></div>
+					<div class="inner-bar" style="width: ${this.progress}%;">${this.progress}%</div>
 				</div>
 			</div>
 		`;

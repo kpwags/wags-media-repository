@@ -697,6 +697,9 @@ input[type="date"] {
 .progress-bar .inner-bar {
 	height: 100%;
 	background-color: var(--blue-3);
+	text-align: center;
+	color: var(--grey-1);
+	overflow: hidden;
 }
 /* END PROGRESS BAR */
 
