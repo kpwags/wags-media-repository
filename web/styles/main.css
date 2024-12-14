@@ -79,6 +79,10 @@ aside {
 	transition: transform 250ms ease-in-out;
 }
 
+body:not(:has(aside[data-collapsed])) main {
+	width: calc(100% - 200px);
+}
+
 aside[data-collapsed] {
 	left: calc(var(--sidebar-width) * -1);
 }
