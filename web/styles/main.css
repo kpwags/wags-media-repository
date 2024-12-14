@@ -584,6 +584,11 @@ input[type="date"] {
 	width: 100%;
 	margin-top: 4px;
 	font-weight: 400;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	border-radius: 0;
+	background: transparent;
+	min-height: 38px;
 }
 /* END FORMS */
 
