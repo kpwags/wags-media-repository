@@ -9,10 +9,7 @@ window.addEventListener('load', function () {
 	bookStatusId = parseInt(document.querySelector('body').getAttribute("data-statusid"));
 
 	document.getElementById('add-new-book')?.addEventListener('click', function () {
-		document.querySelector('#add-book h2').textContent = 'Add Book';
-		document.querySelector('input#book-current-page').value = 1;
-		document.querySelector('input#book-page-count').value = 1;
-		document.querySelector('dialog#add-book').showModal();
+		openAddForm();
 	});
 
 	document.getElementById('book-form-dialog-cancel')?.addEventListener('click', function () {
@@ -488,6 +485,18 @@ async function loadBooks() {
 	books = data.filter((b) => b.bookStatusId === bookStatusId);
 
 	loadRowsIntoTable();
+}
+
+function openAddForm() {
+	const sortOrderValues = books.map((b) => b.sortOrder);
+
+	const maxSortOrder = Math.max(...sortOrderValues)
+
+	document.querySelector('#add-book h2').textContent = 'Add Book';
+	document.querySelector('input#book-sort').value = maxSortOrder + 10;
+	document.querySelector('input#book-current-page').value = 1;
+	document.querySelector('input#book-page-count').value = 1;
+	document.querySelector('dialog#add-book').showModal();
 }
 
 function buildBookFiltersFromForm() {
