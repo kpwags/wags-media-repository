@@ -207,7 +207,7 @@ function loadFinishedMovieRows(movies) {
 		editButton.textContent = 'Edit';
 		editButton.classList.add('btn-link');
 		editButton.addEventListener('click', function () {
-			editTelevisionShow(movie.televisionShowId);
+			editMovie(movie.movieId);
 		});
 
 		const deleteButton = document.createElement('button');
@@ -259,7 +259,7 @@ function loadAbandonedMovieRows(movies) {
 		editButton.textContent = 'Edit';
 		editButton.classList.add('btn-link');
 		editButton.addEventListener('click', function () {
-			editTelevisionShow(movie.televisionShowId);
+			editMovie(movie.movieId);
 		});
 
 		const deleteButton = document.createElement('button');
