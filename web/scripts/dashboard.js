@@ -67,7 +67,7 @@ async function loadCurrentBooks() {
 	data.forEach((d) => {
 		const li = document.createElement('li');
 		li.classList.add('current-item');
-		
+
 		const bookImage = document.createElement('img');
 		bookImage.setAttribute('src', d.coverImageUrl);
 		bookImage.setAttribute('alt', `${d.fullTitle} by ${d.author}`);
@@ -137,7 +137,7 @@ async function loadRecentLinks() {
 	recentLinks.forEach((link) => {
 		const li = document.createElement('li');
 		li.setAttribute('data-link', true);
-		
+
 		const linkAnchor = document.createElement('a');
 		linkAnchor.textContent = link.title;
 		linkAnchor.setAttribute('href', link.url);
@@ -179,7 +179,7 @@ async function loadCurrentTv() {
 	currentTvData.forEach((tv) => {
 		const li = document.createElement('li');
 		li.classList.add('current-item');
-		
+
 		const tvImage = document.createElement('img');
 		tvImage.setAttribute('src', tv.coverImageUrl);
 		tvImage.setAttribute('alt', tv.title);
@@ -241,7 +241,7 @@ async function loadRecentBooks() {
 	recentBookData.forEach((book) => {
 		const li = document.createElement('li');
 		li.classList.add('current-item');
-		
+
 		const bookImage = document.createElement('img');
 		bookImage.setAttribute('src', book.coverImageUrl);
 		bookImage.setAttribute('alt', `${book.fullTitle} by ${book.author}`);
@@ -306,7 +306,7 @@ async function loadCurrentVideoGames() {
 
 		const divContent = document.createElement('div');
 		divContent.classList.add('content');
-		
+
 		const coverImage = document.createElement('img');
 		coverImage.setAttribute('src', game.coverImageUrl);
 		coverImage.setAttribute('alt', game.title);
@@ -354,7 +354,7 @@ async function loadCurrentMusic() {
 
 		const divContent = document.createElement('div');
 		divContent.classList.add('content');
-		
+
 		const coverImage = document.createElement('img');
 		coverImage.setAttribute('src', album.coverImageUrl);
 		coverImage.setAttribute('alt', `${album.artist} - ${album.title}`);
@@ -400,7 +400,7 @@ async function loadRecentMovies() {
 	recentMovies.forEach((movie) => {
 		const li = document.createElement('li');
 		li.classList.add('current-item');
-		
+
 		const movieImage = document.createElement('img');
 		movieImage.setAttribute('src', movie.posterImageUrl);
 		movieImage.setAttribute('alt', movie.title);
@@ -500,6 +500,7 @@ function loadUpdateProgressForm(mediaType, id) {
 	document.querySelector('dialog#update-progress img').setAttribute('src', imageUrl);
 	document.querySelector('dialog#update-progress img').setAttribute('alt', title);
 	document.querySelector('dialog#update-progress progress-bar').setAttribute('progress', progress);
+	document.querySelector('dialog#update-progress progress-bar .inner-bar').textContent = `${progress}%`;
 	document.querySelector('dialog#update-progress h2').textContent = title;
 	document.querySelector('dialog#update-progress input#progress').value = currentValue;
 	document.querySelector('dialog#update-progress input#total-count').value = totalValue;
@@ -515,6 +516,7 @@ function updateProgressBar(newValue) {
 	const updatedProgress = calculateProgress(newValue, totalValue);
 
 	document.querySelector('dialog#update-progress progress-bar').setAttribute('progress', updatedProgress);
+	document.querySelector('dialog#update-progress progress-bar .inner-bar').textContent = `${updatedProgress}%`;
 }
 
 async function updateBookProgress(bookId, currentPage) {
