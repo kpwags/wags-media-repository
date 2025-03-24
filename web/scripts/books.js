@@ -460,6 +460,9 @@ function loadRowsIntoTable() {
 		case 3:
 			fragment = loadFinishedBookRows(data.sort((a, b) => sortByDate(a.dateCompleted, b.dateCompleted)));
 			break;
+		case 4:
+			fragment = loadAbandonedBookRows(data.sort((a, b) => sortByDate(a.dateCompleted, b.dateCompleted)));
+			break;
 		default:
 			document.querySelector("tr.loading")?.classList.add("hidden");
 			document.querySelector("tr.no-content")?.classList.remove("hidden");
