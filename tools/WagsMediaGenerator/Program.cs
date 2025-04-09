@@ -14,12 +14,12 @@ internal class Program
     static async Task Main()
     {
         var appVersion = System.Reflection.Assembly.GetEntryAssembly()?.GetName().Version;
-        
+
         IConfiguration config = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json")
             .AddEnvironmentVariables()
             .Build();
-        
+
         _configuration = config.GetRequiredSection("Directory").Get<DirectoryConfiguration>();
         _generalConfiguration = config.GetRequiredSection("General").Get<GeneralConfiguration>();
 
@@ -36,14 +36,14 @@ internal class Program
         await ProcessTelevision();
         await ProcessPodcasts();
         await ProcessMusic();
-        
+
         WriteConsoleSuccess("JSON written");
     }
 
     static async Task ProcessBooks()
     {
         WriteWithColor("Writing books to JSON");
-        
+
         var books = await Fetch<Book>("book");
 
         if (books is null)
@@ -66,7 +66,7 @@ internal class Program
         var years = completed.Select(b => b.DateCompleted?.Year ?? DateTime.Now.Year).Distinct().ToList();
 
         var bookYears = new List<BookOutput>();
-        
+
         foreach (var year in years)
         {
             bookYears.Add(new BookOutput
@@ -85,7 +85,7 @@ internal class Program
                 inProgress = currentlyReading,
                 completed = bookYears.OrderByDescending(b => b.Year),
                 toRead,
-            }, 
+            },
             options: new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -109,23 +109,23 @@ internal class Program
         }
 
         var links = response.ToList();
-            
+
         var json = JsonSerializer.Serialize(
-            links, 
+            links,
             options: new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 WriteIndented = true,
             }
         );
-        
+
         await WriteJsonToFile(json, "links.json");
     }
 
     static async Task ProcessVideoGames()
     {
         WriteWithColor("Writing video games to JSON");
-        
+
         var videoGames = await Fetch<VideoGame>("video-game");
 
         if (videoGames is null)
@@ -152,7 +152,7 @@ internal class Program
                 inProgress = currentlyPlaying,
                 completed,
                 toPlay,
-            }, 
+            },
             options: new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -162,17 +162,17 @@ internal class Program
 
         await WriteJsonToFile(json, "videoGames.json");
     }
-    
+
     static async Task ProcessMovies()
     {
         WriteWithColor("Writing movies to JSON");
-        
+
         if (_generalConfiguration is null)
         {
             WriteConsoleError("Error reading configuration");
             return;
         }
-        
+
         var movies = await Fetch<Movie>("movie");
 
         if (movies is null)
@@ -193,11 +193,11 @@ internal class Program
             .Where(m => m.Status.Name == Constants.MovieStatus.CouldNotFinish)
             .OrderByDescending(m => m.DateWatched)
             .ToList();
-        
+
         var years = finished.Select(m => m.DateWatched?.Year ?? DateTime.Now.Year).Distinct().ToList();
 
         var movieYears = new List<MovieOutput>();
-        
+
         foreach (var year in years)
         {
             movieYears.Add(new MovieOutput
@@ -216,7 +216,7 @@ internal class Program
                 toWatch,
                 watched = movieYears.OrderByDescending(m => m.Year),
                 abandoned,
-            }, 
+            },
             options: new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -225,12 +225,12 @@ internal class Program
         );
 
         await WriteJsonToFile(json, "movies.json");
-        
+
         // movies in the last X days
         var recentMovies = finished
             .Where(m => m.DateWatched?.Date > DateTime.Now.AddDays(_generalConfiguration.MovieDateRange * -1).Date)
             .ToList();
-        
+
         json = JsonSerializer.Serialize(
             recentMovies,
             options: new JsonSerializerOptions
@@ -242,11 +242,11 @@ internal class Program
 
         await WriteJsonToFile(json, "recentMovies.json");
     }
-    
+
     static async Task ProcessTelevision()
     {
         WriteWithColor("Writing TV to JSON");
-        
+
         var tvShows = await Fetch<TelevisionShow>("tv");
 
         if (tvShows is null)
@@ -284,7 +284,7 @@ internal class Program
                 betweenSeasons,
                 completed,
                 abandoned,
-            }, 
+            },
             options: new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -294,17 +294,17 @@ internal class Program
 
         await WriteJsonToFile(json, "tv.json");
     }
-    
+
     static async Task ProcessPodcasts()
     {
         WriteWithColor("Writing podcasts to JSON");
-        
+
         var podcastsTask = Fetch<Podcast>("podcast");
         var podcastCategoriesTask = Fetch<PodcastCategory>("podcast/category");
 
         await Task.WhenAll(podcastCategoriesTask, podcastsTask);
-        
-        
+
+
         var categories = podcastCategoriesTask.Result;
         var podcasts = podcastsTask.Result;
 
@@ -315,12 +315,12 @@ internal class Program
         }
 
         var podcastOutput = new List<PodcastOutput>();
-        
+
         foreach (var category in categories)
         {
             podcastOutput.Add(new PodcastOutput
             {
-                Name = category.Name, 
+                Name = category.Name,
                 Podcasts = podcasts
                     .Where(p => p.PodcastCategoryId == category.PodcastCategoryId)
                     .OrderBy(p => SortByTitle(p.Name))
@@ -339,11 +339,11 @@ internal class Program
 
         await WriteJsonToFile(json, "podcasts.json");
     }
-    
+
     static async Task ProcessMusic()
     {
         WriteWithColor("Writing music to JSON");
-        
+
         var albums = await Fetch<MusicAlbum>("music");
 
         if (albums is null)
@@ -353,7 +353,7 @@ internal class Program
         }
 
         var json = JsonSerializer.Serialize(
-            albums.OrderBy(a => SortByTitle(a.Artist)).ThenBy(a => SortByTitle(a.Title)).ToList(), 
+            albums.OrderBy(a => SortByTitle(a.Artist)).ThenBy(a => SortByTitle(a.Title)).ToList(),
             options: new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -363,7 +363,7 @@ internal class Program
 
         await WriteJsonToFile(json, "music.json");
     }
-    
+
     static async Task WriteJsonToFile(string json, string filename)
     {
         var path = Path.Join(_configuration?.Output, filename);
@@ -374,10 +374,10 @@ internal class Program
         }
 
         await using var sw = new StreamWriter(path, false);
-        
+
         await sw.WriteAsync(json);
     }
-    
+
     static void WriteConsoleError(string errorMessage)
     {
         WriteWithColor(errorMessage, ConsoleColor.Red);
@@ -399,7 +399,7 @@ internal class Program
     {
         var handler = new HttpClientHandler();
         handler.ClientCertificateOptions = ClientCertificateOption.Manual;
-        handler.ServerCertificateCustomValidationCallback = 
+        handler.ServerCertificateCustomValidationCallback =
             (httpRequestMessage, cert, cetChain, policyErrors) =>
             {
                 return true;
@@ -424,12 +424,12 @@ internal class Program
                 new JsonSerializerOptions
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    
+
                 });
 
         return response;
     }
-    
+
     static string SortByTitle(string title) =>
         title.StartsWith("A ", StringComparison.OrdinalIgnoreCase) || title.StartsWith("The ", StringComparison.OrdinalIgnoreCase)
             ? title.Substring(title.IndexOf(" ", StringComparison.Ordinal) + 1)
