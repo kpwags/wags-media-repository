@@ -103,7 +103,7 @@ function loadRowsIntoTable() {
 
 	const fragment = document.createDocumentFragment();
 
-	music.forEach((album) => {
+	music.sort((a, b) => sortByTitle(a.artist, b.artist)).forEach((album) => {
 		const tr = document.createElement('tr');
 		tr.classList.add('data-row');
 

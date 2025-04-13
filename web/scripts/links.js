@@ -47,23 +47,23 @@ window.addEventListener('load', function () {
 		clearFilters();
 	});
 
-	document.querySelector('form[name="add-link"]').addEventListener('submit', function(e) {
+	document.querySelector('form[name="add-link"]').addEventListener('submit', function (e) {
 		e.preventDefault();
 
 		saveLink();
 	});
 
-	document.querySelector('form[name="filter-links"]').addEventListener('submit', function(e) {
+	document.querySelector('form[name="filter-links"]').addEventListener('submit', function (e) {
 		e.preventDefault();
 
 		applyFilters();
 	});
 
-	document.querySelector('dialog.confirm-dialog button.confirm-dialog-no').addEventListener('click', function() {
+	document.querySelector('dialog.confirm-dialog button.confirm-dialog-no').addEventListener('click', function () {
 		cancelOutOfConfirmDialog('#delete-link-id');
 	});
 
-	document.querySelector('dialog.confirm-dialog button.confirm-dialog-yes').addEventListener('click', function() {
+	document.querySelector('dialog.confirm-dialog button.confirm-dialog-yes').addEventListener('click', function () {
 		deleteLink();
 	});
 });
@@ -129,7 +129,7 @@ function loadRowsIntoTable() {
 	clearTableRows();
 
 	const startingIndex = (currentPage - 1) * linksPerPage;
-	
+
 	const links = filtersActive
 		? filteredLinks
 		: [...allLinks].slice(startingIndex, startingIndex + linksPerPage);
@@ -139,7 +139,7 @@ function loadRowsIntoTable() {
 	links.forEach((link) => {
 		const tr = document.createElement('tr');
 		tr.classList.add('data-row');
-		
+
 		const titleCell = document.createElement('td');
 
 		const linkAnchor = document.createElement('a');
@@ -159,7 +159,7 @@ function loadRowsIntoTable() {
 
 		const dateCell = document.createElement('td');
 		dateCell.classList.add('center-align');
-		dateCell.textContent = dayjs(link.linkDate).format('MM/DD/YYYY');
+		dateCell.textContent = dayjs.tz(link.linkDate, 'UTC').utc(true).format('MM/DD/YYYY');
 
 		tr.appendChild(dateCell);
 
@@ -183,7 +183,7 @@ function loadRowsIntoTable() {
 
 		const categoryCell = document.createElement('td');
 		categoryCell.classList.add('center-align');
-		
+
 		const categoryTag = document.createElement('div');
 		categoryTag.classList.add('tag');
 		categoryTag.setAttribute('style', `background: ${link.category.colorCode};`);
@@ -250,7 +250,7 @@ function editLink(linkId) {
 		document.querySelector('input#link-title').value = link.title;
 		document.querySelector('input#link-url').value = link.url;
 		document.querySelector('input#link-author').value = link.author;
-		document.querySelector('input#link-date').value = dayjs(link.linkDate).format('YYYY-MM-DD');
+		document.querySelector('input#link-date').value = dayjs.tz(link.linkDate, 'UTC').utc(true).format('YYYY-MM-DD');
 		document.querySelector('input#link-issue-number').value = link.readingLogIssueNumber;
 		document.querySelector('select#link-type').value = link.type.linkTypeId;
 		document.querySelector('select#link-category').value = link.category.linkCategoryId;
@@ -402,6 +402,6 @@ async function deleteLink() {
 	}
 
 	await loadLinks();
-	
+
 	document.querySelector('dialog.confirm-dialog').close();
 }

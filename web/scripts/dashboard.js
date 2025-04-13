@@ -19,13 +19,13 @@ window.addEventListener('load', function () {
 		updateProgressBar(newValue);
 	});
 
-	document.querySelector('form[name="update-progress"]').addEventListener('submit', function(e) {
+	document.querySelector('form[name="update-progress"]').addEventListener('submit', function (e) {
 		e.preventDefault();
 
 		updateProgress();
 	});
 
-	document.querySelector('form[name="add-link"]').addEventListener('submit', function(e) {
+	document.querySelector('form[name="add-link"]').addEventListener('submit', function (e) {
 		e.preventDefault();
 
 		saveLink();
@@ -68,13 +68,16 @@ async function loadCurrentBooks() {
 		const li = document.createElement('li');
 		li.classList.add('current-item');
 
+		const imageDiv = document.createElement('div');
+
 		const bookImage = document.createElement('img');
 		bookImage.setAttribute('src', d.coverImageUrl);
 		bookImage.setAttribute('alt', `${d.fullTitle} by ${d.author}`);
 		bookImage.setAttribute('width', '150');
 		bookImage.setAttribute('height', '225');
 
-		li.appendChild(bookImage);
+		imageDiv.appendChild(bookImage);
+		li.appendChild(imageDiv);
 
 		const detailsDiv = document.createElement('div');
 		detailsDiv.classList.add('details');
@@ -95,7 +98,7 @@ async function loadCurrentBooks() {
 		updateProgressButton.textContent = 'Update progress';
 		updateProgressButton.classList.add('btn-primary');
 		updateProgressButton.setAttribute('type', 'button');
-		updateProgressButton.addEventListener('click', function(e) {
+		updateProgressButton.addEventListener('click', function (e) {
 			loadUpdateProgressForm('book', d.bookId);
 		});
 		detailsDiv.appendChild(updateProgressButton);
@@ -180,13 +183,16 @@ async function loadCurrentTv() {
 		const li = document.createElement('li');
 		li.classList.add('current-item');
 
+		const imageDiv = document.createElement('div');
+
 		const tvImage = document.createElement('img');
 		tvImage.setAttribute('src', tv.coverImageUrl);
 		tvImage.setAttribute('alt', tv.title);
 		tvImage.setAttribute('width', '150');
 		tvImage.setAttribute('height', '225');
 
-		li.appendChild(tvImage);
+		imageDiv.appendChild(tvImage);
+		li.appendChild(imageDiv);
 
 		const detailsDiv = document.createElement('div');
 		detailsDiv.classList.add('details');
@@ -203,7 +209,7 @@ async function loadCurrentTv() {
 		updateProgressButton.textContent = 'Update progress';
 		updateProgressButton.classList.add('btn-primary');
 		updateProgressButton.setAttribute('type', 'button');
-		updateProgressButton.addEventListener('click', function(e) {
+		updateProgressButton.addEventListener('click', function (e) {
 			loadUpdateProgressForm('tv', tv.televisionShowId);
 		});
 		detailsDiv.appendChild(updateProgressButton);
@@ -242,13 +248,16 @@ async function loadRecentBooks() {
 		const li = document.createElement('li');
 		li.classList.add('current-item');
 
+		const imageDiv = document.createElement('div');
+
 		const bookImage = document.createElement('img');
 		bookImage.setAttribute('src', book.coverImageUrl);
 		bookImage.setAttribute('alt', `${book.fullTitle} by ${book.author}`);
 		bookImage.setAttribute('width', '150');
 		bookImage.setAttribute('height', '225');
 
-		li.appendChild(bookImage);
+		imageDiv.appendChild(bookImage);
+		li.appendChild(imageDiv);
 
 		const detailsDiv = document.createElement('div');
 		detailsDiv.classList.add('details');
@@ -581,16 +590,16 @@ async function saveLink() {
 	const linkCategory = document.querySelector('#link-category').value;
 
 	const [, error] = await Api.Post('link', {
-        data: {
-            linkTypeId: parseInt(linkType),
-            linkCategoryId: parseInt(linkCategory),
-            title,
-            author,
-            url,
-            linkDate: date,
-            readingLogIssueNumber: issue,
-        }
-    });
+		data: {
+			linkTypeId: parseInt(linkType),
+			linkCategoryId: parseInt(linkCategory),
+			title,
+			author,
+			url,
+			linkDate: date,
+			readingLogIssueNumber: issue,
+		}
+	});
 
 	if (error) {
 		showModalError(error, 'add-link-modal-error');
@@ -609,13 +618,13 @@ function closeAddLinkForm() {
 
 async function initializePage() {
 	await Promise.all([
-        loadCurrentBooks(),
-        loadRecentLinks(),
-        loadCurrentTv(),
-        loadRecentBooks(),
-        loadCurrentVideoGames(),
-        loadCurrentMusic(),
-        loadRecentMovies(),
-        loadLinkCategories(),
-    ]);
+		loadCurrentBooks(),
+		loadRecentLinks(),
+		loadCurrentTv(),
+		loadRecentBooks(),
+		loadCurrentVideoGames(),
+		loadCurrentMusic(),
+		loadRecentMovies(),
+		loadLinkCategories(),
+	]);
 }
