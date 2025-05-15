@@ -7,6 +7,7 @@ import calculateProgress from '../../lib/calculateProgress';
 import buildBookTitle from '../../lib/buildBookTitle';
 import convertDateToJsonDate from '../../lib/convertDateToJsonDate';
 import convertToBoolean from '../../lib/convertToBoolean';
+import { db } from '../../lib/db';
 
 import {
     BookQueryReturn,
@@ -41,6 +42,8 @@ import {
     deleteBookSeries,
     getCurrentlyReadingBooks,
     updateBookProgress,
+    getBooksToReSort,
+    updateBookSortOrder
 } from './queries';
 
 import {
@@ -749,6 +752,27 @@ class BookRepository {
             return callback(null);
         });
     };
+
+    static async UpdateBookSort(bookId: number, sortOrder: number) {
+        await db.Execute(updateBookSortOrder, [sortOrder, bookId]);
+    }
+
+    static async ReorderBacklog(): Promise<string | null> {
+        const [error, books] = await db.Query<{ BookId: number; SortOrder: number }>(getBooksToReSort);
+
+        if (error) {
+            return error;
+        }
+
+        let sortOrder = 10;
+
+        for await (const book of books) {
+            this.UpdateBookSort(book.BookId, sortOrder);
+            sortOrder += 10;
+        }
+
+        return null;
+    }
 };
 
 export default BookRepository;

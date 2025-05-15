@@ -22,12 +22,24 @@ window.addEventListener('load', function () {
 		saveBook();
 	});
 
-	document.querySelector('dialog.confirm-dialog button.confirm-dialog-no')?.addEventListener('click', function () {
+	document.querySelector('dialog.confirm-dialog[dialog-type="confirm-delete"] button.confirm-dialog-no')?.addEventListener('click', function () {
 		cancelOutOfConfirmDialog('#delete-book-id');
 	});
 
-	document.querySelector('dialog.confirm-dialog button.confirm-dialog-yes')?.addEventListener('click', function () {
+	document.querySelector('dialog.confirm-dialog[dialog-type="confirm-delete"] button.confirm-dialog-yes')?.addEventListener('click', function () {
 		deleteBook();
+	});
+
+	document.getElementById('reorder-backlog')?.addEventListener('click', function () {
+		openReorderConfirmation();
+	});
+
+	document.querySelector('dialog.confirm-dialog[dialog-type="confirm-reorder"] button.confirm-dialog-no')?.addEventListener('click', function () {
+		document.querySelector('dialog.confirm-dialog[dialog-type="confirm-reorder"]').close();
+	});
+
+	document.querySelector('dialog.confirm-dialog[dialog-type="confirm-reorder"] button.confirm-dialog-yes')?.addEventListener('click', function () {
+		reorderBooks();
 	});
 
 	document.querySelector('#open-book-filter')?.addEventListener('click', function () {
@@ -681,8 +693,8 @@ async function saveBook() {
 function openDeleteConfirmation(book) {
 	document.getElementById('delete-book-id').value = book.bookId;
 
-	document.querySelector('dialog.confirm-dialog .text').textContent = `Are you sure you want to delete the book "${book.title}"?`;
-	document.querySelector('dialog.confirm-dialog').showModal();
+	document.querySelector('dialog.confirm-dialog[dialog-type="confirm-delete"] .text').textContent = `Are you sure you want to delete the book "${book.title}"?`;
+	document.querySelector('dialog.confirm-dialog[dialog-type="confirm-delete"]').showModal();
 }
 
 async function deleteBook() {
@@ -692,7 +704,7 @@ async function deleteBook() {
 
 	if (error) {
 		showPageError(error);
-		document.querySelector('dialog.confirm-dialog').close();
+		document.querySelector('dialog.confirm-dialog[dialog-type="confirm-delete"]').close();
 		return;
 	}
 
@@ -701,5 +713,35 @@ async function deleteBook() {
 	await loadBooks();
 
 	document.getElementById('delete-book-id').value = '0';
-	document.querySelector('dialog.confirm-dialog').close();
+	document.querySelector('dialog.confirm-dialog[dialog-type="confirm-delete"]').close();
+}
+
+function openReorderConfirmation() {
+	document.querySelector('dialog.confirm-dialog[dialog-type="confirm-reorder"] .text').textContent = 'Are you sure you want to reorder the backlog?';
+	document.querySelector('dialog.confirm-dialog[dialog-type="confirm-reorder"]').showModal();
+}
+
+async function reorderBooks() {
+	document.querySelector('dialog.confirm-dialog[dialog-type="confirm-reorder"] .confirm-dialog-yes').setAttribute('disabled', true);
+	document.querySelector('dialog.confirm-dialog[dialog-type="confirm-reorder"] .confirm-dialog-yes').textContent = 'Reordering Backlog...';
+	document.querySelector('dialog.confirm-dialog[dialog-type="confirm-reorder"] .confirm-dialog-no').setAttribute('disabled', true);
+
+	const [, error] = await Api.Post(`book/reorder`);
+
+	if (error) {
+		showPageError(error);
+		document.querySelector('dialog.confirm-dialog[dialog-type="confirm-reorder"]').close();
+		document.querySelector('dialog.confirm-dialog[dialog-type="confirm-reorder"] .confirm-dialog-yes').removeAttribute('disabled');
+		document.querySelector('dialog.confirm-dialog[dialog-type="confirm-reorder"] .confirm-dialog-yes').textContent = 'Yes';
+		document.querySelector('dialog.confirm-dialog[dialog-type="confirm-reorder"] .confirm-dialog-no').removeAttribute('disabled');
+		return;
+	}
+
+	setTimeout(async () => {
+		await loadBooks();
+		document.querySelector('dialog.confirm-dialog[dialog-type="confirm-reorder"]').close();
+		document.querySelector('dialog.confirm-dialog[dialog-type="confirm-reorder"] .confirm-dialog-yes').removeAttribute('disabled');
+		document.querySelector('dialog.confirm-dialog[dialog-type="confirm-reorder"] .confirm-dialog-yes').textContent = 'Yes';
+		document.querySelector('dialog.confirm-dialog[dialog-type="confirm-reorder"] .confirm-dialog-no').removeAttribute('disabled');
+	}, 5000);
 }

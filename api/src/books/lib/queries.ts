@@ -340,3 +340,19 @@ UPDATE Book SET
     CurrentPage = ?
 WHERE BookId = ?;
 `;
+
+export const getBooksToReSort = `
+SELECT
+	BookId,
+	SortOrder
+FROM Book
+WHERE
+    BookStatusId = 1
+ORDER BY SortOrder;
+`;
+
+export const updateBookSortOrder = `
+UPDATE Book SET
+    SortOrder = ?
+WHERE BookId = ?;
+`;

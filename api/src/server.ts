@@ -17,7 +17,7 @@ const app = express();
 const port = config.port || 3000;
 
 const corsOptions = {
-    origin: ['http://localhost:3009', 'http://192.168.1.152:3009', 'https://192.168.1.232'],
+    origin: config.cors,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
 };
 

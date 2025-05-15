@@ -450,4 +450,18 @@ router.delete('/:id', (req, res) => {
     res.send();
 });
 
+router.post('/reorder', (_, res) => {
+    BookRepository.ReorderBacklog()
+        .then((error) => {
+            if (error) {
+                return res.status(400).json({ error });
+            }
+
+            res.send();
+        })
+        .catch((e) => {
+            return res.status(400).json({ error: e });
+        });
+});
+
 export default router;
