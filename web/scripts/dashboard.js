@@ -80,7 +80,8 @@ async function loadCurrentBooks() {
 		detailsDiv.classList.add('details');
 
 		const titleHeading = document.createElement('h3');
-		titleHeading.textContent = d.fullTitle;
+		const link = createLinkElement(d.fullTitle, d.link, true);
+		titleHeading.appendChild(link);
 		detailsDiv.appendChild(titleHeading);
 
 		const authorHeading = document.createElement('h4');
@@ -192,7 +193,7 @@ async function loadCurrentTv() {
 		detailsDiv.classList.add('details');
 
 		const titleHeading = document.createElement('h3');
-		titleHeading.textContent = tv.title;
+		titleHeading.appendChild(createLinkElement(tv.title, tv.imdbLink, true));
 		detailsDiv.appendChild(titleHeading);
 
 		const progressBar = document.createElement('progress-bar');
@@ -254,7 +255,9 @@ async function loadRecentBooks() {
 		detailsDiv.classList.add('details');
 
 		const titleHeading = document.createElement('h3');
-		titleHeading.textContent = book.fullTitle;
+		const link = createLinkElement(book.fullTitle, book.link, true);
+		titleHeading.appendChild(link);
+
 		detailsDiv.appendChild(titleHeading);
 
 		const authorHeading = document.createElement('h4');
@@ -316,7 +319,7 @@ async function loadCurrentVideoGames() {
 		divContent.appendChild(coverImage);
 
 		const titleHeading = document.createElement('h3');
-		titleHeading.textContent = game.title;
+		titleHeading.appendChild(createLinkElement(game.title, game.link, true));
 		divContent.appendChild(titleHeading);
 
 		li.appendChild(divContent);
@@ -413,7 +416,7 @@ async function loadRecentMovies() {
 		detailsDiv.classList.add('details');
 
 		const titleHeading = document.createElement('h3');
-		titleHeading.textContent = movie.title;
+		titleHeading.appendChild(createLinkElement(movie.title, movie.imdbLink, true));
 		detailsDiv.appendChild(titleHeading);
 
 		const dateWatched = document.createElement('p');
