@@ -390,6 +390,15 @@ tr.no-content td {
 	padding: 16px;
 	text-align: center;
 }
+
+.table-row-count {
+	margin: 8px 0 32px 8px;
+	font-weight: 700;
+
+	span {
+		font-weight: normal;
+	}
+}
 /* END TABLES */
 
 /* FORM DIALOG */

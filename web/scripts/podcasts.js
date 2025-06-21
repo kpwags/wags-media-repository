@@ -143,6 +143,10 @@ function loadRowsIntoTable() {
 	document.querySelector('tr.loading')?.classList.add('hidden');
 
 	document.getElementById('podcast-table-body').appendChild(fragment);
+
+	if (document.querySelector('.table-row-count span')) {
+		document.querySelector('.table-row-count span').textContent = podcasts.length;
+	}
 }
 
 function buildFiltersFromForm() {

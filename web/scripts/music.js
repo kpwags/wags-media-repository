@@ -185,6 +185,10 @@ function loadRowsIntoTable() {
 	document.querySelector("tr.loading")?.classList.add("hidden");
 
 	document.getElementById("music-table-body").appendChild(fragment);
+
+	if (document.querySelector('.table-row-count span')) {
+		document.querySelector('.table-row-count span').textContent = music.length;
+	}
 }
 
 function buildMusicFiltersFromForm() {
