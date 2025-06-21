@@ -473,6 +473,10 @@ function loadRowsIntoTable() {
 	document.querySelector("tr.loading")?.classList.add("hidden");
 
 	document.getElementById("book-table-body").appendChild(fragment);
+
+	if (document.querySelector('.table-row-count span')) {
+		document.querySelector('.table-row-count span').textContent = data.length;
+	}
 }
 
 async function loadBooks() {
