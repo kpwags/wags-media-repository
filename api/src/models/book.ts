@@ -53,6 +53,7 @@ export type Book = {
     sortOrder?: number;
     isAtLibrary: boolean;
     isPurchased: boolean;
+    heardAboutFrom: string;
     genres: BookGenre[];
     formats: BookFormat[];
     status?: BookStatus;

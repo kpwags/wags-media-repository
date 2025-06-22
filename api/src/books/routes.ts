@@ -338,6 +338,7 @@ router.post('/', (req, res) => {
         sortOrder,
         isAtLibrary,
         isPurchased,
+        heardAboutFrom,
         genres,
         formats,
     } = req.body;
@@ -363,6 +364,7 @@ router.post('/', (req, res) => {
         sortOrder,
         isAtLibrary: isAtLibrary ?? false,
         isPurchased: isPurchased ?? false,
+        heardAboutFrom: heardAboutFrom,
         genres: genres.map((g: number) => ({ bookGenreId: g, name: '', colorCode: '' })),
         formats: formats.map((f: number) => ({ bookFormatId: f, name: '', colorCode: '' })),
     };
@@ -398,6 +400,7 @@ router.put('/:id', (req, res) => {
         sortOrder,
         isAtLibrary,
         isPurchased,
+        heardAboutFrom,
         genres,
         formats,
     } = req.body;
@@ -423,6 +426,7 @@ router.put('/:id', (req, res) => {
         sortOrder,
         isAtLibrary,
         isPurchased,
+        heardAboutFrom,
         genres: genres.map((g: number) => ({ bookGenreId: g, name: '', colorCode: '' })),
         formats: formats.map((f: number) => ({ bookFormatId: f, name: '', colorCode: '' })),
     };

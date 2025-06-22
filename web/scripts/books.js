@@ -598,6 +598,7 @@ function editBook(b) {
 		document.querySelector('input#book-page-count').value = b.pageCount;
 		document.querySelector('input#is-purchased').checked = b.isPurchased;
 		document.querySelector('input#at-library').checked = b.isAtLibrary;
+		document.querySelector('input#book-heard-about-from').value = b.heardAboutFrom;
 
 		if (b.dateStarted) {
 			document.querySelector('input#book-date-started').value = displayDate(b.dateStarted, 'YYYY-MM-DD');
@@ -642,6 +643,7 @@ function buildBookFromForm() {
 		rating: parseInt(document.querySelector('#book-rating-value').value),
 		thoughts: document.querySelector('#book-thoughts').value,
 		bookNotesUrl: document.querySelector('#book-notes-url').value,
+		heardAboutFrom: document.querySelector('#book-heard-about-from').value ?? '',
 		currentPage,
 		pageCount,
 	};

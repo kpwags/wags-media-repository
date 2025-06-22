@@ -96,6 +96,7 @@ class BookRepository {
                     sortOrder: row.SortOrder,
                     isAtLibrary: convertToBoolean(row.IsAtLibrary),
                     isPurchased: convertToBoolean(row.IsPurchased),
+                    heardAboutFrom: row.HeardAboutFrom,
                     status: {
                         bookStatusId: row.BookStatusId,
                         name: row.BookStatusName,
@@ -154,6 +155,7 @@ class BookRepository {
                 sortOrder: row.SortOrder,
                 isAtLibrary: convertToBoolean(row.IsAtLibrary),
                 isPurchased: convertToBoolean(row.IsPurchased),
+                heardAboutFrom: row.HeardAboutFrom,
                 status: {
                     bookStatusId: row.BookStatusId,
                     name: row.BookStatusName,
@@ -208,6 +210,7 @@ class BookRepository {
                     sortOrder: row.SortOrder,
                     isAtLibrary: convertToBoolean(row.IsAtLibrary),
                     isPurchased: convertToBoolean(row.IsPurchased),
+                    heardAboutFrom: row.HeardAboutFrom,
                     status: {
                         bookStatusId: row.BookStatusId,
                         name: row.BookStatusName,
@@ -268,6 +271,7 @@ class BookRepository {
                         sortOrder: row.SortOrder,
                         isAtLibrary: convertToBoolean(row.IsAtLibrary),
                         isPurchased: convertToBoolean(row.IsPurchased),
+                        heardAboutFrom: row.HeardAboutFrom,
                         status: {
                             bookStatusId: row.BookStatusId,
                             name: row.BookStatusName,
@@ -351,6 +355,7 @@ class BookRepository {
             book.sortOrder,
             book.isAtLibrary,
             book.isPurchased,
+            book.heardAboutFrom,
         ], (err) => {
             db.close();
 
@@ -400,6 +405,7 @@ class BookRepository {
             book.sortOrder,
             book.isAtLibrary,
             book.isPurchased,
+            book.heardAboutFrom,
             book.bookId,
         ], (err) => {
             if (err) {
