@@ -25,6 +25,7 @@ export type BookQueryReturn = {
     BookTypeColor: string;
     BookSeriesName?: string;
     BookSeriesColor?: string;
+    HeardAboutFrom: string;
 }
 
 export type BookGenreLinkQueryReturn = {
@@ -83,6 +84,7 @@ SELECT
 	B.SortOrder,
 	B.IsAtLibrary,
 	B.IsPurchased,
+    B.HeardAboutFrom,
 	BS.Name AS BookStatusName,
 	BS.ColorCode AS BookStatusColor,
 	BT.Name AS BookTypeName,
@@ -117,6 +119,7 @@ SELECT
 	B.SortOrder,
 	B.IsAtLibrary,
 	B.IsPurchased,
+    B.HeardAboutFrom,
 	BS.Name AS BookStatusName,
 	BS.ColorCode AS BookStatusColor,
 	BT.Name AS BookTypeName,
@@ -132,8 +135,8 @@ WHERE
 `;
 
 export const insertBook = `
-INSERT INTO Book (BookStatusId, BookTypeId, BookSeriesId, Title, SubTitle, Author, Link, DateStarted, DateCompleted, Rating, Thoughts, BookNotesUrl, CoverImageUrl, CurrentPage, PageCount, SortOrder, IsAtLibrary, IsPurchased)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+INSERT INTO Book (BookStatusId, BookTypeId, BookSeriesId, Title, SubTitle, Author, Link, DateStarted, DateCompleted, Rating, Thoughts, BookNotesUrl, CoverImageUrl, CurrentPage, PageCount, SortOrder, IsAtLibrary, IsPurchased, HeardAboutFrom)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 `
 
 export const updateBook = `
@@ -155,7 +158,8 @@ UPDATE Book SET
     PageCount = ?,
     SortOrder = ?,
     IsAtLibrary = ?,
-    IsPurchased = ?
+    IsPurchased = ?,
+    HeardAboutFrom = ?
 WHERE
     BookId = ?;
 `;
@@ -321,6 +325,7 @@ SELECT
 	B.SortOrder,
 	B.IsAtLibrary,
 	B.IsPurchased,
+    B.HeardAboutFrom,
 	BS.Name AS BookStatusName,
 	BS.ColorCode AS BookStatusColor,
 	BT.Name AS BookTypeName,

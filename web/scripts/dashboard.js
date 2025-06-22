@@ -266,7 +266,7 @@ async function loadRecentBooks() {
 
 		const dateCompleted = document.createElement('p');
 		dateCompleted.classList.add('metadata');
-		dateCompleted.textContent = dayjs(book.dateCompleted).format('MMMM D, YYYY');
+		dateCompleted.textContent = displayDate(book.dateCompleted, 'MMMM D, YYYY');
 		detailsDiv.appendChild(dateCompleted);
 
 		const ratingDisplay = document.createElement('rating-display');
@@ -421,7 +421,7 @@ async function loadRecentMovies() {
 
 		const dateWatched = document.createElement('p');
 		dateWatched.classList.add('metadata');
-		dateWatched.textContent = dayjs(movie.dateWatched).format('MMMM D, YYYY');
+		dateWatched.textContent = displayDate(movie.dateWatched, 'MMMM D, YYYY');
 		detailsDiv.appendChild(dateWatched);
 
 		const ratingDisplay = document.createElement('rating-display');

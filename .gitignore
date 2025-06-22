@@ -411,3 +411,7 @@ tools/WagsMediaRepository.Loader/appsettings.json
 MediaRepository.db
 *.db
 api/data/MediaRepository.db
+
+api/data/MediaRepository.db-shm
+
+api/data/MediaRepository.db-wal

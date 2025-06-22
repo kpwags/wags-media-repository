@@ -24,6 +24,13 @@
 		<script src="/scripts/links.js"></script>
 
 		<script src="/scripts/lib/dayjs.min.js"></script>
+		<script src="/scripts/lib/dayjs.timezone.js"></script>
+		<script src="/scripts/lib/dayjs.utc.js"></script>
+
+		<script>
+			dayjs.extend(window.dayjs_plugin_utc);
+			dayjs.extend(window.dayjs_plugin_timezone);
+		</script>
 
 		<title>Links - Wags Media Repository</title>
 	</head>
