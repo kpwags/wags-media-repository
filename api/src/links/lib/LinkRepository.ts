@@ -1,294 +1,213 @@
-import sqlite3 from 'sqlite3';
-import config from '../../config';
-import cleanSqliteError from '../../lib/cleanSqliteError';
+import { db } from '../../lib/db';
+
 import convertDateToJsonDate from '../../lib/convertDateToJsonDate';
+
 import { Link, LinkCategory } from '../../models/link';
+
 import {
-    LinkCategoryQueryReturn,
-    LinkQueryReturn,
-    getLinkCategories,
-    getLinkCategoryById,
-    insertLinkCategory,
-    updateLinkCategory,
-    deleteLinkCategory,
-    getLinks,
-    getLinksForReadingLogIssue,
-    getLinkById,
-    insertLink,
-    updateLink,
-    deleteLink,
+	LinkCategoryQueryReturn,
+	LinkQueryReturn,
+	getLinkCategories,
+	getLinkCategoryById,
+	insertLinkCategory,
+	updateLinkCategory,
+	deleteLinkCategory,
+	getLinks,
+	getLinksForReadingLogIssue,
+	getLinkById,
+	insertLink,
+	updateLink,
+	deleteLink,
 } from './queries';
 
 class LinkRepository {
-    private static GetDatabase = () => new sqlite3.Database(config.db);
+	static async GetAllLinkCatgeories(): Promise<[error: string | null, categories: LinkCategory[]]> {
+		const [error, data] = await db.Query<LinkCategoryQueryReturn>(getLinkCategories);
 
-    static readonly GetAllLinkCatgeories = (callback: (error: string | null, categories: LinkCategory[]) => void) => {
-        const db = this.GetDatabase();
+		if (error) {
+			return [error, []];
+		}
 
-        const categories: LinkCategory[] = [];
+		const categories: LinkCategory[] = [];
 
-        db.all(getLinkCategories, (err: any, rows: LinkCategoryQueryReturn[]) => {
-            db.close();
+		data.forEach((row) => {
+			categories.push({
+				linkCategoryId: row.LinkCategoryId,
+				name: row.Name,
+				colorCode: row.ColorCode,
+				linkCount: row.LinkCount,
+			});
+		});
 
-            if (err) {
-                return callback(cleanSqliteError(err), []);
-            }
+		return [null, categories];
+	};
 
-            rows.forEach((row) => {
-                categories.push({
-                    linkCategoryId: row.LinkCategoryId,
-                    name: row.Name,
-                    colorCode: row.ColorCode,
-                    linkCount: row.LinkCount,
-                });
-            });
+	static async GetLinkCategoryById(id: number): Promise<[error: string | null, linkCategory: LinkCategory | null]> {
+		const [error, data] = await db.QuerySingle<LinkCategoryQueryReturn>(getLinkCategoryById, [id]);
 
-            return callback(null, categories);
-        });
-    };
+		if (error) {
+			return [error, null];
+		}
 
-    static readonly GetLinkCategoryById = (id: number, callback: (error: string | null, linkCategory: LinkCategory | null) => void) => {
-        const db = this.GetDatabase();
+		if (!data) {
+			return [null, null];
+		}
 
-        db.get(getLinkCategoryById, [id], (err, row: LinkCategoryQueryReturn) => {
-            db.close();
+		return [null, {
+			linkCategoryId: data.LinkCategoryId,
+			name: data.Name,
+			colorCode: data.ColorCode,
+			linkCount: data.LinkCount,
+		}];
+	};
 
-            if (err) {
-                return callback(cleanSqliteError(err), null);
-            }
+	static async AddLinkCategory(category: LinkCategory): Promise<string | null> {
+		return db.Execute(insertLinkCategory, [category.name, category.colorCode]);
+	};
 
-            if (!row) {
-                return callback(null, null);
-            }
+	static async UpdateLinkCategory(category: LinkCategory): Promise<string | null> {
+		return db.Execute(updateLinkCategory, [
+			category.name,
+			category.colorCode,
+			category.linkCategoryId,
+		]);
+	};
 
-            return callback(null, {
-                linkCategoryId: row.LinkCategoryId,
-                name: row.Name,
-                colorCode: row.ColorCode,
-                linkCount: row.LinkCount,
-            });
-        });
-    };
+	static async DeleteLinkCategory(id: number): Promise<string | null> {
+		return db.Execute(deleteLinkCategory, [id]);
+	};
 
-    static readonly AddLinkCategory = (category: LinkCategory, callback: (error: string | null) => void) => {
-        const db = this.GetDatabase();
+	static async GetAllLinks(): Promise<[error: string | null, links: Link[]]> {
+		const [error, data] = await db.Query<LinkQueryReturn>(getLinks);
 
-        db.run(insertLinkCategory, [category.name, category.colorCode], (err) => {
-            db.close();
+		if (error) {
+			return [error, []];
+		}
 
-            if (err) {
-                return callback(cleanSqliteError(err));
-            }
+		const links: Link[] = [];
 
-            return callback(null);
-        });
-    };
+		data.forEach((row) => {
+			links.push({
+				linkId: row.LinkId,
+				linkTypeId: row.LinkTypeId,
+				linkCategoryId: row.LinkCategoryId,
+				title: row.Title,
+				author: row.Author,
+				url: row.Url,
+				linkDate: convertDateToJsonDate(row.LinkDate),
+				readingLogIssueNumber: row.ReadingLogIssueNumber,
+				category: {
+					linkCategoryId: row.LinkCategoryId,
+					name: row.LinkCategoryName,
+					colorCode: row.LinkCategoryColor,
+				},
+				type: {
+					linkTypeId: row.LinkTypeId,
+					name: row.LinkTypeName,
+					colorCode: row.LinkTypeColor,
+				},
+			});
+		});
 
-    static readonly UpdateLinkCategory = (category: LinkCategory, callback: (error: string | null) => void) => {
-        const db = this.GetDatabase();
+		return [null, links];
+	};
 
-        db.run(updateLinkCategory, [
-            category.name,
-            category.colorCode,
-            category.linkCategoryId,
-        ], (err) => {
-            db.close();
+	static async GetLinksForReadingLogIssue(id: number): Promise<[error: string | null, links: Link[]]> {
+		const [error, data] = await db.Query<LinkQueryReturn>(getLinksForReadingLogIssue, [id]);
 
-            if (err) {
-                return callback(cleanSqliteError(err));
-            }
+		if (error) {
+			return [error, []];
+		}
 
-            return callback(null);
-        });
-    };
+		const links: Link[] = [];
 
-    static readonly DeleteLinkCategory = (linkCategoryId: number, callback: (error: string | null) => void) => {
-        const db = this.GetDatabase();
+		data.forEach((row) => {
+			links.push({
+				linkId: row.LinkId,
+				linkTypeId: row.LinkTypeId,
+				linkCategoryId: row.LinkCategoryId,
+				title: row.Title,
+				author: row.Author,
+				url: row.Url,
+				linkDate: convertDateToJsonDate(row.LinkDate),
+				readingLogIssueNumber: row.ReadingLogIssueNumber,
+				category: {
+					linkCategoryId: row.LinkCategoryId,
+					name: row.LinkCategoryName,
+					colorCode: row.LinkCategoryColor,
+				},
+				type: {
+					linkTypeId: row.LinkTypeId,
+					name: row.LinkTypeName,
+					colorCode: row.LinkTypeColor,
+				},
+			});
+		});
 
-        db.run(deleteLinkCategory, [linkCategoryId], (err) => {
-            db.close();
+		return [null, links];
+	};
 
-            if (err) {
-                return callback(cleanSqliteError(err));
-            }
+	static async GetLinkById(id: number): Promise<[error: string | null, podcast: Link | null]> {
+		const [error, data] = await db.QuerySingle<LinkQueryReturn>(getLinkById, [id]);
 
-            return callback(null);
-        });
-    };
+		if (error) {
+			return [error, null];
+		}
 
-    static readonly GetAllLinks = (callback: (error: string | null, links: Link[]) => void) => {
-        const db = this.GetDatabase();
+		if (!data) {
+			return [null, null];
+		}
 
-        const links: Link[] = [];
+		return [null, {
+			linkId: data.LinkId,
+			linkTypeId: data.LinkTypeId,
+			linkCategoryId: data.LinkCategoryId,
+			title: data.Title,
+			author: data.Author,
+			url: data.Url,
+			linkDate: convertDateToJsonDate(data.LinkDate),
+			readingLogIssueNumber: data.ReadingLogIssueNumber,
+			category: {
+				linkCategoryId: data.LinkCategoryId,
+				name: data.LinkCategoryName,
+				colorCode: data.LinkCategoryColor,
+			},
+			type: {
+				linkTypeId: data.LinkTypeId,
+				name: data.LinkTypeName,
+				colorCode: data.LinkTypeColor,
+			},
+		}];
+	};
 
-        db.all(getLinks, (err: any, rows: LinkQueryReturn[]) => {
-            db.close();
+	static async AddLink(link: Link): Promise<string | null> {
+		return await db.Execute(insertLink, [
+			link.linkTypeId,
+			link.linkCategoryId,
+			link.title,
+			link.url,
+			link.author,
+			link.linkDate,
+			link.readingLogIssueNumber,
+		]);
+	};
 
-            if (err) {
-                return callback(cleanSqliteError(err), []);
-            }
+	static async UpdateLink(link: Link): Promise<string | null> {
+		return await db.Execute(updateLink, [
+			link.linkTypeId,
+			link.linkCategoryId,
+			link.title,
+			link.url,
+			link.author,
+			link.linkDate,
+			link.readingLogIssueNumber,
+			link.linkId
+		]);
+	};
 
-            rows.forEach((row) => {
-                links.push({
-                    linkId: row.LinkId,
-                    linkTypeId: row.LinkTypeId,
-                    linkCategoryId: row.LinkCategoryId,
-                    title: row.Title,
-                    author: row.Author,
-                    url: row.Url,
-                    linkDate: convertDateToJsonDate(row.LinkDate),
-                    readingLogIssueNumber: row.ReadingLogIssueNumber,
-                    category: {
-                        linkCategoryId: row.LinkCategoryId,
-                        name: row.LinkCategoryName,
-                        colorCode: row.LinkCategoryColor,
-                    },
-                    type: {
-                        linkTypeId: row.LinkTypeId,
-                        name: row.LinkTypeName,
-                        colorCode: row.LinkTypeColor,
-                    },
-                });
-            });
-
-            return callback(null, links);
-        });
-    };
-
-    static readonly GetLinksForReadingLogIssue = (id: number, callback: (error: string | null, links: Link[]) => void) => {
-        const db = this.GetDatabase();
-
-        const links: Link[] = [];
-
-        db.all(getLinksForReadingLogIssue, [id], (err: any, rows: LinkQueryReturn[]) => {
-            db.close();
-
-            if (err) {
-                return callback(cleanSqliteError(err), []);
-            }
-
-            rows.forEach((row) => {
-                links.push({
-                    linkId: row.LinkId,
-                    linkTypeId: row.LinkTypeId,
-                    linkCategoryId: row.LinkCategoryId,
-                    title: row.Title,
-                    author: row.Author,
-                    url: row.Url,
-                    linkDate: convertDateToJsonDate(row.LinkDate),
-                    readingLogIssueNumber: row.ReadingLogIssueNumber,
-                    category: {
-                        linkCategoryId: row.LinkCategoryId,
-                        name: row.LinkCategoryName,
-                        colorCode: row.LinkCategoryColor,
-                    },
-                    type: {
-                        linkTypeId: row.LinkTypeId,
-                        name: row.LinkTypeName,
-                        colorCode: row.LinkTypeColor,
-                    },
-                });
-            });
-
-            return callback(null, links);
-        });
-    };
-
-    static readonly GetLinkById = (id: number, callback: (error: string | null, podcast: Link | null) => void) => {
-        const db = this.GetDatabase();
-
-        db.get(getLinkById, [id], (err, row: LinkQueryReturn) => {
-            db.close();
-
-            if (err) {
-                return callback(cleanSqliteError(err), null);
-            }
-
-            if (!row) {
-                return callback(null, null);
-            }
-
-            return callback(null, {
-                linkId: row.LinkId,
-                linkTypeId: row.LinkTypeId,
-                linkCategoryId: row.LinkCategoryId,
-                title: row.Title,
-                author: row.Author,
-                url: row.Url,
-                linkDate: convertDateToJsonDate(row.LinkDate),
-                readingLogIssueNumber: row.ReadingLogIssueNumber,
-                category: {
-                    linkCategoryId: row.LinkCategoryId,
-                    name: row.LinkCategoryName,
-                    colorCode: row.LinkCategoryColor,
-                },
-                type: {
-                    linkTypeId: row.LinkTypeId,
-                    name: row.LinkTypeName,
-                    colorCode: row.LinkTypeColor,
-                },
-            });
-        });
-    };
-
-    static readonly AddLink = (link: Link, callback: (error: string | null) => void) => {
-        const db = this.GetDatabase();
-
-        db.run(insertLink, [
-            link.linkTypeId,
-            link.linkCategoryId,
-            link.title,
-            link.url,
-            link.author,
-            link.linkDate,
-            link.readingLogIssueNumber,
-        ], (err) => {
-            db.close();
-
-            if (err) {
-                return callback(cleanSqliteError(err));
-            }
-
-            return callback(null);
-        });
-    };
-
-    static readonly UpdateLink = (link: Link, callback: (error: string | null) => void) => {
-        const db = this.GetDatabase();
-
-        db.run(updateLink, [
-            link.linkTypeId,
-            link.linkCategoryId,
-            link.title,
-            link.url,
-            link.author,
-            link.linkDate,
-            link.readingLogIssueNumber,
-            link.linkId
-        ], (err) => {
-            db.close();
-
-            if (err) {
-                return callback(cleanSqliteError(err));
-            }
-
-            return callback(null);
-        });
-    };
-
-    static readonly DeleteLink = (linkId: number, callback: (error: string | null) => void) => {
-        const db = this.GetDatabase();
-
-        db.run(deleteLink, [linkId], (err) => {
-            db.close();
-
-            if (err) {
-                return callback(cleanSqliteError(err));
-            }
-
-            return callback(null);
-        });
-    };
+	static async DeleteLink(id: number): Promise<string | null> {
+		return await db.Execute(deleteLink, [id]);
+	};
 }
 
 export default LinkRepository;

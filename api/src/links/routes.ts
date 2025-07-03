@@ -6,192 +6,225 @@ import { Link, LinkCategory } from '../models/link';
 const router = express.Router();
 
 router.get('/category', (_, res) => {
-    linkRepository.GetAllLinkCatgeories((error, data) => {
-        if (error) {
-            return res.status(400).json({ error });
-        }
+	linkRepository.GetAllLinkCatgeories()
+		.then(([error, data]) => {
+			if (error) {
+				return res.status(400).json({ error });
+			}
 
-        res.json(data);
-    });
+			res.json(data);
+		}).catch((e) => {
+			return res.status(400).json({ error: e });
+		});
 });
 
 router.get('/category/:id', (req, res) => {
-    const id = parseInt(req.params.id);
-    linkRepository.GetLinkCategoryById(id, (error, category) => {
-        if (error) {
-            return res.status(400).json({ error });
-        }
+	const id = parseInt(req.params.id);
 
-        if (!category) {
-            res.status(404).json({ error: 'Link category not found' });
-        } else {
-            res.json(category);
-        }
-    });
+	linkRepository.GetLinkCategoryById(id)
+		.then(([error, category]) => {
+			if (error) {
+				return res.status(400).json({ error });
+			}
+
+			if (!category) {
+				res.status(404).json({ error: 'Link category not found' });
+			} else {
+				res.json(category);
+			}
+		}).catch((e) => {
+			return res.status(400).json({ error: e });
+		});
 });
 
 router.post('/category', (req, res) => {
-    const { linkCategoryId, name, colorCode } = req.body;
+	const { linkCategoryId, name, colorCode } = req.body;
 
-    const category: LinkCategory = {
-        linkCategoryId: parseInt(linkCategoryId),
-        name,
-        colorCode,
-    };
+	const category: LinkCategory = {
+		linkCategoryId: parseInt(linkCategoryId),
+		name,
+		colorCode,
+	};
 
-    linkRepository.AddLinkCategory(category, (error) => {
-        if (error) {
-            return res.status(400).json({ error });
-        }
+	linkRepository.AddLinkCategory(category)
+		.then((error) => {
+			if (error) {
+				return res.status(400).json({ error });
+			}
 
-        res.send();
-    });
+			res.send();
+		}).catch((e) => {
+			return res.status(400).json({ error: e });
+		});
 });
 
 router.put('/category/:id', (req, res) => {
-    const id = parseInt(req.params.id);
+	const id = parseInt(req.params.id);
 
-    const { name, colorCode } = req.body;
+	const { name, colorCode } = req.body;
 
-    const category: LinkCategory = {
-        linkCategoryId: id,
-        name,
-        colorCode,
-    };
+	const category: LinkCategory = {
+		linkCategoryId: id,
+		name,
+		colorCode,
+	};
 
-    linkRepository.UpdateLinkCategory(category, (error) => {
-        if (error) {
-            return res.status(400).json({ error });
-        }
+	linkRepository.UpdateLinkCategory(category)
+		.then((error) => {
+			if (error) {
+				return res.status(400).json({ error });
+			}
 
-        res.send();
-    });
+			res.send();
+		}).catch((e) => {
+			return res.status(400).json({ error: e });
+		});
 });
 
 router.delete('/category/:id', (req, res) => {
-    const id = parseInt(req.params.id);
+	const id = parseInt(req.params.id);
 
-    linkRepository.DeleteLinkCategory(id, (error) => {
-        if (error) {
-            return res.status(400).json({ error });
-        }
+	linkRepository.DeleteLinkCategory(id)
+		.then((error) => {
+			if (error) {
+				return res.status(400).json({ error });
+			}
 
-        res.send();
-    });
-
-    res.send();
+			res.send();
+		})
+		.catch((e) => {
+			return res.status(400).json({ error: e });
+		});
 });
 
 router.get('/reading-log/:id', (req, res) => {
-    const id = parseInt(req.params.id);
+	const id = parseInt(req.params.id);
 
-    linkRepository.GetLinksForReadingLogIssue(id, (error, data) => {
-        if (error) {
-            return res.status(400).json({ error });
-        }
+	linkRepository.GetLinksForReadingLogIssue(id)
+		.then(([error, data]) => {
+			if (error) {
+				return res.status(400).json({ error });
+			}
 
-        res.json(data);
-    });
+			res.json(data);
+		}).catch((e) => {
+			return res.status(400).json({ error: e });
+		});
 });
 
 router.get('/limit/:count', (req, res) => {
-    const count = parseInt(req.params.count);
+	const count = parseInt(req.params.count);
 
-    linkRepository.GetAllLinks((error, data) => {
-        if (error) {
-            return res.status(400).json({ error });
-        }
+	linkRepository.GetAllLinks()
+		.then(([error, data]) => {
+			if (error) {
+				return res.status(400).json({ error });
+			}
 
-        res.json(data.slice(0, count));
-    });
+			res.json(data.slice(0, count));
+		}).catch((e) => {
+			return res.status(400).json({ error: e });
+		});
 });
 
 router.get('/', (_, res) => {
-    linkRepository.GetAllLinks((error, data) => {
-        if (error) {
-            return res.status(400).json({ error });
-        }
+	linkRepository.GetAllLinks()
+		.then(([error, data]) => {
+			if (error) {
+				return res.status(400).json({ error });
+			}
 
-        res.json(data);
-    });
+			res.json(data);
+		}).catch((e) => {
+			return res.status(400).json({ error: e });
+		});
 });
 
 router.get('/:id', (req, res) => {
-    const id = parseInt(req.params.id);
-    linkRepository.GetLinkById(id, (error, podcast) => {
-        if (error) {
-            return res.status(400).json({ error });
-        }
+	const id = parseInt(req.params.id);
 
-        if (!podcast) {
-            res.status(404).json({ error: 'Link not found' });
-        } else {
-            res.json(podcast);
-        }
-    });
+	linkRepository.GetLinkById(id)
+		.then(([error, podcast]) => {
+			if (error) {
+				return res.status(400).json({ error });
+			}
+
+			if (!podcast) {
+				res.status(404).json({ error: 'Link not found' });
+			} else {
+				res.json(podcast);
+			}
+		}).catch((e) => {
+			return res.status(400).json({ error: e });
+		});
 });
 
 router.post('/', (req, res) => {
-    const formBody = req.body;
+	const formBody = req.body;
 
-    const link: Link = {
-        linkId: 0,
-        linkCategoryId: parseInt(formBody.linkCategoryId),
-        linkTypeId: parseInt(formBody.linkTypeId),
-        title: formBody.title,
-        author: formBody.author,
-        url: formBody.url,
-        linkDate: formBody.linkDate,
-        readingLogIssueNumber: formBody.readingLogIssueNumber,
-    };
+	const link: Link = {
+		linkId: 0,
+		linkCategoryId: parseInt(formBody.linkCategoryId),
+		linkTypeId: parseInt(formBody.linkTypeId),
+		title: formBody.title,
+		author: formBody.author,
+		url: formBody.url,
+		linkDate: formBody.linkDate,
+		readingLogIssueNumber: formBody.readingLogIssueNumber,
+	};
 
-    linkRepository.AddLink(link, (error) => {
-        if (error) {
-            return res.status(400).json({ error });
-        }
+	linkRepository.AddLink(link)
+		.then((error) => {
+			if (error) {
+				return res.status(400).json({ error });
+			}
 
-        res.send();
-    });
-    res.send();
+			res.send();
+		}).catch((e) => {
+			return res.status(400).json({ error: e });
+		});
 });
 
 router.put('/:id', (req, res) => {
-    const id = parseInt(req.params.id);
-    const formBody = req.body;
+	const id = parseInt(req.params.id);
+	const formBody = req.body;
 
-    const link: Link = {
-        linkId: id,
-        linkCategoryId: parseInt(formBody.linkCategoryId),
-        linkTypeId: parseInt(formBody.linkTypeId),
-        title: formBody.title,
-        author: formBody.author,
-        url: formBody.url,
-        linkDate: formBody.linkDate,
-        readingLogIssueNumber: formBody.readingLogIssueNumber,
-    };
+	const link: Link = {
+		linkId: id,
+		linkCategoryId: parseInt(formBody.linkCategoryId),
+		linkTypeId: parseInt(formBody.linkTypeId),
+		title: formBody.title,
+		author: formBody.author,
+		url: formBody.url,
+		linkDate: formBody.linkDate,
+		readingLogIssueNumber: formBody.readingLogIssueNumber,
+	};
 
-    linkRepository.UpdateLink(link, (error) => {
-        if (error) {
-            return res.status(400).json({ error });
-        }
+	linkRepository.UpdateLink(link)
+		.then((error) => {
+			if (error) {
+				return res.status(400).json({ error });
+			}
 
-        res.send();
-    });
-    res.send();
+			res.send();
+		}).catch((e) => {
+			return res.status(400).json({ error: e });
+		});
 });
 
 router.delete('/:id', (req, res) => {
-    const id = parseInt(req.params.id);
+	const id = parseInt(req.params.id);
 
-    linkRepository.DeleteLink(id, (error) => {
-        if (error) {
-            return res.status(400).json({ error });
-        }
+	linkRepository.DeleteLink(id)
+		.then((error) => {
+			if (error) {
+				return res.status(400).json({ error });
+			}
 
-        res.send();
-    });
-
-    res.send();
+			res.send();
+		}).catch((e) => {
+			return res.status(400).json({ error: e });
+		});
 });
 
 export default router;
