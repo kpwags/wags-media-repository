@@ -1,7 +1,7 @@
-import sqlite3 from 'sqlite3';
-import config from '../../config';
-import cleanSqliteError from '../../lib/cleanSqliteError';
+import { db } from '../../lib/db';
+
 import { Podcast, PodcastCategory } from '../../models/podcast';
+
 import {
 	getPodcasts,
 	getPodcastById,
@@ -18,54 +18,17 @@ import {
 } from './queries';
 
 class PodcastRepository {
-	private static GetDatabase = () => new sqlite3.Database(config.db);
+	static async GetAllPodcasts(): Promise<[error: string | null, podcasts: Podcast[]]> {
+		const [error, data] = await db.Query<PodcastQueryReturn>(getPodcasts);
 
-	static readonly GetAllPodcasts = (callback: (error: string | null, podcasts: Podcast[]) => void) => {
-		const db = this.GetDatabase();
+		if (error) {
+			return [error, []];
+		}
 
 		const podcasts: Podcast[] = [];
 
-		db.all(getPodcasts, (err: any, rows: PodcastQueryReturn[]) => {
-			db.close();
-
-			if (err) {
-				return callback(cleanSqliteError(err), []);
-			}
-
-			rows.forEach((row) => {
-				podcasts.push({
-					podcastId: row.PodcastId,
-					podcastCategoryId: row.PodcastCategoryId,
-					name: row.Name,
-					link: row.Link,
-					coverImageUrl: row.CoverImageUrl,
-					category: {
-						podcastCategoryId: row.PodcastCategoryId,
-						name: row.PodcastCategoryName,
-						colorCode: row.ColorCode,
-					}
-				});
-			});
-
-			return callback(null, podcasts);
-		});
-	};
-
-	static readonly GetPodcastById = (id: number, callback: (error: string | null, podcast: Podcast | null) => void) => {
-		const db = this.GetDatabase();
-
-		db.get(getPodcastById, [id], (err, row: PodcastQueryReturn) => {
-			db.close();
-
-			if (err) {
-				return callback(cleanSqliteError(err), null);
-			}
-
-			if (!row) {
-				return callback(null, null);
-			}
-
-			return callback(null, {
+		data.forEach((row) => {
+			podcasts.push({
 				podcastId: row.PodcastId,
 				podcastCategoryId: row.PodcastCategoryId,
 				name: row.Name,
@@ -78,148 +41,107 @@ class PodcastRepository {
 				}
 			});
 		});
-	};
 
-	static readonly AddPodcast = (podcast: Podcast, callback: (error: string | null) => void) => {
-		const db = this.GetDatabase();
+		return [null, podcasts];
+	}
 
-		db.run(insertPodcast, [podcast.name, podcast.link, podcast.coverImageUrl, podcast.podcastCategoryId], (err) => {
-			db.close();
+	static async GetPodcastById(id: number): Promise<[error: string | null, podcast: Podcast | null]> {
+		const [error, data] = await db.QuerySingle<PodcastQueryReturn>(getPodcastById, [id]);
 
-			if (err) {
-				return callback(cleanSqliteError(err));
+		if (error) {
+			return [error, null];
+		}
+
+		if (!data) {
+			return [null, null];
+		}
+
+		return [null, {
+			podcastId: data.PodcastId,
+			podcastCategoryId: data.PodcastCategoryId,
+			name: data.Name,
+			link: data.Link,
+			coverImageUrl: data.CoverImageUrl,
+			category: {
+				podcastCategoryId: data.PodcastCategoryId,
+				name: data.PodcastCategoryName,
+				colorCode: data.ColorCode,
 			}
+		}];
+	}
 
-			return callback(null);
-		});
-	};
+	static async AddPodcast(podcast: Podcast): Promise<string | null> {
+		return await db.Execute(insertPodcast, [podcast.name, podcast.link, podcast.coverImageUrl, podcast.podcastCategoryId]);
+	}
 
-	static readonly UpdatePodcast = (podcast: Podcast, callback: (error: string | null) => void) => {
-		const db = this.GetDatabase();
-
-		db.run(updatePodcast, [
+	static async UpdatePodcast(podcast: Podcast): Promise<string | null> {
+		return await db.Execute(updatePodcast, [
 			podcast.podcastCategoryId,
 			podcast.name,
 			podcast.link,
 			podcast.coverImageUrl,
 			podcast.podcastId,
-		], (err) => {
-			db.close();
+		]);
+	}
 
-			if (err) {
-				return callback(cleanSqliteError(err));
-			}
+	static async DeletePodcast(id: number): Promise<string | null> {
+		return await db.Execute(deletePodcast, [id]);
+	}
 
-			return callback(null);
-		});
-	};
+	static async GetAllPodcastCategories(): Promise<[error: string | null, categories: PodcastCategory[]]> {
+		const [error, data] = await db.Query<PodcastCategoryQueryReturn>(getPodcastCategories);
 
-	static readonly DeletePodcast = (podcastId: number, callback: (error: string | null) => void) => {
-		const db = this.GetDatabase();
-
-		db.run(deletePodcast, [podcastId], (err) => {
-			db.close();
-
-			if (err) {
-				return callback(cleanSqliteError(err));
-			}
-
-			return callback(null);
-		});
-	};
-
-	static readonly GetAllPodcastCategories = (callback: (error: string | null, categories: PodcastCategory[]) => void) => {
-		const db = this.GetDatabase();
+		if (error) {
+			return [error, []];
+		}
 
 		const categories: PodcastCategory[] = [];
 
-		db.all(getPodcastCategories, (err: any, rows: PodcastCategoryQueryReturn[]) => {
-			db.close();
-
-			if (err) {
-				return callback(cleanSqliteError(err), []);
-			}
-
-			rows.forEach((row) => {
-				categories.push({
-					podcastCategoryId: row.PodcastCategoryId,
-					name: row.Name,
-					colorCode: row.ColorCode,
-					podcastCount: row.PodcastCount,
-				});
-			});
-
-			return callback(null, categories);
-		});
-	};
-
-	static readonly GetPodcastCategoryById = (id: number, callback: (error: string | null, podcast: PodcastCategory | null) => void) => {
-		const db = this.GetDatabase();
-
-		db.get(getPodcastCategoryById, [id], (err, row: PodcastCategoryQueryReturn) => {
-			db.close();
-
-			if (err) {
-				return callback(cleanSqliteError(err), null);
-			}
-
-			if (!row) {
-				return callback(null, null);
-			}
-
-			return callback(null, {
+		data.forEach((row) => {
+			categories.push({
 				podcastCategoryId: row.PodcastCategoryId,
 				name: row.Name,
 				colorCode: row.ColorCode,
 				podcastCount: row.PodcastCount,
 			});
 		});
+
+		return [null, categories];
 	};
 
-	static readonly AddPodcastCategory = (category: PodcastCategory, callback: (error: string | null) => void) => {
-		const db = this.GetDatabase();
+	static async GetPodcastCategoryById(id: number): Promise<[error: string | null, podcast: PodcastCategory | null]> {
+		const [error, data] = await db.QuerySingle<PodcastCategoryQueryReturn>(getPodcastCategoryById, [id]);
 
-		db.run(insertPodcastCategory, [category.name, category.colorCode], (err) => {
-			db.close();
+		if (error) {
+			return [error, null];
+		}
 
-			if (err) {
-				return callback(cleanSqliteError(err));
-			}
+		if (!data) {
+			return [null, null];
+		}
 
-			return callback(null);
-		});
+		return [null, {
+			podcastCategoryId: data.PodcastCategoryId,
+			name: data.Name,
+			colorCode: data.ColorCode,
+			podcastCount: data.PodcastCount,
+		}];
 	};
 
-	static readonly UpdatePodcastCategory = (category: PodcastCategory, callback: (error: string | null) => void) => {
-		const db = this.GetDatabase();
+	static async AddPodcastCategory(category: PodcastCategory): Promise<string | null> {
+		return await db.Execute(insertPodcastCategory, [category.name, category.colorCode]);
+	};
 
-		db.run(updatePodcastCategory, [
+	static async UpdatePodcastCategory(category: PodcastCategory): Promise<string | null> {
+		return await db.Execute(updatePodcastCategory, [
 			category.name,
 			category.colorCode,
 			category.podcastCategoryId,
-		], (err) => {
-			db.close();
-
-			if (err) {
-				return callback(cleanSqliteError(err));
-			}
-
-			return callback(null);
-		});
+		]);
 	};
 
-	static readonly DeletePodcastCategory = (podcastCategoryId: number, callback: (error: string | null) => void) => {
-		const db = this.GetDatabase();
-
-		db.run(deletePodcastCategory, [podcastCategoryId], (err) => {
-			db.close();
-
-			if (err) {
-				return callback(cleanSqliteError(err));
-			}
-
-			return callback(null);
-		});
+	static async DeletePodcastCategory(id: number): Promise<string | null> {
+		return await db.Execute(deletePodcastCategory, [id]);
 	};
 }
 

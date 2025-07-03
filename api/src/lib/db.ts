@@ -5,7 +5,7 @@ import cleanSqliteError from '../lib/cleanSqliteError';
 class db {
 	private static GetDatabase = () => new sqlite3.Database(config.db);
 
-	static async Query<T>(sql: string, params: any = []): Promise<[error: string | null, data: T[]]> {
+	static async Query<T>(sql: string, params: any[] = []): Promise<[error: string | null, data: T[]]> {
 		return new Promise(function (resolve, reject) {
 			try {
 				const database = db.GetDatabase();
@@ -25,7 +25,7 @@ class db {
 		});
 	}
 
-	static async QuerySingle<T>(sql: string, params: any = []): Promise<[error: string | null, data: T | null]> {
+	static async QuerySingle<T>(sql: string, params: any[] = []): Promise<[error: string | null, data: T | null]> {
 		return new Promise(function (resolve, reject) {
 			try {
 				const database = db.GetDatabase();
@@ -49,7 +49,7 @@ class db {
 		});
 	}
 
-	static async Execute(sql: string, params: any = []): Promise<string | null> {
+	static async Execute(sql: string, params: any[] = []): Promise<string | null> {
 		return new Promise(function (resolve, reject) {
 			try {
 				const database = db.GetDatabase();
