@@ -9,107 +9,44 @@ const router = express.Router();
 router.get('/recent/:days', (req, res) => {
     const limitInDays = parseInt(req.params.days);
 
-    MovieRepository.GetAllMovieGenreLinks((genreLinkError, genreLinks) => {
-        if (genreLinkError) {
-            return res.status(400).json({ genreLinkError });
-        }
-
-        MovieRepository.GetAllMovieServiceLinks((serviceLinkError, serviceLinks) => {
-            if (genreLinkError) {
-                return res.status(400).json({ serviceLinkError });
+    MovieRepository.GetRecentMovies(limitInDays)
+        .then(([error, data]) => {
+            if (error) {
+                return res.status(400).json({ error });
             }
 
-            MovieRepository.GetRecentMovies(limitInDays, (error, data) => {
-                if (error) {
-                    return res.status(400).json({ error });
-                }
-
-                const movies: Movie[] = [];
-
-                data.forEach((m) => {
-                    m.genres = genreLinks
-                        .filter((g) => g.movieId == m.movieId)
-                        .map((g) => ({ videoGenreId: g.genreId, name: g.genreName, colorCode: g.genreColorCode }));
-
-                    m.services = serviceLinks
-                        .filter((s) => s.movieId == m.movieId)
-                        .map((s) => ({ videoServiceId: s.serviceId, name: s.serviceName, colorCode: s.serviceColorCode }));
-
-                    movies.push(m);
-                });
-
-                res.json(movies);
-            });
+            return res.json(data);
+        }).catch((e) => {
+            return res.status(400).json({ error: e });
         });
-    });
 });
 
 router.get('/', (_, res) => {
-    MovieRepository.GetAllMovieGenreLinks((genreLinkError, genreLinks) => {
-        if (genreLinkError) {
-            return res.status(400).json({ genreLinkError });
-        }
-
-        MovieRepository.GetAllMovieServiceLinks((serviceLinkError, serviceLinks) => {
-            if (genreLinkError) {
-                return res.status(400).json({ serviceLinkError });
+    MovieRepository.GetAllMovies()
+        .then(([error, data]) => {
+            if (error) {
+                return res.status(400).json({ error });
             }
 
-            MovieRepository.GetAllMovies((error, data) => {
-                if (error) {
-                    return res.status(400).json({ error });
-                }
-
-                const movies: Movie[] = [];
-
-                data.forEach((m) => {
-                    m.genres = genreLinks
-                        .filter((g) => g.movieId == m.movieId)
-                        .map((g) => ({ videoGenreId: g.genreId, name: g.genreName, colorCode: g.genreColorCode }));
-
-                    m.services = serviceLinks
-                        .filter((s) => s.movieId == m.movieId)
-                        .map((s) => ({ videoServiceId: s.serviceId, name: s.serviceName, colorCode: s.serviceColorCode }));
-
-                    movies.push(m);
-                });
-
-                res.json(movies);
-            });
+            return res.json(data);
+        }).catch((e) => {
+            return res.status(400).json({ error: e });
         });
-    });
 });
 
 router.get('/:id', (req, res) => {
     const id = parseInt(req.params.id);
 
-    MovieRepository.GetServicesForMovie(id, (serviceError, services) => {
-        if (serviceError) {
-            return res.status(400).json({ serviceError });
-        }
-
-        MovieRepository.GetGenresForMovie(id, (genreError, genres) => {
-            if (genreError) {
-                return res.status(400).json({ genreError });
+    MovieRepository.GetMovieById(id)
+        .then(([error, data]) => {
+            if (error) {
+                return res.status(400).json({ error });
             }
 
-            MovieRepository.GetMovieById(id, (error, data) => {
-                if (error) {
-                    return res.status(400).json({ error });
-                }
-
-                if (!data) {
-                    res.status(404).json({ error: 'Movie not found' });
-                } else {
-                    res.json({
-                        ...data,
-                        genres,
-                        services,
-                    });
-                }
-            });
+            return res.json(data);
+        }).catch((e) => {
+            return res.status(400).json({ error: e });
         });
-    });
 });
 
 router.post('/', (req, res) => {
@@ -140,13 +77,16 @@ router.post('/', (req, res) => {
         services: services.map((s: number) => ({ videoServiceId: s, name: '', colorCode: '' })),
     };
 
-    MovieRepository.AddMovie(movie, (error) => {
-        if (error) {
-            return res.status(400).json({ error });
-        }
+    MovieRepository.AddMovie(movie)
+        .then((error) => {
+            if (error) {
+                return res.status(400).json({ error });
+            }
 
-        res.send();
-    });
+            res.send();
+        }).catch((e) => {
+            return res.status(400).json({ error: e });
+        });
 });
 
 router.put('/:id', (req, res) => {
@@ -179,27 +119,31 @@ router.put('/:id', (req, res) => {
         services: services.map((s: number) => ({ videoServiceId: s, name: '', colorCode: '' })),
     };
 
-    MovieRepository.UpdateMovie(movie, (error) => {
-        if (error) {
-            return res.status(400).json({ error });
-        }
+    MovieRepository.UpdateMovie(movie)
+        .then((error) => {
+            if (error) {
+                return res.status(400).json({ error });
+            }
 
-        res.send();
-    });
+            res.send();
+        }).catch((e) => {
+            return res.status(400).json({ error: e });
+        });
 });
 
 router.delete('/:id', (req, res) => {
     const id = parseInt(req.params.id);
 
-    MovieRepository.DeleteMovie(id, (error) => {
-        if (error) {
-            return res.status(400).json({ error });
-        }
+    MovieRepository.DeleteMovie(id)
+        .then((error) => {
+            if (error) {
+                return res.status(400).json({ error });
+            }
 
-        res.send();
-    });
-
-    res.send();
+            res.send();
+        }).catch((e) => {
+            return res.status(400).json({ error: e });
+        });
 });
 
 export default router;

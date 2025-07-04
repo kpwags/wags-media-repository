@@ -1,28 +1,30 @@
-import sqlite3 from 'sqlite3';
+import { db } from '../../lib/db';
+
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
-import config from '../../config';
-import cleanSqliteError from '../../lib/cleanSqliteError';
+
 import convertDateToJsonDate from '../../lib/convertDateToJsonDate';
+
 import { Movie, MovieGenreLink, MovieServiceLink } from '../../models/movie';
+
 import {
-    MovieQueryReturn,
-    MovieGenreLinkQueryReturn,
-    getAllMovies,
-    getGenresForMovie,
-    getAllMovieGenreLinks,
-    getAllMovieServiceLinks,
-    MovieServiceLinkQueryReturn,
-    getMovieById,
-    getServicesForMovie,
-    insertMovieServiceLink,
-    insertMovieGenreLink,
-    insertMovie,
-    getLastInsertedId,
-    clearMovieGenreLinks,
-    clearMovieServiceLinks,
-    deleteMovie,
-    updateMovie,
+	MovieQueryReturn,
+	MovieGenreLinkQueryReturn,
+	getAllMovies,
+	getGenresForMovie,
+	getAllMovieGenreLinks,
+	getAllMovieServiceLinks,
+	MovieServiceLinkQueryReturn,
+	getMovieById,
+	getServicesForMovie,
+	insertMovieServiceLink,
+	insertMovieGenreLink,
+	insertMovie,
+	getLastInsertedId,
+	clearMovieGenreLinks,
+	clearMovieServiceLinks,
+	deleteMovie,
+	updateMovie,
 } from './queries';
 import { VideoService, VideoGenre } from '../../models/system';
 import { VideoGenreQueryReturn, VideoServiceQueryReturn } from '../../system/lib/queries';
@@ -30,360 +32,364 @@ import { VideoGenreQueryReturn, VideoServiceQueryReturn } from '../../system/lib
 dayjs.extend(isSameOrAfter);
 
 class MovieRepository {
-    private static GetDatabase = () => {
-        sqlite3.verbose();
-
-        return new sqlite3.Database(config.db);
-    };
-
-    static readonly GetGenresForMovie = (movieId: number, callback: (error: string | null, genres: VideoGenre[]) => void) => {
-        const db = this.GetDatabase();
-
-        const genres: VideoGenre[] = [];
-
-        db.all(getGenresForMovie, [movieId], (err: any, rows: VideoGenreQueryReturn[]) => {
-            db.close();
-
-            if (err) {
-                return callback(cleanSqliteError(err), []);
-            }
-
-            rows.forEach((row) => {
-                genres.push({
-                    videoGenreId: row.VideoGenreId,
-                    name: row.Name,
-                    colorCode: row.ColorCode,
-                    movieCount: row.MovieCount,
-                });
-            });
-
-            return callback(null, genres);
-        });
-    };
-
-    static readonly GetServicesForMovie = (movieId: number, callback: (error: string | null, genres: VideoService[]) => void) => {
-        const db = this.GetDatabase();
-
-        const services: VideoService[] = [];
-
-        db.all(getServicesForMovie, [movieId], (err: any, rows: VideoServiceQueryReturn[]) => {
-            db.close();
-
-            if (err) {
-                return callback(cleanSqliteError(err), []);
-            }
-
-            rows.forEach((row) => {
-                services.push({
-                    videoServiceId: row.VideoServiceId,
-                    name: row.Name,
-                    colorCode: row.ColorCode,
-                });
-            });
-
-            return callback(null, services);
-        });
-    };
-
-    static readonly GetAllMovieGenreLinks = (callback: (error: string | null, genreLinks: MovieGenreLink[]) => void) => {
-        const db = this.GetDatabase();
-
-        const genreLinks: MovieGenreLink[] = [];
-
-        db.all(getAllMovieGenreLinks, (err: any, rows: MovieGenreLinkQueryReturn[]) => {
-            db.close();
-
-            if (err) {
-                return callback(cleanSqliteError(err), []);
-            }
-
-            rows.forEach((row) => {
-                genreLinks.push({
-                    movieId: row.MovieId,
-                    genreId: row.VideoGenreId,
-                    genreName: row.VideoGenreName,
-                    genreColorCode: row.VideoGenreColor,
-                });
-            });
-
-            return callback(null, genreLinks);
-        });
-    };
-
-    static readonly GetAllMovieServiceLinks = (callback: (error: string | null, genreLinks: MovieServiceLink[]) => void) => {
-        const db = this.GetDatabase();
-
-        const genreLinks: MovieServiceLink[] = [];
-
-        db.all(getAllMovieServiceLinks, (err: any, rows: MovieServiceLinkQueryReturn[]) => {
-            db.close();
-
-            if (err) {
-                return callback(cleanSqliteError(err), []);
-            }
-
-            rows.forEach((row) => {
-                genreLinks.push({
-                    movieId: row.MovieId,
-                    serviceId: row.VideoServiceId,
-                    serviceName: row.VideoServiceName,
-                    serviceColorCode: row.VideoServiceColor,
-                });
-            });
-
-            return callback(null, genreLinks);
-        });
-    };
-
-    static readonly GetAllMovies = (callback: (error: string | null, movies: Movie[]) => void) => {
-        const db = this.GetDatabase();
-
-        const movies: Movie[] = [];
-
-        db.all(getAllMovies, (err: any, rows: MovieQueryReturn[]) => {
-            db.close();
-
-            if (err) {
-                return callback(cleanSqliteError(err), []);
-            }
-
-            rows.forEach((row) => {
-                movies.push({
-                    movieId: row.MovieId,
-                    statusId: row.MovieStatusId,
-                    title: row.Title,
-                    imdbLink: row.ImdbLink,
-                    posterImageUrl: row.PosterImageUrl,
-                    dateWatched: convertDateToJsonDate(row.DateWatched),
-                    rating: row.Rating,
-                    thoughts: row.Thoughts,
-                    sortOrder: row.SortOrder,
-                    status: {
-                        movieStatusId: row.MovieStatusId,
-                        name: row.MovieStatusName,
-                        colorCode: row.MovieStatusColor,
-                    },
-                    genres: [],
-                    services: [],
-                });
-            });
-
-            return callback(null, movies);
-        });
-    };
-
-    static readonly GetMovieById = (id: number, callback: (error: string | null, movie: Movie | null) => void) => {
-        const db = this.GetDatabase();
-
-        db.get(getMovieById, [id], (err: any, row: MovieQueryReturn) => {
-            db.close();
-
-            if (err) {
-                return callback(cleanSqliteError(err), null);
-            }
-
-            if (!row) {
-                return callback(null, null);
-            }
-
-            return callback(null, {
-                movieId: row.MovieId,
-                statusId: row.MovieStatusId,
-                title: row.Title,
-                imdbLink: row.ImdbLink,
-                posterImageUrl: row.PosterImageUrl,
-                dateWatched: convertDateToJsonDate(row.DateWatched),
-                rating: row.Rating,
-                thoughts: row.Thoughts,
-                sortOrder: row.SortOrder,
-                status: {
-                    movieStatusId: row.MovieStatusId,
-                    name: row.MovieStatusName,
-                    colorCode: row.MovieStatusColor,
-                },
-                genres: [],
-                services: [],
-            });
-        });
-    };
-
-    static readonly AddMovieGenreLinks = (genres: { movieId: number, genreId: number }[]) => {
-        const db = this.GetDatabase();
-
-        for (let i = 0; i < genres.length; i++) {
-            const genre = genres[i];
-
-            db.run(insertMovieGenreLink, [genre.movieId, genre.genreId], function (err) {
-                if (err) throw err;
-            });
-        }
-    };
-
-    static readonly AddMovieServiceLinks = (services: { movieId: number, serviceId: number }[]) => {
-        const db = this.GetDatabase();
-
-        for (let i = 0; i < services.length; i++) {
-            const service = services[i];
-
-            db.run(insertMovieServiceLink, [service.movieId, service.serviceId], function (err) {
-                if (err) throw err;
-            });
-        }
-    };
-
-    static readonly GetLastInsertedId = (callback: (error: string | null, id: number | null) => void) => {
-        const db = this.GetDatabase();
-
-        db.get(getLastInsertedId, (err: any, row: { LastInsertedId: number }) => {
-            db.close();
-
-            if (err) {
-                return callback(cleanSqliteError(err), null);
-            }
-
-            return callback(null, row.LastInsertedId);
-        });
-    };
-
-    static readonly AddMovie = (movie: Movie, callback: (error: string | null) => void) => {
-        const db = this.GetDatabase();
-
-        db.run(insertMovie, [
-            movie.statusId,
-            movie.title,
-            movie.imdbLink,
-            movie.posterImageUrl,
-            movie.dateWatched,
-            movie.rating,
-            movie.thoughts,
-            movie.sortOrder
-        ], (err) => {
-            db.close();
-
-            if (err) {
-                return callback(cleanSqliteError(err));
-            }
-
-            try {
-                this.GetLastInsertedId((error, movieId) => {
-                    if (error || !movieId) {
-                        return callback(error ?? 'Error retrieving last ID');
-                    }
-
-                    const genres = movie.genres.map((g) => ({ movieId, genreId: g.videoGenreId }));
-                    const services = movie.services.map((g) => ({ movieId, serviceId: g.videoServiceId }));
-
-                    this.AddMovieGenreLinks(genres);
-                    this.AddMovieServiceLinks(services);
-                });
-            } catch (e) {
-                return callback((e as Error).message);
-            }
-
-            return callback(null);
-        });
-    };
-
-    static readonly UpdateMovie = (movie: Movie, callback: (error: string | null) => void) => {
-        const db = this.GetDatabase();
-
-        db.run(updateMovie, [
-            movie.statusId,
-            movie.title,
-            movie.imdbLink,
-            movie.posterImageUrl,
-            movie.dateWatched,
-            movie.rating,
-            movie.thoughts,
-            movie.sortOrder,
-            movie.movieId,
-        ], (err) => {
-            if (err) {
-                db.close();
-                return callback(cleanSqliteError(err));
-            }
-
-            db.serialize(() => {
-                db
-                    .run(clearMovieGenreLinks, [movie.movieId])
-                    .run(clearMovieServiceLinks, [movie.movieId], (error) => {
-                        db.close();
-
-                        if (error) {
-                            return callback(cleanSqliteError(error));
-                        }
-
-                        const genres = movie.genres.map((g) => ({ movieId: movie.movieId, genreId: g.videoGenreId }));
-                        const services = movie.services.map((g) => ({ movieId: movie.movieId, serviceId: g.videoServiceId }));
-
-                        this.AddMovieGenreLinks(genres);
-                        this.AddMovieServiceLinks(services);
-                    });
-            });
-
-            return callback(null);
-        });
-    };
-
-    static readonly DeleteMovie = (movieId: number, callback: (error: string | null) => void) => {
-        const db = this.GetDatabase();
-
-        db.serialize(() => {
-            db
-                .run(clearMovieGenreLinks, [movieId])
-                .run(clearMovieServiceLinks, [movieId])
-                .run(deleteMovie, [movieId], (err) => {
-                    db.close();
-
-                    if (err) {
-                        return callback(cleanSqliteError(err));
-                    }
-
-                    return callback(null);
-                });
-        });
-    };
-
-    static readonly GetRecentMovies = (days: number, callback: (error: string | null, movies: Movie[]) => void) => {
-        const db = this.GetDatabase();
-
-        const movies: Movie[] = [];
-
-        db.all(getAllMovies, (err: any, rows: MovieQueryReturn[]) => {
-            db.close();
-
-            if (err) {
-                return callback(cleanSqliteError(err), []);
-            }
-
-            rows.forEach((row) => {
-                const limit = dayjs().subtract(days, 'day');
-
-                if (row.DateWatched && dayjs(row.DateWatched).isSameOrAfter(limit)) {
-                    movies.push({
-                        movieId: row.MovieId,
-                        statusId: row.MovieStatusId,
-                        title: row.Title,
-                        imdbLink: row.ImdbLink,
-                        posterImageUrl: row.PosterImageUrl,
-                        dateWatched: convertDateToJsonDate(row.DateWatched),
-                        rating: row.Rating,
-                        thoughts: row.Thoughts,
-                        sortOrder: row.SortOrder,
-                        status: {
-                            movieStatusId: row.MovieStatusId,
-                            name: row.MovieStatusName,
-                            colorCode: row.MovieStatusColor,
-                        },
-                        genres: [],
-                        services: [],
-                    });
-                }
-            });
-
-            return callback(null, movies);
-        });
-    };
+	static async GetGenresForMovie(movieId: number): Promise<[error: string | null, genres: VideoGenre[]]> {
+		const [error, data] = await db.Query<VideoGenreQueryReturn>(getGenresForMovie, [movieId]);
+
+		if (error) {
+			return [error, []];
+		}
+
+		const genres: VideoGenre[] = [];
+
+		data.forEach((row) => {
+			genres.push({
+				videoGenreId: row.VideoGenreId,
+				name: row.Name,
+				colorCode: row.ColorCode,
+				movieCount: row.MovieCount,
+			});
+		});
+
+		return [null, genres];
+	};
+
+	static async GetServicesForMovie(movieId: number): Promise<[error: string | null, genres: VideoService[]]> {
+		const [error, data] = await db.Query<VideoServiceQueryReturn>(getServicesForMovie, [movieId]);
+
+		if (error) {
+			return [error, []];
+		}
+
+		const services: VideoService[] = [];
+
+		data.forEach((row) => {
+			services.push({
+				videoServiceId: row.VideoServiceId,
+				name: row.Name,
+				colorCode: row.ColorCode,
+			});
+		});
+
+		return [null, services];
+	};
+
+	static async GetAllMovieGenreLinks(): Promise<[error: string | null, genreLinks: MovieGenreLink[]]> {
+		const [error, data] = await db.Query<MovieGenreLinkQueryReturn>(getAllMovieGenreLinks);
+
+		if (error) {
+			return [error, []];
+		}
+
+		const genreLinks: MovieGenreLink[] = [];
+
+		data.forEach((row) => {
+			genreLinks.push({
+				movieId: row.MovieId,
+				genreId: row.VideoGenreId,
+				genreName: row.VideoGenreName,
+				genreColorCode: row.VideoGenreColor,
+			});
+		});
+
+		return [null, genreLinks];
+	};
+
+	static async GetAllMovieServiceLinks(): Promise<[error: string | null, genreLinks: MovieServiceLink[]]> {
+		const [error, data] = await db.Query<MovieServiceLinkQueryReturn>(getAllMovieServiceLinks);
+
+		if (error) {
+			return [error, []];
+		}
+
+		const serviceLinks: MovieServiceLink[] = [];
+
+		data.forEach((row) => {
+			serviceLinks.push({
+				movieId: row.MovieId,
+				serviceId: row.VideoServiceId,
+				serviceName: row.VideoServiceName,
+				serviceColorCode: row.VideoServiceColor,
+			});
+		});
+
+		return [null, serviceLinks];
+	};
+
+	static async GetAllMovies(): Promise<[error: string | null, movies: Movie[]]> {
+		const [
+			[error, data],
+			[genreLinksError, genreLinks],
+			[serviceLinksError, serviceLinks],
+		] = await Promise.all([
+			db.Query<MovieQueryReturn>(getAllMovies),
+			this.GetAllMovieGenreLinks(),
+			this.GetAllMovieServiceLinks(),
+		]);
+
+		if (error || genreLinksError || serviceLinksError) {
+			return [error ?? genreLinksError ?? serviceLinksError, []];
+		}
+
+		const movies: Movie[] = [];
+
+		data.forEach((row) => {
+			movies.push({
+				movieId: row.MovieId,
+				statusId: row.MovieStatusId,
+				title: row.Title,
+				imdbLink: row.ImdbLink,
+				posterImageUrl: row.PosterImageUrl,
+				dateWatched: convertDateToJsonDate(row.DateWatched),
+				rating: row.Rating,
+				thoughts: row.Thoughts,
+				sortOrder: row.SortOrder,
+				status: {
+					movieStatusId: row.MovieStatusId,
+					name: row.MovieStatusName,
+					colorCode: row.MovieStatusColor,
+				},
+				genres: genreLinks
+					.filter((g) => g.movieId == row.MovieId)
+					.map((g) => ({ videoGenreId: g.genreId, name: g.genreName, colorCode: g.genreColorCode })),
+				services: serviceLinks
+					.filter((s) => s.movieId == row.MovieId)
+					.map((s) => ({ videoServiceId: s.serviceId, name: s.serviceName, colorCode: s.serviceColorCode })),
+			});
+		});
+
+		return [null, movies];
+	};
+
+	static async GetMovieById(id: number): Promise<[error: string | null, movie: Movie | null]> {
+		const [
+			[error, data],
+			[genreError, genres],
+			[serviceError, services],
+		] = await Promise.all([
+			db.QuerySingle<MovieQueryReturn>(getMovieById, [id]),
+			this.GetGenresForMovie(id),
+			this.GetServicesForMovie(id),
+		]);
+
+		if (error || genreError || serviceError) {
+			return [error ?? genreError ?? serviceError, null];
+		}
+
+		if (!data) {
+			return [null, null];
+		}
+
+		return [null, {
+			movieId: data.MovieId,
+			statusId: data.MovieStatusId,
+			title: data.Title,
+			imdbLink: data.ImdbLink,
+			posterImageUrl: data.PosterImageUrl,
+			dateWatched: convertDateToJsonDate(data.DateWatched),
+			rating: data.Rating,
+			thoughts: data.Thoughts,
+			sortOrder: data.SortOrder,
+			status: {
+				movieStatusId: data.MovieStatusId,
+				name: data.MovieStatusName,
+				colorCode: data.MovieStatusColor,
+			},
+			genres,
+			services,
+		}]
+	};
+
+	static async AddMovieGenreLinks(genres: { movieId: number, genreId: number }[]): Promise<string | null> {
+		let error: string | null = null;
+
+		for (let i = 0; i < genres.length; i++) {
+			const genre = genres[i];
+
+			const err = await db.Execute(insertMovieGenreLink, [genre.movieId, genre.genreId]);
+
+			if (err) {
+				error = err;
+			}
+		}
+
+		return error;
+	};
+
+	static async AddMovieServiceLinks(services: { movieId: number, serviceId: number }[]): Promise<string | null> {
+		let error: string | null = null;
+
+		for (let i = 0; i < services.length; i++) {
+			const service = services[i];
+
+			const err = await db.Execute(insertMovieServiceLink, [service.movieId, service.serviceId]);
+
+			if (err) {
+				error = err;
+			}
+		}
+
+		return error;
+	};
+
+	static async GetLastInsertedRowId(): Promise<[error: string | null, id: number | null]> {
+		const [error, data] = await db.QuerySingle<number>(getLastInsertedId);
+
+		if (error) {
+			return [error, null];
+		}
+
+		if (!data) {
+			return [null, null];
+		}
+
+		return [null, data];
+	}
+
+	static async AddMovie(movie: Movie): Promise<string | null> {
+		const error = await db.Execute(insertMovie, [
+			movie.statusId,
+			movie.title,
+			movie.imdbLink,
+			movie.posterImageUrl,
+			movie.dateWatched,
+			movie.rating,
+			movie.thoughts,
+			movie.sortOrder
+		]);
+
+		if (error) {
+			return error;
+		}
+
+		const [idError, movieId] = await this.GetLastInsertedRowId();
+
+		if (idError || !movieId) {
+			return idError ?? 'Unable to get movie ID';
+		}
+
+		const genres = movie.genres.map((g) => ({ movieId, genreId: g.videoGenreId }));
+		const services = movie.services.map((g) => ({ movieId, serviceId: g.videoServiceId }));
+
+		const [genreError, serviceError] = await Promise.all([
+			this.AddMovieGenreLinks(genres),
+			this.AddMovieServiceLinks(services),
+		]);
+
+		if (genreError || serviceError) {
+			return genreError ?? serviceError;
+		}
+
+		return null;
+	}
+
+	static async ClearMovieGenres(movieId: number): Promise<string | null> {
+		return await db.Execute(clearMovieGenreLinks, [movieId]);
+	}
+
+	static async ClearMovieServices(movieId: number): Promise<string | null> {
+		return await db.Execute(clearMovieServiceLinks, [movieId]);
+	}
+
+	static async UpdateMovie(movie: Movie): Promise<string | null> {
+		const [updateError, clearGenresError, clearServicesError] = await Promise.all([
+			db.Execute(updateMovie, [
+				movie.statusId,
+				movie.title,
+				movie.imdbLink,
+				movie.posterImageUrl,
+				movie.dateWatched,
+				movie.rating,
+				movie.thoughts,
+				movie.sortOrder,
+				movie.movieId,
+			]),
+			this.ClearMovieGenres(movie.movieId),
+			this.ClearMovieServices(movie.movieId),
+		]);
+
+		if (updateError || clearGenresError || clearServicesError) {
+			return updateError ?? clearGenresError ?? clearServicesError;
+		}
+
+		const genres = movie.genres.map((g) => ({ movieId: movie.movieId, genreId: g.videoGenreId }));
+		const services = movie.services.map((g) => ({ movieId: movie.movieId, serviceId: g.videoServiceId }));
+
+		const [genreError, serviceError] = await Promise.all([
+			this.AddMovieGenreLinks(genres),
+			this.AddMovieServiceLinks(services),
+		]);
+
+		if (genreError || serviceError) {
+			return genreError ?? serviceError;
+		}
+
+		return null;
+	};
+
+	static async DeleteMovie(id: number): Promise<string | null> {
+		const [
+			clearGenresError,
+			clearServicesError,
+		] = await Promise.all([
+			this.ClearMovieGenres(id),
+			this.ClearMovieServices(id),
+		]);
+
+		if (clearGenresError || clearServicesError) {
+			return clearGenresError ?? clearServicesError;
+		}
+
+		return await db.Execute(deleteMovie, [id]);
+	};
+
+	static async GetRecentMovies(days: number): Promise<[error: string | null, movies: Movie[]]> {
+		const [
+			[error, data],
+			[genreLinksError, genreLinks],
+			[serviceLinksError, serviceLinks],
+		] = await Promise.all([
+			db.Query<MovieQueryReturn>(getAllMovies),
+			this.GetAllMovieGenreLinks(),
+			this.GetAllMovieServiceLinks(),
+		]);
+
+		if (error || genreLinksError || serviceLinksError) {
+			return [error ?? genreLinksError ?? serviceLinksError, []];
+		}
+
+		const movies: Movie[] = [];
+
+		data.forEach((row) => {
+			const limit = dayjs().subtract(days, 'day');
+
+			if (row.DateWatched && dayjs(row.DateWatched).isSameOrAfter(limit)) {
+				movies.push({
+					movieId: row.MovieId,
+					statusId: row.MovieStatusId,
+					title: row.Title,
+					imdbLink: row.ImdbLink,
+					posterImageUrl: row.PosterImageUrl,
+					dateWatched: convertDateToJsonDate(row.DateWatched),
+					rating: row.Rating,
+					thoughts: row.Thoughts,
+					sortOrder: row.SortOrder,
+					status: {
+						movieStatusId: row.MovieStatusId,
+						name: row.MovieStatusName,
+						colorCode: row.MovieStatusColor,
+					},
+					genres: genreLinks
+						.filter((g) => g.movieId == row.MovieId)
+						.map((g) => ({ videoGenreId: g.genreId, name: g.genreName, colorCode: g.genreColorCode })),
+					services: serviceLinks
+						.filter((s) => s.movieId == row.MovieId)
+						.map((s) => ({ videoServiceId: s.serviceId, name: s.serviceName, colorCode: s.serviceColorCode })),
+				});
+			}
+		});
+
+		return [null, movies];
+	};
 }
 
 export default MovieRepository;
