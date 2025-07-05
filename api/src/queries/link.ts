@@ -1,25 +1,3 @@
-export type LinkQueryReturn = {
-    LinkId: number;
-    LinkTypeId: number;
-    Title: string;
-    Url: string;
-    Author: string;
-    LinkDate: Date;
-    ReadingLogIssueNumber: number;
-    LinkCategoryId: number;
-    LinkCategoryName: string;
-    LinkCategoryColor: string;
-    LinkTypeName: string;
-    LinkTypeColor: string;
-}
-
-export type LinkCategoryQueryReturn = {
-    LinkCategoryId: number;
-    Name: string;
-    ColorCode: string;
-    LinkCount: number;
-}
-
 export const getLinkCategories = `
 SELECT
 	L.LinkCategoryId,

@@ -1,6 +1,6 @@
-import { db } from './../lib/db';
+import { db } from '@lib/db';
 
-import convertToBoolean from './../lib/convertToBoolean';
+import convertToBoolean from '@lib/convertToBoolean';
 
 import {
 	MusicAlbum,
@@ -15,7 +15,7 @@ import {
 	MusicFormatQueryReturn,
 	MusicGenreLinkQueryReturn,
 	MusicGenreQueryReturn,
-} from './../models/music';
+} from '@models/music';
 
 import {
 	clearMusicAlbumFormatLinks,
@@ -42,7 +42,7 @@ import {
 	updateMusicGenre,
 	insertAlbumTrack,
 	getMusicAlbumsOnNowPage,
-} from './../queries/music';
+} from '@queries/music';
 
 class MusicRepository {
 	static async GetAllMusicAlbums(): Promise<[error: string | null, albums: MusicAlbum[]]> {
@@ -449,7 +449,7 @@ class MusicRepository {
 	}
 
 	static async GetAllAlbumFormatLinks(): Promise<[error: string | null, genreLinks: MusicFormatLink[]]> {
-		const [error, data] = await db.Query<MusicFormatLinkQueryReturn>(getAllMusicGenreLinks);
+		const [error, data] = await db.Query<MusicFormatLinkQueryReturn>(getAllMusicFormatLinks);
 
 		if (error) {
 			return [error, []];

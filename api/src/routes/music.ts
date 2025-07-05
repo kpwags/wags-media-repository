@@ -2,8 +2,8 @@ import express from 'express';
 
 const musicRouter = express.Router();
 
-import { MusicRepository } from './../repositories/MusicRepository';
-import { MusicAlbum, AlbumTrack, MusicGenre } from './../models/music';
+import { MusicRepository } from '@repositories/MusicRepository';
+import { MusicAlbum, AlbumTrack, MusicGenre } from '@models/music';
 
 musicRouter.get('/genre', (_, res) => {
 	MusicRepository.GetAllMusicGenres()

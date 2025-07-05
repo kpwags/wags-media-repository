@@ -1,11 +1,11 @@
 import express from 'express';
 
-import linkRepository from './lib/LinkRepository';
-import { Link, LinkCategory } from '../models/link';
+import linkRepository from '@repositories/LinkRepository';
+import { Link, LinkCategory } from '@models/link';
 
-const router = express.Router();
+const linkRouter = express.Router();
 
-router.get('/category', (_, res) => {
+linkRouter.get('/category', (_, res) => {
 	linkRepository.GetAllLinkCatgeories()
 		.then(([error, data]) => {
 			if (error) {
@@ -18,7 +18,7 @@ router.get('/category', (_, res) => {
 		});
 });
 
-router.get('/category/:id', (req, res) => {
+linkRouter.get('/category/:id', (req, res) => {
 	const id = parseInt(req.params.id);
 
 	linkRepository.GetLinkCategoryById(id)
@@ -37,7 +37,7 @@ router.get('/category/:id', (req, res) => {
 		});
 });
 
-router.post('/category', (req, res) => {
+linkRouter.post('/category', (req, res) => {
 	const { linkCategoryId, name, colorCode } = req.body;
 
 	const category: LinkCategory = {
@@ -58,7 +58,7 @@ router.post('/category', (req, res) => {
 		});
 });
 
-router.put('/category/:id', (req, res) => {
+linkRouter.put('/category/:id', (req, res) => {
 	const id = parseInt(req.params.id);
 
 	const { name, colorCode } = req.body;
@@ -81,7 +81,7 @@ router.put('/category/:id', (req, res) => {
 		});
 });
 
-router.delete('/category/:id', (req, res) => {
+linkRouter.delete('/category/:id', (req, res) => {
 	const id = parseInt(req.params.id);
 
 	linkRepository.DeleteLinkCategory(id)
@@ -97,7 +97,7 @@ router.delete('/category/:id', (req, res) => {
 		});
 });
 
-router.get('/reading-log/:id', (req, res) => {
+linkRouter.get('/reading-log/:id', (req, res) => {
 	const id = parseInt(req.params.id);
 
 	linkRepository.GetLinksForReadingLogIssue(id)
@@ -112,7 +112,7 @@ router.get('/reading-log/:id', (req, res) => {
 		});
 });
 
-router.get('/limit/:count', (req, res) => {
+linkRouter.get('/limit/:count', (req, res) => {
 	const count = parseInt(req.params.count);
 
 	linkRepository.GetAllLinks()
@@ -127,7 +127,7 @@ router.get('/limit/:count', (req, res) => {
 		});
 });
 
-router.get('/', (_, res) => {
+linkRouter.get('/', (_, res) => {
 	linkRepository.GetAllLinks()
 		.then(([error, data]) => {
 			if (error) {
@@ -140,7 +140,7 @@ router.get('/', (_, res) => {
 		});
 });
 
-router.get('/:id', (req, res) => {
+linkRouter.get('/:id', (req, res) => {
 	const id = parseInt(req.params.id);
 
 	linkRepository.GetLinkById(id)
@@ -159,7 +159,7 @@ router.get('/:id', (req, res) => {
 		});
 });
 
-router.post('/', (req, res) => {
+linkRouter.post('/', (req, res) => {
 	const formBody = req.body;
 
 	const link: Link = {
@@ -185,7 +185,7 @@ router.post('/', (req, res) => {
 		});
 });
 
-router.put('/:id', (req, res) => {
+linkRouter.put('/:id', (req, res) => {
 	const id = parseInt(req.params.id);
 	const formBody = req.body;
 
@@ -212,7 +212,7 @@ router.put('/:id', (req, res) => {
 		});
 });
 
-router.delete('/:id', (req, res) => {
+linkRouter.delete('/:id', (req, res) => {
 	const id = parseInt(req.params.id);
 
 	linkRepository.DeleteLink(id)
@@ -227,4 +227,4 @@ router.delete('/:id', (req, res) => {
 		});
 });
 
-export default router;
+export { linkRouter };

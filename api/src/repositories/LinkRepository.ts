@@ -1,12 +1,15 @@
-import { db } from '../../lib/db';
+import { db } from '@lib/db';
 
-import convertDateToJsonDate from '../../lib/convertDateToJsonDate';
-
-import { Link, LinkCategory } from '../../models/link';
+import convertDateToJsonDate from '@lib/convertDateToJsonDate';
 
 import {
 	LinkCategoryQueryReturn,
 	LinkQueryReturn,
+	Link,
+	LinkCategory
+} from '@models/link';
+
+import {
 	getLinkCategories,
 	getLinkCategoryById,
 	insertLinkCategory,
@@ -18,7 +21,7 @@ import {
 	insertLink,
 	updateLink,
 	deleteLink,
-} from './queries';
+} from '@queries/link';
 
 class LinkRepository {
 	static async GetAllLinkCatgeories(): Promise<[error: string | null, categories: LinkCategory[]]> {

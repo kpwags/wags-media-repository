@@ -1,6 +1,11 @@
-import { db } from '../../lib/db';
+import { db } from '@lib/db';
 
-import { Podcast, PodcastCategory } from '../../models/podcast';
+import {
+	Podcast,
+	PodcastCategory,
+	PodcastQueryReturn,
+	PodcastCategoryQueryReturn,
+} from '@models/podcast';
 
 import {
 	getPodcasts,
@@ -9,13 +14,11 @@ import {
 	deletePodcast,
 	updatePodcast,
 	getPodcastCategories,
-	PodcastQueryReturn,
-	PodcastCategoryQueryReturn,
 	getPodcastCategoryById,
 	insertPodcastCategory,
 	deletePodcastCategory,
 	updatePodcastCategory,
-} from './queries';
+} from '@queries/podcast';
 
 class PodcastRepository {
 	static async GetAllPodcasts(): Promise<[error: string | null, podcasts: Podcast[]]> {

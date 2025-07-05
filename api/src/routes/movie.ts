@@ -1,12 +1,12 @@
 import express from 'express';
 
-import MovieRepository from './lib/MovieRepository';
+import MovieRepository from '@repositories/MovieRepository';
 
-import { Movie } from '../models/movie';
+import { Movie } from '@models/movie';
 
-const router = express.Router();
+const movieRouter = express.Router();
 
-router.get('/recent/:days', (req, res) => {
+movieRouter.get('/recent/:days', (req, res) => {
     const limitInDays = parseInt(req.params.days);
 
     MovieRepository.GetRecentMovies(limitInDays)
@@ -21,7 +21,7 @@ router.get('/recent/:days', (req, res) => {
         });
 });
 
-router.get('/', (_, res) => {
+movieRouter.get('/', (_, res) => {
     MovieRepository.GetAllMovies()
         .then(([error, data]) => {
             if (error) {
@@ -34,7 +34,7 @@ router.get('/', (_, res) => {
         });
 });
 
-router.get('/:id', (req, res) => {
+movieRouter.get('/:id', (req, res) => {
     const id = parseInt(req.params.id);
 
     MovieRepository.GetMovieById(id)
@@ -49,7 +49,7 @@ router.get('/:id', (req, res) => {
         });
 });
 
-router.post('/', (req, res) => {
+movieRouter.post('/', (req, res) => {
     const {
         title,
         imdbLink,
@@ -89,7 +89,7 @@ router.post('/', (req, res) => {
         });
 });
 
-router.put('/:id', (req, res) => {
+movieRouter.put('/:id', (req, res) => {
     const id = parseInt(req.params.id);
 
     const {
@@ -131,7 +131,7 @@ router.put('/:id', (req, res) => {
         });
 });
 
-router.delete('/:id', (req, res) => {
+movieRouter.delete('/:id', (req, res) => {
     const id = parseInt(req.params.id);
 
     MovieRepository.DeleteMovie(id)
@@ -146,4 +146,4 @@ router.delete('/:id', (req, res) => {
         });
 });
 
-export default router;
+export { movieRouter };

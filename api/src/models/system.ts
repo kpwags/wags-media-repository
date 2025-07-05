@@ -13,3 +13,19 @@ export type VideoService = {
     tvShowCount?: number;
     movieCount?: number;
 }
+
+export type VideoGenreQueryReturn = {
+    VideoGenreId: number;
+    Name: string;
+    ColorCode: string;
+    TvShowCount: number;
+    MovieCount: number;
+}
+
+export type VideoServiceQueryReturn = {
+    VideoServiceId: number;
+    Name: string;
+    ColorCode: string;
+    TvShowCount: number;
+    MovieCount: number;
+}

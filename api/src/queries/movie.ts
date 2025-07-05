@@ -1,31 +1,3 @@
-export type MovieQueryReturn = {
-    MovieId: number;
-    DateWatched?: Date;
-    ImdbLink: string;
-    MovieStatusId: number;
-    PosterImageUrl: string;
-    Rating: number;
-    Thoughts: string;
-    Title: string;
-    SortOrder: number;
-    MovieStatusName: string;
-    MovieStatusColor: string;
-}
-
-export type MovieGenreLinkQueryReturn = {
-    MovieId: number;
-    VideoGenreId: number;
-    VideoGenreName: string;
-    VideoGenreColor: string;
-}
-
-export type MovieServiceLinkQueryReturn = {
-    MovieId: number;
-    VideoServiceId: number;
-    VideoServiceName: string;
-    VideoServiceColor: string;
-}
-
 export const getAllMovies = `
 SELECT
     M.MovieId,

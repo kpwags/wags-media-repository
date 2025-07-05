@@ -75,20 +75,3 @@ WHERE PodcastCategoryId = ?;
 `;
 
 export const deletePodcastCategory = `DELETE FROM PodcastCategory WHERE PodcastCategoryId = ?;`;
-
-export type PodcastQueryReturn = {
-    PodcastId: number;
-    Name: string;
-    Link: string;
-    CoverImageUrl: string;
-    PodcastCategoryId: number;
-    PodcastCategoryName: string;
-    ColorCode: string;
-}
-
-export type PodcastCategoryQueryReturn = {
-    PodcastCategoryId: number;
-    Name: string;
-    ColorCode: string;
-    PodcastCount: number;
-}

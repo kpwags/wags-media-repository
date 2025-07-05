@@ -5,10 +5,10 @@ import bodyParser from 'body-parser';
 import config from './config';
 
 import BookRoutes from './books/routes';
-import LinkRoutes from './links/routes';
-import MovieRoutes from './movies/routes';
-import { musicRouter } from './routes/music';
-import PodcastRoutes from './podcasts/routes';
+import { linkRouter } from '@routes/link';
+import { movieRouter } from '@routes/movie';
+import { musicRouter } from '@routes/music';
+import { podcastRouter } from '@routes/podcast';
 import SystemRoutes from './system/routes';
 import TvRoutes from './tv/routes';
 import VideoGameRoutes from './videoGames/routes';
@@ -28,10 +28,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use('/book', BookRoutes);
-app.use('/link', LinkRoutes);
-app.use('/movie', MovieRoutes);
+app.use('/link', linkRouter);
+app.use('/movie', movieRouter);
 app.use('/music', musicRouter);
-app.use('/podcast', PodcastRoutes);
+app.use('/podcast', podcastRouter);
 app.use('/system', SystemRoutes);
 app.use('/tv', TvRoutes);
 app.use('/video-game', VideoGameRoutes);

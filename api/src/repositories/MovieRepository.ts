@@ -1,20 +1,30 @@
-import { db } from '../../lib/db';
+import { db } from '@lib/db';
 
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 
-import convertDateToJsonDate from '../../lib/convertDateToJsonDate';
-
-import { Movie, MovieGenreLink, MovieServiceLink } from '../../models/movie';
+import convertDateToJsonDate from '@lib/convertDateToJsonDate';
 
 import {
+	Movie,
+	MovieGenreLink,
+	MovieServiceLink,
 	MovieQueryReturn,
 	MovieGenreLinkQueryReturn,
+	MovieServiceLinkQueryReturn,
+} from '@models/movie';
+import {
+	VideoService,
+	VideoGenre,
+	VideoGenreQueryReturn,
+	VideoServiceQueryReturn,
+} from '@models/system';
+
+import {
 	getAllMovies,
 	getGenresForMovie,
 	getAllMovieGenreLinks,
 	getAllMovieServiceLinks,
-	MovieServiceLinkQueryReturn,
 	getMovieById,
 	getServicesForMovie,
 	insertMovieServiceLink,
@@ -25,9 +35,7 @@ import {
 	clearMovieServiceLinks,
 	deleteMovie,
 	updateMovie,
-} from './queries';
-import { VideoService, VideoGenre } from '../../models/system';
-import { VideoGenreQueryReturn, VideoServiceQueryReturn } from '../../system/lib/queries';
+} from '@queries/movie';
 
 dayjs.extend(isSameOrAfter);
 
@@ -51,7 +59,7 @@ class MovieRepository {
 		});
 
 		return [null, genres];
-	};
+	}
 
 	static async GetServicesForMovie(movieId: number): Promise<[error: string | null, genres: VideoService[]]> {
 		const [error, data] = await db.Query<VideoServiceQueryReturn>(getServicesForMovie, [movieId]);
@@ -71,7 +79,7 @@ class MovieRepository {
 		});
 
 		return [null, services];
-	};
+	}
 
 	static async GetAllMovieGenreLinks(): Promise<[error: string | null, genreLinks: MovieGenreLink[]]> {
 		const [error, data] = await db.Query<MovieGenreLinkQueryReturn>(getAllMovieGenreLinks);
@@ -92,7 +100,7 @@ class MovieRepository {
 		});
 
 		return [null, genreLinks];
-	};
+	}
 
 	static async GetAllMovieServiceLinks(): Promise<[error: string | null, genreLinks: MovieServiceLink[]]> {
 		const [error, data] = await db.Query<MovieServiceLinkQueryReturn>(getAllMovieServiceLinks);
@@ -113,7 +121,7 @@ class MovieRepository {
 		});
 
 		return [null, serviceLinks];
-	};
+	}
 
 	static async GetAllMovies(): Promise<[error: string | null, movies: Movie[]]> {
 		const [
@@ -158,7 +166,7 @@ class MovieRepository {
 		});
 
 		return [null, movies];
-	};
+	}
 
 	static async GetMovieById(id: number): Promise<[error: string | null, movie: Movie | null]> {
 		const [
@@ -197,7 +205,7 @@ class MovieRepository {
 			genres,
 			services,
 		}]
-	};
+	}
 
 	static async AddMovieGenreLinks(genres: { movieId: number, genreId: number }[]): Promise<string | null> {
 		let error: string | null = null;
@@ -213,7 +221,7 @@ class MovieRepository {
 		}
 
 		return error;
-	};
+	}
 
 	static async AddMovieServiceLinks(services: { movieId: number, serviceId: number }[]): Promise<string | null> {
 		let error: string | null = null;
@@ -229,7 +237,7 @@ class MovieRepository {
 		}
 
 		return error;
-	};
+	}
 
 	static async GetLastInsertedRowId(): Promise<[error: string | null, id: number | null]> {
 		const [error, data] = await db.QuerySingle<number>(getLastInsertedId);
@@ -324,7 +332,7 @@ class MovieRepository {
 		}
 
 		return null;
-	};
+	}
 
 	static async DeleteMovie(id: number): Promise<string | null> {
 		const [
@@ -340,7 +348,7 @@ class MovieRepository {
 		}
 
 		return await db.Execute(deleteMovie, [id]);
-	};
+	}
 
 	static async GetRecentMovies(days: number): Promise<[error: string | null, movies: Movie[]]> {
 		const [
@@ -389,7 +397,7 @@ class MovieRepository {
 		});
 
 		return [null, movies];
-	};
+	}
 }
 
 export default MovieRepository;

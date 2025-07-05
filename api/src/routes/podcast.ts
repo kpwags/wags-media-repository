@@ -1,11 +1,11 @@
 import express from 'express';
 
-import podcastRepository from './lib/PodcastRepository';
-import { Podcast, PodcastCategory } from '../models/podcast';
+import podcastRepository from '@repositories/PodcastRepository';
+import { Podcast, PodcastCategory } from '@models/podcast';
 
-const router = express.Router();
+const podcastRouter = express.Router();
 
-router.get('/category', (_, res) => {
+podcastRouter.get('/category', (_, res) => {
 	podcastRepository.GetAllPodcastCategories()
 		.then(([error, data]) => {
 			if (error) {
@@ -18,7 +18,7 @@ router.get('/category', (_, res) => {
 		});
 });
 
-router.get('/category/:id', (req, res) => {
+podcastRouter.get('/category/:id', (req, res) => {
 	const id = parseInt(req.params.id);
 
 	podcastRepository.GetPodcastCategoryById(id)
@@ -37,7 +37,7 @@ router.get('/category/:id', (req, res) => {
 		});
 });
 
-router.post('/category', (req, res) => {
+podcastRouter.post('/category', (req, res) => {
 	const { podcastCategoryId, name, colorCode } = req.body;
 
 	const category: PodcastCategory = {
@@ -58,7 +58,7 @@ router.post('/category', (req, res) => {
 		});
 });
 
-router.put('/category/:id', (req, res) => {
+podcastRouter.put('/category/:id', (req, res) => {
 	const id = parseInt(req.params.id);
 
 	const { name, colorCode } = req.body;
@@ -81,7 +81,7 @@ router.put('/category/:id', (req, res) => {
 		});
 });
 
-router.delete('/category/:id', (req, res) => {
+podcastRouter.delete('/category/:id', (req, res) => {
 	const id = parseInt(req.params.id);
 
 	podcastRepository.DeletePodcastCategory(id)
@@ -96,7 +96,7 @@ router.delete('/category/:id', (req, res) => {
 		});
 });
 
-router.get('/', (_, res) => {
+podcastRouter.get('/', (_, res) => {
 	podcastRepository.GetAllPodcasts()
 		.then(([error, data]) => {
 			if (error) {
@@ -109,7 +109,7 @@ router.get('/', (_, res) => {
 		});;
 });
 
-router.get('/:id', (req, res) => {
+podcastRouter.get('/:id', (req, res) => {
 	const id = parseInt(req.params.id);
 
 	podcastRepository.GetPodcastById(id)
@@ -128,7 +128,7 @@ router.get('/:id', (req, res) => {
 		});
 });
 
-router.post('/', (req, res) => {
+podcastRouter.post('/', (req, res) => {
 	const formBody = req.body;
 
 	const podcast: Podcast = {
@@ -156,7 +156,7 @@ router.post('/', (req, res) => {
 		});
 });
 
-router.put('/:id', (req, res) => {
+podcastRouter.put('/:id', (req, res) => {
 	const id = parseInt(req.params.id);
 	const formBody = req.body;
 
@@ -185,7 +185,7 @@ router.put('/:id', (req, res) => {
 		});
 });
 
-router.delete('/:id', (req, res) => {
+podcastRouter.delete('/:id', (req, res) => {
 	const id = parseInt(req.params.id);
 
 	podcastRepository.DeletePodcast(id)
@@ -200,4 +200,4 @@ router.delete('/:id', (req, res) => {
 		});
 });
 
-export default router;
+export { podcastRouter };
