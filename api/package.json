@@ -26,5 +26,12 @@
     "@types/sqlite3": "^3.1.11",
     "nodemon": "^3.1.4",
     "ts-node": "^10.9.2"
+  },
+  "imports": {
+    "#lib/*": "./src/lib/*",
+    "#models/*": "./src/models/*",
+    "#queries/*": "./src/queries/*",
+    "#repositories/*": "./src/repositories/*",
+    "#routes/*": "./src/routes/*"
   }
 }
