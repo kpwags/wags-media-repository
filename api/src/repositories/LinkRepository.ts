@@ -213,4 +213,4 @@ class LinkRepository {
 	};
 }
 
-export default LinkRepository;
+export { LinkRepository };

@@ -3,7 +3,7 @@ SELECT
 	VG.VideoGenreId,
 	VG.Name,
 	VG.ColorCode,
-    0 AS TvShowCount,
+	0 AS TvShowCount,
 	(SELECT COUNT(MovieToVideoGenreId) FROM MovieToVideoGenre WHERE VideoGenreId = VG.VideoGenreId) AS MovieCount
 FROM VideoGenre VG
 ORDER BY Name ASC;
@@ -14,7 +14,7 @@ SELECT
 	VG.VideoGenreId,
 	VG.Name,
 	VG.ColorCode,
-    0 AS TvShowCount,
+	0 AS TvShowCount,
 	(SELECT COUNT(MovieToVideoGenreId) FROM MovieToVideoGenre WHERE VideoGenreId = VG.VideoGenreId) AS MovieCount
 FROM VideoGenre VG
 WHERE MovieGenreId = ?
@@ -27,8 +27,8 @@ VALUES (?, ?);
 
 export const updateVideoGenre = `
 UPDATE VideoGenre SET
-    Name = ?,
-    ColorCode = ?
+	Name = ?,
+	ColorCode = ?
 WHERE VideoGenreId = ?;
 `;
 
@@ -39,7 +39,7 @@ SELECT
 	VS.VideoServiceId,
 	VS.Name,
 	VS.ColorCode,
-    0 AS TvShowCount,
+	0 AS TvShowCount,
 	(SELECT COUNT(MovieToVideoServiceId) FROM MovieToVideoService WHERE VideoServiceId = VS.VideoServiceId) AS MovieCount
 FROM VideoService VS
 ORDER BY Name ASC;
@@ -50,7 +50,7 @@ SELECT
 	VS.VideoServiceId,
 	VS.Name,
 	VS.ColorCode,
-    0 AS TvShowCount,
+	0 AS TvShowCount,
 	(SELECT COUNT(MovieToVideoServiceId) FROM MovieToVideoService WHERE VideoServiceId = VS.VideoServiceId) AS MovieCount
 FROM VideoService VS
 WHERE VideoServiceId = ?
@@ -63,8 +63,8 @@ VALUES (?, ?);
 
 export const updateVideoService = `
 UPDATE VideoService SET
-    Name = ?,
-    ColorCode = ?
+	Name = ?,
+	ColorCode = ?
 WHERE VideoServiceId = ?;
 `;
 

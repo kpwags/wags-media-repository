@@ -400,4 +400,4 @@ class MovieRepository {
 	}
 }
 
-export default MovieRepository;
+export { MovieRepository };

@@ -9,7 +9,7 @@ import { linkRouter } from '@routes/link';
 import { movieRouter } from '@routes/movie';
 import { musicRouter } from '@routes/music';
 import { podcastRouter } from '@routes/podcast';
-import SystemRoutes from './system/routes';
+import { systemRouter } from '@routes/system';
 import TvRoutes from './tv/routes';
 import VideoGameRoutes from './videoGames/routes';
 
@@ -32,7 +32,7 @@ app.use('/link', linkRouter);
 app.use('/movie', movieRouter);
 app.use('/music', musicRouter);
 app.use('/podcast', podcastRouter);
-app.use('/system', SystemRoutes);
+app.use('/system', systemRouter);
 app.use('/tv', TvRoutes);
 app.use('/video-game', VideoGameRoutes);
 

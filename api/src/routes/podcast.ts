@@ -1,12 +1,12 @@
 import express from 'express';
 
-import podcastRepository from '@repositories/PodcastRepository';
+import { PodcastRepository } from '@repositories/PodcastRepository';
 import { Podcast, PodcastCategory } from '@models/podcast';
 
 const podcastRouter = express.Router();
 
 podcastRouter.get('/category', (_, res) => {
-	podcastRepository.GetAllPodcastCategories()
+	PodcastRepository.GetAllPodcastCategories()
 		.then(([error, data]) => {
 			if (error) {
 				return res.status(400).json({ error });
@@ -21,7 +21,7 @@ podcastRouter.get('/category', (_, res) => {
 podcastRouter.get('/category/:id', (req, res) => {
 	const id = parseInt(req.params.id);
 
-	podcastRepository.GetPodcastCategoryById(id)
+	PodcastRepository.GetPodcastCategoryById(id)
 		.then(([error, category]) => {
 			if (error) {
 				return res.status(400).json({ error });
@@ -46,7 +46,7 @@ podcastRouter.post('/category', (req, res) => {
 		colorCode,
 	};
 
-	podcastRepository.AddPodcastCategory(category)
+	PodcastRepository.AddPodcastCategory(category)
 		.then((error) => {
 			if (error) {
 				return res.status(400).json({ error });
@@ -69,7 +69,7 @@ podcastRouter.put('/category/:id', (req, res) => {
 		colorCode,
 	};
 
-	podcastRepository.UpdatePodcastCategory(category)
+	PodcastRepository.UpdatePodcastCategory(category)
 		.then((error) => {
 			if (error) {
 				return res.status(400).json({ error });
@@ -84,7 +84,7 @@ podcastRouter.put('/category/:id', (req, res) => {
 podcastRouter.delete('/category/:id', (req, res) => {
 	const id = parseInt(req.params.id);
 
-	podcastRepository.DeletePodcastCategory(id)
+	PodcastRepository.DeletePodcastCategory(id)
 		.then((error) => {
 			if (error) {
 				return res.status(400).json({ error });
@@ -97,7 +97,7 @@ podcastRouter.delete('/category/:id', (req, res) => {
 });
 
 podcastRouter.get('/', (_, res) => {
-	podcastRepository.GetAllPodcasts()
+	PodcastRepository.GetAllPodcasts()
 		.then(([error, data]) => {
 			if (error) {
 				return res.status(400).json({ error });
@@ -112,7 +112,7 @@ podcastRouter.get('/', (_, res) => {
 podcastRouter.get('/:id', (req, res) => {
 	const id = parseInt(req.params.id);
 
-	podcastRepository.GetPodcastById(id)
+	PodcastRepository.GetPodcastById(id)
 		.then(([error, podcast]) => {
 			if (error) {
 				return res.status(400).json({ error });
@@ -144,7 +144,7 @@ podcastRouter.post('/', (req, res) => {
 		},
 	};
 
-	podcastRepository.AddPodcast(podcast)
+	PodcastRepository.AddPodcast(podcast)
 		.then((error) => {
 			if (error) {
 				return res.status(400).json({ error });
@@ -173,7 +173,7 @@ podcastRouter.put('/:id', (req, res) => {
 		},
 	};
 
-	podcastRepository.UpdatePodcast(podcast)
+	PodcastRepository.UpdatePodcast(podcast)
 		.then((error) => {
 			if (error) {
 				return res.status(400).json({ error });
@@ -188,7 +188,7 @@ podcastRouter.put('/:id', (req, res) => {
 podcastRouter.delete('/:id', (req, res) => {
 	const id = parseInt(req.params.id);
 
-	podcastRepository.DeletePodcast(id)
+	PodcastRepository.DeletePodcast(id)
 		.then((error) => {
 			if (error) {
 				return res.status(400).json({ error });

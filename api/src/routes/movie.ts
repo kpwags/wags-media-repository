@@ -1,6 +1,6 @@
 import express from 'express';
 
-import MovieRepository from '@repositories/MovieRepository';
+import { MovieRepository } from '@repositories/MovieRepository';
 
 import { Movie } from '@models/movie';
 

@@ -148,4 +148,4 @@ class PodcastRepository {
 	};
 }
 
-export default PodcastRepository;
+export { PodcastRepository };

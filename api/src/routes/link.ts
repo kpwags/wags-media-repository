@@ -1,12 +1,12 @@
 import express from 'express';
 
-import linkRepository from '@repositories/LinkRepository';
+import { LinkRepository } from '@repositories/LinkRepository';
 import { Link, LinkCategory } from '@models/link';
 
 const linkRouter = express.Router();
 
 linkRouter.get('/category', (_, res) => {
-	linkRepository.GetAllLinkCatgeories()
+	LinkRepository.GetAllLinkCatgeories()
 		.then(([error, data]) => {
 			if (error) {
 				return res.status(400).json({ error });
@@ -21,7 +21,7 @@ linkRouter.get('/category', (_, res) => {
 linkRouter.get('/category/:id', (req, res) => {
 	const id = parseInt(req.params.id);
 
-	linkRepository.GetLinkCategoryById(id)
+	LinkRepository.GetLinkCategoryById(id)
 		.then(([error, category]) => {
 			if (error) {
 				return res.status(400).json({ error });
@@ -46,7 +46,7 @@ linkRouter.post('/category', (req, res) => {
 		colorCode,
 	};
 
-	linkRepository.AddLinkCategory(category)
+	LinkRepository.AddLinkCategory(category)
 		.then((error) => {
 			if (error) {
 				return res.status(400).json({ error });
@@ -69,7 +69,7 @@ linkRouter.put('/category/:id', (req, res) => {
 		colorCode,
 	};
 
-	linkRepository.UpdateLinkCategory(category)
+	LinkRepository.UpdateLinkCategory(category)
 		.then((error) => {
 			if (error) {
 				return res.status(400).json({ error });
@@ -84,7 +84,7 @@ linkRouter.put('/category/:id', (req, res) => {
 linkRouter.delete('/category/:id', (req, res) => {
 	const id = parseInt(req.params.id);
 
-	linkRepository.DeleteLinkCategory(id)
+	LinkRepository.DeleteLinkCategory(id)
 		.then((error) => {
 			if (error) {
 				return res.status(400).json({ error });
@@ -100,7 +100,7 @@ linkRouter.delete('/category/:id', (req, res) => {
 linkRouter.get('/reading-log/:id', (req, res) => {
 	const id = parseInt(req.params.id);
 
-	linkRepository.GetLinksForReadingLogIssue(id)
+	LinkRepository.GetLinksForReadingLogIssue(id)
 		.then(([error, data]) => {
 			if (error) {
 				return res.status(400).json({ error });
@@ -115,7 +115,7 @@ linkRouter.get('/reading-log/:id', (req, res) => {
 linkRouter.get('/limit/:count', (req, res) => {
 	const count = parseInt(req.params.count);
 
-	linkRepository.GetAllLinks()
+	LinkRepository.GetAllLinks()
 		.then(([error, data]) => {
 			if (error) {
 				return res.status(400).json({ error });
@@ -128,7 +128,7 @@ linkRouter.get('/limit/:count', (req, res) => {
 });
 
 linkRouter.get('/', (_, res) => {
-	linkRepository.GetAllLinks()
+	LinkRepository.GetAllLinks()
 		.then(([error, data]) => {
 			if (error) {
 				return res.status(400).json({ error });
@@ -143,7 +143,7 @@ linkRouter.get('/', (_, res) => {
 linkRouter.get('/:id', (req, res) => {
 	const id = parseInt(req.params.id);
 
-	linkRepository.GetLinkById(id)
+	LinkRepository.GetLinkById(id)
 		.then(([error, podcast]) => {
 			if (error) {
 				return res.status(400).json({ error });
@@ -173,7 +173,7 @@ linkRouter.post('/', (req, res) => {
 		readingLogIssueNumber: formBody.readingLogIssueNumber,
 	};
 
-	linkRepository.AddLink(link)
+	LinkRepository.AddLink(link)
 		.then((error) => {
 			if (error) {
 				return res.status(400).json({ error });
@@ -200,7 +200,7 @@ linkRouter.put('/:id', (req, res) => {
 		readingLogIssueNumber: formBody.readingLogIssueNumber,
 	};
 
-	linkRepository.UpdateLink(link)
+	LinkRepository.UpdateLink(link)
 		.then((error) => {
 			if (error) {
 				return res.status(400).json({ error });
@@ -215,7 +215,7 @@ linkRouter.put('/:id', (req, res) => {
 linkRouter.delete('/:id', (req, res) => {
 	const id = parseInt(req.params.id);
 
-	linkRepository.DeleteLink(id)
+	LinkRepository.DeleteLink(id)
 		.then((error) => {
 			if (error) {
 				return res.status(400).json({ error });

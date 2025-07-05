@@ -26,7 +26,7 @@ import {
 } from './queries';
 
 import { VideoService, VideoGenre } from '../../models/system';
-import { VideoGenreQueryReturn, VideoServiceQueryReturn } from '../../system/lib/queries';
+import { VideoGenreQueryReturn, VideoServiceQueryReturn } from '@models/system';
 import { TelevisionShowServiceLink, TelevisionShow, TelevisionShowGenreLink } from '../../models/tv';
 
 class TvRepository {
