@@ -6,13 +6,6 @@
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		"strict": true,
-		"skipLibCheck": true,
-		"paths": {
-			"#lib/*": ["./src/lib/*"],
-			"#models/*": ["./src/models/*"],
-			"#queries/*": ["./src/queries/*"],
-			"#repositories/*": ["./src/repositories/*"],
-			"#routes/*": ["./src/routes/*"]
-		}
+		"skipLibCheck": true
 	}
 }
