@@ -11,15 +11,15 @@ import { musicRouter } from '@routes/music';
 import { podcastRouter } from '@routes/podcast';
 import { systemRouter } from '@routes/system';
 import { tvRouter } from '@routes/tv';
-import VideoGameRoutes from './videoGames/routes';
+import { videoGameRouter } from '@routes/videoGame';
 
 const app = express();
 
 const port = config.port || 3000;
 
 const corsOptions = {
-    origin: ['http://localhost:3009', 'http://192.168.1.152:3009', 'https://192.168.1.232'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+	origin: ['http://localhost:3009', 'http://192.168.1.152:3009', 'https://192.168.1.232'],
+	methods: ['GET', 'POST', 'PUT', 'DELETE'],
 };
 
 app.use(cors(corsOptions));
@@ -34,8 +34,8 @@ app.use('/music', musicRouter);
 app.use('/podcast', podcastRouter);
 app.use('/system', systemRouter);
 app.use('/tv', tvRouter);
-app.use('/video-game', VideoGameRoutes);
+app.use('/video-game', videoGameRouter);
 
 app.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
+	console.log(`Server listening on port ${port}`);
 });
