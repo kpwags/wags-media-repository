@@ -10,7 +10,7 @@ import { movieRouter } from '@routes/movie';
 import { musicRouter } from '@routes/music';
 import { podcastRouter } from '@routes/podcast';
 import { systemRouter } from '@routes/system';
-import TvRoutes from './tv/routes';
+import { tvRouter } from '@routes/tv';
 import VideoGameRoutes from './videoGames/routes';
 
 const app = express();
@@ -33,7 +33,7 @@ app.use('/movie', movieRouter);
 app.use('/music', musicRouter);
 app.use('/podcast', podcastRouter);
 app.use('/system', systemRouter);
-app.use('/tv', TvRoutes);
+app.use('/tv', tvRouter);
 app.use('/video-game', VideoGameRoutes);
 
 app.listen(port, () => {
