@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npx tsc",
     "start": "node dist/server.js",
-    "dev": "nodemon src/server.ts"
+    "dev": "tsc-watch --onSuccess \"node dist/server.js\""
   },
   "author": "Keith Wagner",
   "license": "MIT",
@@ -15,6 +15,7 @@
     "cors": "^2.8.5",
     "dayjs": "^1.11.13",
     "express": "^4.19.2",
+    "module-alias": "^2.2.3",
     "sqlite3": "^5.1.7",
     "typescript": "^5.5.4"
   },
@@ -22,9 +23,17 @@
     "@tsconfig/node20": "^20.1.4",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
+    "@types/module-alias": "^2.0.4",
     "@types/node": "^22.5.0",
     "@types/sqlite3": "^3.1.11",
-    "nodemon": "^3.1.4",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "tsc-watch": "^7.1.1"
+  },
+  "_moduleAliases": {
+    "@lib": "dist/lib",
+    "@models": "dist/models",
+    "@queries": "dist/queries",
+    "@repositories": "dist/repositories",
+    "@routes": "dist/routes"
   }
 }

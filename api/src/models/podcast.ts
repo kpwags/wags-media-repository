@@ -13,3 +13,20 @@ export type Podcast = {
     coverImageUrl: string;
     category: PodcastCategory;
 }
+
+export type PodcastQueryReturn = {
+    PodcastId: number;
+    Name: string;
+    Link: string;
+    CoverImageUrl: string;
+    PodcastCategoryId: number;
+    PodcastCategoryName: string;
+    ColorCode: string;
+}
+
+export type PodcastCategoryQueryReturn = {
+    PodcastCategoryId: number;
+    Name: string;
+    ColorCode: string;
+    PodcastCount: number;
+}
