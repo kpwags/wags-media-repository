@@ -1,68 +1,3 @@
-export type BookQueryReturn = {
-    BookId: number;
-    BookStatusId: number;
-    BookTypeId: number;
-    BookSeriesId: number;
-    Title: string;
-    SubTitle: string;
-    Author: string;
-    Link: string;
-    DateStarted?: Date;
-    DateCompleted?: Date;
-    Rating: number;
-    Thoughts: string;
-    BookNotesUrl: string;
-    CoverImageUrl: string;
-    CurrentPage: number;
-    PageCount: number;
-    Progress: number;
-    SortOrder: number;
-    IsAtLibrary: boolean;
-    IsPurchased: boolean;
-    BookStatusName: string;
-    BookStatusColor: string;
-    BookTypeName: string;
-    BookTypeColor: string;
-    BookSeriesName?: string;
-    BookSeriesColor?: string;
-    HeardAboutFrom: string;
-}
-
-export type BookGenreLinkQueryReturn = {
-    BookId: number;
-    BookGenreId: number;
-    BookGenreName: string;
-    BookGenreColor: string;
-}
-
-export type BookFormatLinkQueryReturn = {
-    BookId: number;
-    BookFormatId: number;
-    BookFormatName: string;
-    BookFormatColor: string;
-}
-
-export type BookGenreQueryReturn = {
-    BookGenreId: number;
-    Name: string;
-    ColorCode: string;
-    BookCount: number;
-}
-
-export type BookFormatQueryReturn = {
-    BookFormatId: number;
-    Name: string;
-    ColorCode: string;
-    BookCount: number;
-}
-
-export type BookSeriesQueryReturn = {
-    BookSeriesId: number;
-    Name: string;
-    ColorCode: string;
-    BookCount: number;
-}
-
 export const getAllBooks = `
 SELECT
 	B.BookId,
@@ -84,7 +19,7 @@ SELECT
 	B.SortOrder,
 	B.IsAtLibrary,
 	B.IsPurchased,
-    B.HeardAboutFrom,
+	B.HeardAboutFrom,
 	BS.Name AS BookStatusName,
 	BS.ColorCode AS BookStatusColor,
 	BT.Name AS BookTypeName,
@@ -119,7 +54,7 @@ SELECT
 	B.SortOrder,
 	B.IsAtLibrary,
 	B.IsPurchased,
-    B.HeardAboutFrom,
+	B.HeardAboutFrom,
 	BS.Name AS BookStatusName,
 	BS.ColorCode AS BookStatusColor,
 	BT.Name AS BookTypeName,
@@ -131,7 +66,7 @@ JOIN BookStatus BS ON BS.BookStatusId = B.BookStatusId
 JOIN BookType BT ON BT.BookTypeId = B.BookTypeId
 LEFT JOIN BookSeries BKS ON BKS.BookSeriesId = B.BookSeriesId
 WHERE
-    B.BookId = ?;
+	B.BookId = ?;
 `;
 
 export const insertBook = `
@@ -141,27 +76,27 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 export const updateBook = `
 UPDATE Book SET
-    BookStatusId = ?,
-    BookTypeId = ?,
-    BookSeriesId = ?,
-    Title = ?,
-    SubTitle = ?,
-    Author = ?,
-    Link = ?,
-    DateStarted = ?,
-    DateCompleted = ?,
-    Rating = ?,
-    Thoughts = ?,
-    BookNotesUrl = ?,
-    CoverImageUrl = ?,
-    CurrentPage = ?,
-    PageCount = ?,
-    SortOrder = ?,
-    IsAtLibrary = ?,
-    IsPurchased = ?,
-    HeardAboutFrom = ?
+	BookStatusId = ?,
+	BookTypeId = ?,
+	BookSeriesId = ?,
+	Title = ?,
+	SubTitle = ?,
+	Author = ?,
+	Link = ?,
+	DateStarted = ?,
+	DateCompleted = ?,
+	Rating = ?,
+	Thoughts = ?,
+	BookNotesUrl = ?,
+	CoverImageUrl = ?,
+	CurrentPage = ?,
+	PageCount = ?,
+	SortOrder = ?,
+	IsAtLibrary = ?,
+	IsPurchased = ?,
+	HeardAboutFrom = ?
 WHERE
-    BookId = ?;
+	BookId = ?;
 `;
 
 export const deleteBook = `
@@ -170,44 +105,44 @@ DELETE FROM Book WHERE BookId = ?;
 
 export const getAllBookGenreLinks = `
 SELECT
-    BG.BookId,
-    BG.BookGenreId,
-    G.Name AS BookGenreName,
-    G.ColorCode AS BookGenreColor
+	BG.BookId,
+	BG.BookGenreId,
+	G.Name AS BookGenreName,
+	G.ColorCode AS BookGenreColor
 FROM BookToBookGenre BG
 JOIN BookGenre G ON G.BookGenreId = BG.BookGenreId;
 `;
 
 export const getAllBookFormatLinks = `
 SELECT
-    BF.BookId,
-    BF.BookFormatId,
-    F.Name AS BookFormatName,
-    F.ColorCode AS BookFormatColor
+	BF.BookId,
+	BF.BookFormatId,
+	F.Name AS BookFormatName,
+	F.ColorCode AS BookFormatColor
 FROM BookToBookFormat BF
 JOIN BookFormat F ON F.BookFormatId = BF.BookFormatId;
 `;
 
 export const getGenresForBook = `
 SELECT
-    G.BookGenreId,
+	G.BookGenreId,
 	G.Name,
 	G.ColorCode
 FROM BookGenre G
 JOIN BookToBookGenre BG ON BG.BookGenreId = G.BookGenreId
 WHERE
-    BG.BookId = ?;
+	BG.BookId = ?;
 `;
 
 export const getFormatsForBook = `
 SELECT
-    F.BookFormatId,
+	F.BookFormatId,
 	F.Name,
 	F.ColorCode
 FROM BookFormat F
 JOIN BookToBookFormat BF ON BF.BookFormatId = F.BookFormatId
 WHERE
-    BF.BookId = ?;
+	BF.BookId = ?;
 `;
 
 export const clearBookGenreLinks = `
@@ -232,23 +167,23 @@ export const getLastInsertedId = 'SELECT MAX(BookId) AS LastInsertedId FROM Book
 
 export const getAllBookGenres = `
 SELECT
-    BG.BookGenreId,
-    BG.Name,
-    BG.ColorCode,
-    (SELECT COUNT(BookToBookGenreId) FROM BookToBookGenre WHERE BookGenreId = BG.BookGenreId) AS BookCount
+	BG.BookGenreId,
+	BG.Name,
+	BG.ColorCode,
+	(SELECT COUNT(BookToBookGenreId) FROM BookToBookGenre WHERE BookGenreId = BG.BookGenreId) AS BookCount
 FROM BookGenre BG
 ORDER BY BG.Name;
 `;
 
 export const getBookGenreById = `
 SELECT
-    BookGenreId,
-    Name,
-    ColorCode,
-    (SELECT COUNT(BookToBookGenreId) FROM BookToBookGenre WHERE BookGenreId = BG.BookGenreId) AS BookCount
+	BookGenreId,
+	Name,
+	ColorCode,
+	(SELECT COUNT(BookToBookGenreId) FROM BookToBookGenre WHERE BookGenreId = BG.BookGenreId) AS BookCount
 FROM VideoGameGenre
 WHERE
-    VideoGameGenreId = ?;
+	VideoGameGenreId = ?;
 `;
 
 export const insertBookGenre = `
@@ -258,8 +193,8 @@ VALUES (?, ?);
 
 export const updateBookGenre = `
 UPDATE BookGenre SET
-    Name = ?,
-    ColorCode = ?
+	Name = ?,
+	ColorCode = ?
 WHERE BookGenreId = ?;
 `;
 
@@ -269,23 +204,23 @@ DELETE FROM BookGenre WHERE BookGenreId = ?
 
 export const getAllBookSeries = `
 SELECT
-    BS.BookSeriesId,
-    BS.Name,
-    BS.ColorCode,
-    (SELECT COUNT(BookId) FROM Book WHERE BookSeriesId = BS.BookSeriesId) AS BookCount
+	BS.BookSeriesId,
+	BS.Name,
+	BS.ColorCode,
+	(SELECT COUNT(BookId) FROM Book WHERE BookSeriesId = BS.BookSeriesId) AS BookCount
 FROM BookSeries BS
 ORDER BY BS.Name;
 `;
 
 export const getBookSeriesById = `
 SELECT
-    BS.BookSeriesId,
-    BS.Name,
-    BS.ColorCode,
-    (SELECT COUNT(BookId) FROM Book WHERE BookSeriesId = BS.BookSeriesId) AS BookCount
+	BS.BookSeriesId,
+	BS.Name,
+	BS.ColorCode,
+	(SELECT COUNT(BookId) FROM Book WHERE BookSeriesId = BS.BookSeriesId) AS BookCount
 FROM BookSeries BS
 WHERE
-    BookSeriesId = ?;
+	BookSeriesId = ?;
 `;
 
 export const insertBookSeries = `
@@ -295,8 +230,8 @@ VALUES (?, ?);
 
 export const updateBookSeries = `
 UPDATE BookSeries SET
-    Name = ?,
-    ColorCode = ?
+	Name = ?,
+	ColorCode = ?
 WHERE BookSeriesId = ?;
 `;
 
@@ -325,7 +260,7 @@ SELECT
 	B.SortOrder,
 	B.IsAtLibrary,
 	B.IsPurchased,
-    B.HeardAboutFrom,
+	B.HeardAboutFrom,
 	BS.Name AS BookStatusName,
 	BS.ColorCode AS BookStatusColor,
 	BT.Name AS BookTypeName,
@@ -337,11 +272,11 @@ JOIN BookStatus BS ON BS.BookStatusId = B.BookStatusId
 JOIN BookType BT ON BT.BookTypeId = B.BookTypeId
 LEFT JOIN BookSeries BKS ON BKS.BookSeriesId = B.BookSeriesId
 WHERE
-    B.BookStatusId = 2;
+	B.BookStatusId = 2;
 `;
 
 export const updateBookProgress = `
 UPDATE Book SET
-    CurrentPage = ?
+	CurrentPage = ?
 WHERE BookId = ?;
 `;

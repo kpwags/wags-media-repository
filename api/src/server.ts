@@ -4,7 +4,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import config from './config';
 
-import BookRoutes from './books/routes';
+import { bookRouter } from '@routes/book';
 import { linkRouter } from '@routes/link';
 import { movieRouter } from '@routes/movie';
 import { musicRouter } from '@routes/music';
@@ -27,7 +27,7 @@ app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use('/book', BookRoutes);
+app.use('/book', bookRouter);
 app.use('/link', linkRouter);
 app.use('/movie', movieRouter);
 app.use('/music', musicRouter);
