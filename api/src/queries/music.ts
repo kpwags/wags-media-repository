@@ -67,7 +67,8 @@ SELECT
     MusicAlbumId,
     TrackNumber,
     Title
-FROM MusicAlbumTrack;
+FROM MusicAlbumTrack
+ORDER BY TrackNumber;
 `;
 
 export const getTracksForAlbum = `
@@ -78,7 +79,8 @@ SELECT
     Title
 FROM MusicAlbumTrack
 WHERE
-    MusicAlbumId = ?;
+    MusicAlbumId = ?
+ORDER BY TrackNumber;
 `;
 
 export const clearTracksFromAlbum = `
