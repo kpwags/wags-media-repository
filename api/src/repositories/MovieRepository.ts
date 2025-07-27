@@ -240,7 +240,7 @@ class MovieRepository {
 	}
 
 	static async GetLastInsertedRowId(): Promise<[error: string | null, id: number | null]> {
-		const [error, data] = await db.QuerySingle<number>(getLastInsertedId);
+		const [error, data] = await db.QuerySingle<{ LastInsertedId: number }>(getLastInsertedId);
 
 		if (error) {
 			return [error, null];
@@ -250,7 +250,7 @@ class MovieRepository {
 			return [null, null];
 		}
 
-		return [null, data];
+		return [null, data.LastInsertedId];
 	}
 
 	static async AddMovie(movie: Movie): Promise<string | null> {

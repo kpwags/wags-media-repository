@@ -200,7 +200,7 @@ class TvRepository {
 	};
 
 	static async GetLastInsertedRowId(): Promise<[error: string | null, id: number | null]> {
-		const [error, data] = await db.QuerySingle<number>(getLastInsertedId);
+		const [error, data] = await db.QuerySingle<{ LastInsertedId: number }>(getLastInsertedId);
 
 		if (error) {
 			return [error, null];
@@ -210,7 +210,7 @@ class TvRepository {
 			return [null, null];
 		}
 
-		return [null, data];
+		return [null, data.LastInsertedId];
 	}
 
 	static async AddTelevisionShow(televsionShow: TelevisionShow): Promise<string | null> {

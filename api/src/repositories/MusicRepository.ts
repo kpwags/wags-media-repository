@@ -195,7 +195,7 @@ class MusicRepository {
 	}
 
 	static async GetLastInsertedRowId(): Promise<[error: string | null, id: number | null]> {
-		const [error, data] = await db.QuerySingle<number>(getLastInsertedId);
+		const [error, data] = await db.QuerySingle<{ LastInsertedId: number }>(getLastInsertedId);
 
 		if (error) {
 			return [error, null];
@@ -205,7 +205,7 @@ class MusicRepository {
 			return [null, null];
 		}
 
-		return [null, data];
+		return [null, data.LastInsertedId];
 	}
 
 	static async AddMusicAlbum(album: MusicAlbum): Promise<string | null> {
