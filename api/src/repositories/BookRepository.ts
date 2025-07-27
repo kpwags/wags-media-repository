@@ -349,7 +349,7 @@ class BookRepository {
 	}
 
 	static async GetLastInsertedRowId(): Promise<[error: string | null, id: number | null]> {
-		const [error, data] = await db.QuerySingle<number>(getLastInsertedId);
+		const [error, data] = await db.QuerySingle<{ LastInsertedId: number }>(getLastInsertedId);
 
 		if (error) {
 			return [error, null];
@@ -359,7 +359,7 @@ class BookRepository {
 			return [null, null];
 		}
 
-		return [null, data];
+		return [null, data.LastInsertedId];
 	}
 
 	static async AddBook(book: Book): Promise<string | null> {
