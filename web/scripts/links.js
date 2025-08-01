@@ -25,6 +25,7 @@ window.addEventListener('load', function () {
 	});
 
 	document.querySelector('#add-new-link').addEventListener('click', function () {
+		document.querySelector('#add-link h2').textContent = 'Add Link';
 		document.querySelector('dialog#add-link input#linkId').value = '0';
 		document.querySelector('dialog#add-link input#link-issue-number').value = allLinks[0].readingLogIssueNumber;
 		document.querySelector('dialog#add-link input#link-date').value = dayjs().format('YYYY-MM-DD');

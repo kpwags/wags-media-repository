@@ -205,6 +205,23 @@ bookRouter.put('/update-progress/:id', (req, res) => {
 		});
 });
 
+bookRouter.put('/mark-finished/:id', (req, res) => {
+	const id = parseInt(req.params.id);
+
+	const { rating, thoughts, dateCompleted } = req.body;
+
+	BookRepository.MarkBookAsFinished(id, rating, thoughts, dateCompleted)
+		.then((error) => {
+			if (error) {
+				return res.status(400).json({ error });
+			}
+
+			return res.send();
+		}).catch((e) => {
+			return res.status(400).json({ error: e });
+		});
+});
+
 bookRouter.get('/current', (_, res) => {
 	BookRepository.GetCurrentBooks()
 		.then(([error, data]) => {

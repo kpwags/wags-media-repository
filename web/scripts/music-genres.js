@@ -96,10 +96,12 @@ function openAddDialog() {
 }
 
 function editGenre(genre) {
+	const colorCode = genre.colorCode.includes('rgb') ? rgbToHex(genre.colorCode) : genre.colorCode;
+
 	document.querySelector('dialog#add-music-genre h2').textContent = 'Edit Genre';
 	document.querySelector('dialog#add-music-genre input#musicGenreId').value = genre.musicGenreId;
 	document.querySelector('dialog#add-music-genre input#name').value = genre.name;
-	document.querySelector('dialog#add-music-genre input#colorCode').value = genre.colorCode;
+	document.querySelector('dialog#add-music-genre input#colorCode').value = colorCode;
 
 	document.querySelector('dialog#add-music-genre').showModal();
 }

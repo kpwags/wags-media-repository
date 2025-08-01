@@ -62,35 +62,37 @@
 		</div>
 
 		<dialog class="form-dialog">
-			<h3>Edit Video Genre</h3>
+			<h2 class="modal-title">Edit Video Genre</h2>
+			<div class="container">
 
-			<div id="modal-error" class="alert error hidden"></div>
+				<div id="modal-error" class="alert error hidden"></div>
 
-			<form>
-				<fieldset>
-					<legend hidden>Edit Video Genre</legend>
-					<input type="hidden" id="videoGenreId" name="videoGenreId" value="0" />
+				<form>
+					<fieldset>
+						<legend hidden>Edit Video Genre</legend>
+						<input type="hidden" id="videoGenreId" name="videoGenreId" value="0" />
 
-					<div class="form-field">
-						<label for="name">
-							<span class="required">*</span>Name
-							<input type="text" name="name" id="name" required />
-						</label>
-					</div>
+						<div class="form-field">
+							<label for="name">
+								<span class="required">*</span>Name
+								<input type="text" name="name" id="name" required />
+							</label>
+						</div>
 
-					<div class="form-field">
-						<label for="colorCode">
-							<span class="required">*</span>Color
-							<input type="color" name="colorCode" id="colorCode" required />
-						</label>
-					</div>
+						<div class="form-field">
+							<label for="colorCode">
+								<span class="required">*</span>Color
+								<input type="color" name="colorCode" id="colorCode" required />
+							</label>
+						</div>
 
-					<div class="actions">
-	                    <button type="button" class="btn-ghost" id="form-dialog-cancel">Cancel</button>
-	                    <button type="submit" class="btn-primary">Save</button>
-	                </div>
-	            </fieldset>
-			</form>    
+						<div class="actions">
+		                    <button type="button" class="btn-ghost" id="form-dialog-cancel">Cancel</button>
+		                    <button type="submit" class="btn-primary">Save</button>
+		                </div>
+		            </fieldset>
+				</form>   
+			</div> 
 		</dialog>
 
 		<input type="hidden" id="delete-video-genre-id" value="0" />

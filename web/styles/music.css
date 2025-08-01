@@ -31,7 +31,7 @@ th.genre-actions-col {
 	margin: 0 auto;
 }
 
-.edit-tracks-modal {
+.form-dialog.edit-tracks-modal {
 	width: 800px;
 }
 

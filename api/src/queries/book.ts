@@ -280,3 +280,13 @@ UPDATE Book SET
 	CurrentPage = ?
 WHERE BookId = ?;
 `;
+
+export const updateBookToFinished = `
+UPDATE Book SET
+	BookStatusId = 3,
+	CurrentPage = ?,
+	Rating = ?,
+	Thoughts = ?,
+	DateCompleted = ?
+WHERE BookId = ?;
+`;

@@ -211,3 +211,20 @@ function getNumericValueFromInput(querySelector, fallback = 0) {
 
 	return val;
 }
+
+function componentToHex(c) {
+	var hex = c.toString(16);
+	return hex.length == 1 ? "0" + hex : hex;
+}
+
+function rgbToHex(rgb) {
+	const val = rgb.replace('rgb(', '').replace(')', '');
+	const rgbArray = val.split(',').map((x) => parseInt(x.trim()));
+
+	const r = rgbArray[0];
+	const g = rgbArray[1];
+	const b = rgbArray[2];
+
+	return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+

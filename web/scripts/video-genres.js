@@ -90,7 +90,7 @@ async function loadVideoGenres() {
 }
 
 function openAddDialog() {
-	document.querySelector('dialog.form-dialog h3').textContent = 'Add Video Genre';
+	document.querySelector('dialog.form-dialog h2').textContent = 'Add Video Genre';
 
 	document.querySelector('dialog.form-dialog').showModal();
 }
@@ -101,10 +101,12 @@ function editVideoGenre(e) {
 
 	const videoGenre = videoGenreData.find((vg) => vg.videoGenreId === videoGenreId);
 
-	document.querySelector('dialog.form-dialog h3').textContent = 'Edit Video Genre';
+	const colorCode = videoGenre.colorCode.includes('rgb') ? rgbToHex(videoGenre.colorCode) : videoGenre.colorCode;
+
+	document.querySelector('dialog.form-dialog h2').textContent = 'Edit Video Genre';
 	document.querySelector('dialog.form-dialog input#videoGenreId').value = videoGenre.videoGenreId;
 	document.querySelector('dialog.form-dialog input#name').value = videoGenre.name;
-	document.querySelector('dialog.form-dialog input#colorCode').value = videoGenre.colorCode;
+	document.querySelector('dialog.form-dialog input#colorCode').value = colorCode;
 
 	document.querySelector('dialog.form-dialog').showModal();
 }
@@ -135,7 +137,7 @@ function addEventListeners() {
 };
 
 function resetForm() {
-	document.querySelector('dialog.form-dialog h3').textContent = 'Edit Video Genre';
+	document.querySelector('dialog.form-dialog h2').textContent = 'Edit Video Genre';
 	document.querySelector('dialog.form-dialog input#name').value = '';
 	document.querySelector('dialog.form-dialog input#colorCode').value = '';
 	document.querySelector('dialog.form-dialog input#videoGenreId').value = 0;

@@ -96,10 +96,12 @@ function openAddDialog() {
 }
 
 function editGenre(genre) {
+	const colorCode = genre.colorCode.includes('rgb') ? rgbToHex(genre.colorCode) : genre.colorCode;
+
 	document.querySelector('dialog#add-book-genre h2').textContent = 'Edit Genre';
 	document.querySelector('dialog#add-book-genre input#bookGenreId').value = genre.bookGenreId;
 	document.querySelector('dialog#add-book-genre input#name').value = genre.name;
-	document.querySelector('dialog#add-book-genre input#colorCode').value = genre.colorCode;
+	document.querySelector('dialog#add-book-genre input#colorCode').value = colorCode;
 
 	document.querySelector('dialog#add-book-genre').showModal();
 }

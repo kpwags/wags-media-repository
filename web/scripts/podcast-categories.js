@@ -96,10 +96,12 @@ function openAddDialog() {
 }
 
 function editCategory(category) {
+	const colorCode = category.colorCode.includes('rgb') ? rgbToHex(category.colorCode) : category.colorCode;
+
 	document.querySelector('dialog#add-podcast-category h2').textContent = 'Edit Category';
 	document.querySelector('dialog#add-podcast-category input#podcastCategoryId').value = category.podcastCategoryId;
 	document.querySelector('dialog#add-podcast-category input#name').value = category.name;
-	document.querySelector('dialog#add-podcast-category input#colorCode').value = category.colorCode;
+	document.querySelector('dialog#add-podcast-category input#colorCode').value = colorCode;
 
 	document.querySelector('dialog#add-podcast-category').showModal();
 }

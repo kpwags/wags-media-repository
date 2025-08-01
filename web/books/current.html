@@ -20,6 +20,7 @@
 		<script src="/components/confirm-dialog.js"></script>
 		<script src="/components/star-rating.js"></script>
 		<script src="/components/book-form.js"></script>
+		<script src="/components/book-filter-form.js"></script>
 
 		<script src="/scripts/main.js"></script>
 		<script src="/scripts/api.js"></script>
@@ -86,71 +87,8 @@
 			</main>
 		</div>
 
-		<book-form></book-form>
-
-		<dialog id="filter-book" class="standard-modal">
-			<div class="container">
-				<h2>Filter Games</h2>
-
-				<form name="filter-book">
-					<div class="form-field">
-						<label for="filter-book-title">
-							Title / Author
-							<input type="text" name="book-title" id="filter-book-title" />
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="filter-book-genre">
-							Genre
-							<select name="book-genre" id="filter-book-genre">
-								<option value="0">All</option>
-							</select>
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="filter-book-series">
-							Series
-							<select name="book-series" id="filter-book-series">
-								<option value="0">All</option>
-							</select>
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="filter-book-type">
-							Type
-							<select name="book-type" id="filter-book-type">
-								<option value="0">All</option>
-								<option value="1">Fiction</option>
-								<option value="2">Non-Fiction</option>
-								<option value="3">Reference</option>
-							</select>
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="filter-is-purchased">
-							<input type="checkbox" name="filter-is-purchased" id="filter-is-purchased" value="true" switch />
-							Purchased
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="filter-at-library">
-							<input type="checkbox" name="filter-at-library" id="filter-at-library" value="true" switch />
-							At Library
-						</label>
-					</div>
-
-					<div class="actions">
-						<button type="submit" class="btn-primary">Filter</button>
-						<button type="button" class="btn-ghost" id="book-filter-cancel">Cancel</button>
-					</div>
-				</form>
-			</div>
-		</dialog>
+		<book-form status="2"></book-form>
+		<book-filter-form></book-filter-form>
 
 		<input type="hidden" id="delete-book-id" value="0" />
 		<confirm-dialog></confirm-dialog>

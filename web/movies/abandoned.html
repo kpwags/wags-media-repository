@@ -18,6 +18,8 @@
 		<script src="/components/sidebar.js"></script>
 		<script src="/components/loading-spinner.js"></script>
 		<script src="/components/confirm-dialog.js"></script>
+		<script src="/components/movie-form.js"></script>
+		<script src="/components/movie-filter-form.js"></script>
 
 		<script src="/scripts/main.js"></script>
 		<script src="/scripts/api.js"></script>
@@ -73,52 +75,9 @@
 				<div class="table-row-count">Rows: <span>0</span></div>
 			</main>
 		</div>
-
-		<dialog id="filter-movie" class="movie-modal">
-			<div class="container">
-				<h2>Filter Movies</h2>
-
-				<form name="filter-movie">
-					<div class="form-field">
-						<label for="filter-movie-title">
-							Title
-							<input
-								type="text"
-								name="movie-title"
-								id="filter-movie-title"
-							/>
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="filter-movie-genre">
-							Genre
-							<select name="movie-genre" id="filter-movie-genre">
-								<option value="0">All</option>
-							</select>
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="filter-movie-service">
-							Service
-							<select name="movie-service" id="filter-movie-service">
-								<option value="0">All</option>
-							</select>
-						</label>
-					</div>
-
-					<div class="actions">
-						<button type="submit" class="btn-primary">
-							Filter
-						</button>
-						<button type="button" class="btn-ghost" id="movie-filter-cancel">
-							Cancel
-						</button>
-					</div>
-				</form>
-			</div>
-		</dialog>
+		
+		<movie-form status="4"></movie-form>
+		<movie-filter-form></movie-filter-form>
 
 		<input type="hidden" id="delete-movie-id" value="0" />
 		<confirm-dialog></confirm-dialog>

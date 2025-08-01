@@ -19,6 +19,8 @@
 		<script src="/components/loading-spinner.js"></script>
 		<script src="/components/confirm-dialog.js"></script>
 		<script src="/components/star-rating.js"></script>
+		<script src="/components/movie-form.js"></script>
+		<script src="/components/movie-filter-form.js"></script>
 
 		<script src="/scripts/main.js"></script>
 		<script src="/scripts/api.js"></script>
@@ -87,146 +89,9 @@
 				<div class="table-row-count">Rows: <span>0</span></div>
 			</main>
 		</div>
-
-		<dialog id="add-movie" class="movie-modal">
-			<div class="container">
-				<h2>Add Movie</h2>
-
-				<div id="add-movie-modal-error" class="alert error hidden"></div>
-
-				<form name="add-movie">
-					<input type="hidden" id="movieId" name="movieId" value="0" />
-
-					<div class="form-field">
-						<label for="movie-title">
-							<span class="required">*</span>Title
-							<input type="text" name="movie-title" id="movie-title" required
-							/>
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="movie-status">
-							<span class="required">*</span>Status
-							<select name="movie-status" id="movie-status" required>
-								<option></option>
-								<option value="1" selected>Personal Backlog</option>
-								<option value="2">Joint Backlog</option>
-								<option value="3">Finished</option>
-								<option value="4">Abandoned</option>
-							</select>
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="movie-imdblink">
-							<span class="required">*</span>IMDb Link
-							<input type="url" name="movie-imdblink" id="movie-imdblink" required />
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="movie-cover-url">
-							Cover URL
-							<input type="url" name="movie-cover-url" id="movie-cover-url" />
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="movie-sort">
-							Sort Order
-							<input type="text" name="movie-sort" id="movie-sort" />
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="movie-genre">
-							Genre(s)
-							<select id="movie-genre" name="genres" multiple></select>
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="movie-service">
-							Service(s)
-							<select id="movie-service" name="services" multiple></select>
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="movie-date">
-							Date Watched
-							<input type="date" name="movie-date" id="movie-date" />
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label>
-							Rating
-							<star-rating id="movie-rating" fieldid="movie-rating" rating="0"></star-rating>
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="movie-thoughts">
-							Thoughts
-							<textarea id="movie-thoughts" name="movie-thoughts"></textarea>
-						</label>
-					</div>
-
-					<div class="actions">
-						<button type="submit" class="btn-primary">Save</button>
-						<button type="button" class="btn-ghost" id="movie-form-dialog-cancel">Cancel</button>
-					</div>
-				</form>
-			</div>
-		</dialog>
-
-		<dialog id="filter-movie" class="movie-modal">
-			<div class="container">
-				<h2>Filter Movies</h2>
-
-				<form name="filter-movie">
-					<div class="form-field">
-						<label for="filter-movie-title">
-							Title
-							<input
-								type="text"
-								name="movie-title"
-								id="filter-movie-title"
-							/>
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="filter-movie-genre">
-							Genre
-							<select name="movie-genre" id="filter-movie-genre">
-								<option value="0">All</option>
-							</select>
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="filter-movie-service">
-							Service
-							<select name="movie-service" id="filter-movie-service">
-								<option value="0">All</option>
-							</select>
-						</label>
-					</div>
-
-					<div class="actions">
-						<button type="submit" class="btn-primary">
-							Filter
-						</button>
-						<button type="button" class="btn-ghost" id="movie-filter-cancel">
-							Cancel
-						</button>
-					</div>
-				</form>
-			</div>
-		</dialog>
+		
+		<movie-form status="1"></movie-form>
+		<movie-filter-form></movie-filter-form>		
 
 		<input type="hidden" id="delete-movie-id" value="0" />
 		<confirm-dialog></confirm-dialog>

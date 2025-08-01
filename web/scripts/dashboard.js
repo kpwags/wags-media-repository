@@ -25,6 +25,16 @@ window.addEventListener('load', function () {
 		updateProgress();
 	});
 
+	document.querySelector('form[name="finish-book"]').addEventListener('submit', function(e) {
+		e.preventDefault();
+
+		markBookAsFinished();
+	});
+
+	document.querySelector('button#mark-finished-dialog-cancel').addEventListener('click', function () {
+		closeMarkFinishedForm();
+	});
+
 	document.querySelector('form[name="add-link"]').addEventListener('submit', function(e) {
 		e.preventDefault();
 
@@ -63,46 +73,30 @@ async function loadCurrentBooks() {
 	}
 
 	const fragment = document.createDocumentFragment();
+	const template = document.querySelector('template#current-book-template');
 
 	data.forEach((d) => {
-		const li = document.createElement('li');
-		li.classList.add('current-item');
+		const li = template.content.cloneNode(true);
 
-		const bookImage = document.createElement('img');
-		bookImage.setAttribute('src', d.coverImageUrl);
-		bookImage.setAttribute('alt', `${d.fullTitle} by ${d.author}`);
-		bookImage.setAttribute('width', '150');
-		bookImage.setAttribute('height', '225');
+		li.querySelector('img').setAttribute('src', d.coverImageUrl);
+		li.querySelector('img').setAttribute('alt', `${d.fullTitle} by ${d.author}`);
 
-		li.appendChild(bookImage);
 
-		const detailsDiv = document.createElement('div');
-		detailsDiv.classList.add('details');
+		li.querySelector('h3 a').setAttribute('href', d.link);
+		li.querySelector('h3 a').textContent = d.fullTitle;
 
-		const titleHeading = document.createElement('h3');
-		const link = createLinkElement(d.fullTitle, d.link, true);
-		titleHeading.appendChild(link);
-		detailsDiv.appendChild(titleHeading);
+		li.querySelector('h4').textContent = d.author;
 
-		const authorHeading = document.createElement('h4');
-		authorHeading.textContent = d.author;
-		detailsDiv.appendChild(authorHeading);
+		li.querySelector('progress-bar').setAttribute('progress', d.progress);
 
-		const progressBar = document.createElement('progress-bar');
-		progressBar.setAttribute('progress', d.progress);
-		detailsDiv.appendChild(progressBar);
-
-		const updateProgressButton = document.createElement('button');
-		updateProgressButton.textContent = 'Update progress';
-		updateProgressButton.classList.add('btn-primary');
-		updateProgressButton.setAttribute('type', 'button');
-		updateProgressButton.addEventListener('click', function(e) {
+		li.querySelector('button.btn-primary')?.addEventListener('click', function() {
 			loadUpdateProgressForm('book', d.bookId);
 		});
-		detailsDiv.appendChild(updateProgressButton);
 
-		li.appendChild(detailsDiv);
-
+		li.querySelector('button.btn-ghost')?.addEventListener('click', function() {
+			loadFinishBookModal(d.bookId);
+		});
+		
 		fragment.appendChild(li);
 	});
 
@@ -176,40 +170,23 @@ async function loadCurrentTv() {
 	}
 
 	const fragment = document.createDocumentFragment();
+	const template = document.querySelector('template#current-tv-template');
 
 	currentTvData.forEach((tv) => {
-		const li = document.createElement('li');
-		li.classList.add('current-item');
+		const li = template.content.cloneNode(true);
 
-		const tvImage = document.createElement('img');
-		tvImage.setAttribute('src', tv.coverImageUrl);
-		tvImage.setAttribute('alt', tv.title);
-		tvImage.setAttribute('width', '150');
-		tvImage.setAttribute('height', '225');
+		li.querySelector('img').setAttribute('src', tv.coverImageUrl);
+		li.querySelector('img').setAttribute('alt', tv.title);
 
-		li.appendChild(tvImage);
 
-		const detailsDiv = document.createElement('div');
-		detailsDiv.classList.add('details');
+		li.querySelector('h3 a').setAttribute('href', tv.imdbLink);
+		li.querySelector('h3 a').textContent = tv.title;
 
-		const titleHeading = document.createElement('h3');
-		titleHeading.appendChild(createLinkElement(tv.title, tv.imdbLink, true));
-		detailsDiv.appendChild(titleHeading);
+		li.querySelector('progress-bar').setAttribute('progress', tv.progress);
 
-		const progressBar = document.createElement('progress-bar');
-		progressBar.setAttribute('progress', tv.progress);
-		detailsDiv.appendChild(progressBar);
-
-		const updateProgressButton = document.createElement('button');
-		updateProgressButton.textContent = 'Update progress';
-		updateProgressButton.classList.add('btn-primary');
-		updateProgressButton.setAttribute('type', 'button');
-		updateProgressButton.addEventListener('click', function(e) {
+		li.querySelector('button.btn-primary')?.addEventListener('click', function() {
 			loadUpdateProgressForm('tv', tv.televisionShowId);
 		});
-		detailsDiv.appendChild(updateProgressButton);
-
-		li.appendChild(detailsDiv);
 
 		fragment.appendChild(li);
 	});
@@ -220,6 +197,10 @@ async function loadCurrentTv() {
 }
 
 async function loadRecentBooks() {
+	clearTableRows('ul#recent-books li.current-item');
+	document.querySelector('ul#recent-books li.currently-loading')?.classList.remove('hidden');
+	document.querySelector('ul#recent-books li.no-content')?.classList.add('hidden');
+
 	const [data, error] = await Api.Get('book/recent/30');
 
 	if (error) {
@@ -504,7 +485,7 @@ function loadUpdateProgressForm(mediaType, id) {
 	document.querySelector('dialog#update-progress img').setAttribute('alt', title);
 	document.querySelector('dialog#update-progress progress-bar').setAttribute('progress', progress);
 	document.querySelector('dialog#update-progress progress-bar .inner-bar').textContent = `${progress}%`;
-	document.querySelector('dialog#update-progress h2').textContent = title;
+	document.querySelector('dialog#update-progress h2.item-title').textContent = title;
 	document.querySelector('dialog#update-progress input#progress').value = currentValue;
 	document.querySelector('dialog#update-progress input#total-count').value = totalValue;
 	document.querySelector('dialog#update-progress .label-text').textContent = labelText;
@@ -512,6 +493,25 @@ function loadUpdateProgressForm(mediaType, id) {
 	document.querySelector('dialog#update-progress input#object-id').value = id;
 
 	document.querySelector('dialog#update-progress').showModal();
+}
+
+function loadFinishBookModal(bookId) {
+	const book = currentBookData.find((b) => b.bookId === bookId);
+
+	if (book) {
+		document.querySelector('dialog#mark-book-finished input#finish-book-id').value = bookId;
+		document.querySelector('dialog#mark-book-finished img').setAttribute('src', book.coverImageUrl);
+		document.querySelector('dialog#mark-book-finished img').setAttribute('alt', book.fullTitle);
+		document.querySelector('dialog#mark-book-finished .book-information h2').textContent = book.fullTitle;
+		document.querySelector('dialog#mark-book-finished .book-information h3').textContent = `by ${book.author}`;
+		document.querySelector('dialog#mark-book-finished .book-information dd.book-type').textContent = book.type?.name ?? 'Unspecified';
+		document.querySelector('dialog#mark-book-finished .book-information dd.book-format').textContent = book.formats[0]?.name ?? 'Unspecified';
+		document.querySelector('dialog#mark-book-finished .book-information dd.book-started').textContent = dayjs(book.dateStarted).format('MMMM DD, YYYY');
+		document.querySelector('dialog#mark-book-finished input#book-date-completed').value = dayjs().format('YYYY-MM-DD');
+		document.querySelector('#book-rating').setAttribute('rating', 0);
+
+		document.querySelector('dialog#mark-book-finished').showModal();
+	}
 }
 
 function updateProgressBar(newValue) {
@@ -608,6 +608,37 @@ async function saveLink() {
 function closeAddLinkForm() {
 	document.querySelector('form[name="add-link"]').reset()
 	document.querySelector('dialog#add-link').close();
+}
+
+function closeMarkFinishedForm() {
+	document.querySelector('form[name="finish-book"]').reset()
+	document.querySelector('dialog#mark-book-finished').close();
+}
+
+async function markBookAsFinished() {
+	hideModalError('finish-book-modal-error');
+
+	const bookId = parseInt(document.querySelector('#finish-book-id').value);
+	const rating = parseInt(document.querySelector('#book-rating-value').value);
+	const thoughts = document.querySelector('#book-thoughts').value;
+	const dateCompleted = document.querySelector('#book-date-completed').value;
+
+	const [, error] = await Api.Put(`book/mark-finished/${bookId}`, {
+		data: {
+			rating,
+			thoughts,
+			dateCompleted
+		},
+	});
+
+	if (error) {
+		showModalError(error, 'finish-book-modal-error');
+		return;
+	}
+
+	await Promise.all([loadCurrentBooks(), loadRecentBooks()]);
+
+	closeMarkFinishedForm();
 }
 
 async function initializePage() {

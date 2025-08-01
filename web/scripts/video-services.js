@@ -90,7 +90,7 @@ async function loadVideoServices() {
 }
 
 function openAddDialog() {
-	document.querySelector('dialog.form-dialog h3').textContent = 'Add Video Service';
+	document.querySelector('dialog.form-dialog h2').textContent = 'Add Video Service';
 
 	document.querySelector('dialog.form-dialog').showModal();
 }
@@ -101,10 +101,12 @@ function editVideoService(e) {
 
 	const videoService = videoServiceData.find((vs) => vs.videoServiceId === videoServiceId);
 
-	document.querySelector('dialog.form-dialog h3').textContent = 'Edit Video Service';
+	const colorCode = videoService.colorCode.includes('rgb') ? rgbToHex(videoService.colorCode) : videoService.colorCode;
+
+	document.querySelector('dialog.form-dialog h2').textContent = 'Edit Video Service';
 	document.querySelector('dialog.form-dialog input#videoServiceId').value = videoService.videoServiceId;
 	document.querySelector('dialog.form-dialog input#name').value = videoService.name;
-	document.querySelector('dialog.form-dialog input#colorCode').value = videoService.colorCode;
+	document.querySelector('dialog.form-dialog input#colorCode').value = colorCode;
 
 	document.querySelector('dialog.form-dialog').showModal();
 }
@@ -135,7 +137,7 @@ function addEventListeners() {
 };
 
 function resetForm() {
-	document.querySelector('dialog.form-dialog h3').textContent = 'Edit Video Service';
+	document.querySelector('dialog.form-dialog h2').textContent = 'Edit Video Service';
 	document.querySelector('dialog.form-dialog input#name').value = '';
 	document.querySelector('dialog.form-dialog input#colorCode').value = '';
 	document.querySelector('dialog.form-dialog input#videoServiceId').value = 0;

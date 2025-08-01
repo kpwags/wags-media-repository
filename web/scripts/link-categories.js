@@ -92,7 +92,7 @@ async function loadLinkCategories() {
 }
 
 function openAddDialog() {
-	document.querySelector('dialog.form-dialog h3').textContent = 'Add Category';
+	document.querySelector('dialog.form-dialog h2').textContent = 'Add Category';
 
 	document.querySelector('dialog.form-dialog').showModal();
 }
@@ -100,10 +100,12 @@ function openAddDialog() {
 function editCategory(linkCategoryId) {
 	const category = linkCategoryData.find((c) => c.linkCategoryId === linkCategoryId);
 
-	document.querySelector('dialog.form-dialog h3').textContent = 'Edit Category';
+	const colorCode = category.colorCode.includes('rgb') ? rgbToHex(category.colorCode) : category.colorCode;
+
+	document.querySelector('dialog.form-dialog h2').textContent = 'Edit Category';
 	document.querySelector('dialog.form-dialog input#linkCategoryId').value = category.linkCategoryId;
 	document.querySelector('dialog.form-dialog input#name').value = category.name;
-	document.querySelector('dialog.form-dialog input#colorCode').value = category.colorCode;
+	document.querySelector('dialog.form-dialog input#colorCode').value = colorCode;
 
 	document.querySelector('dialog.form-dialog').showModal();
 }
@@ -118,7 +120,7 @@ function deleteCategory(linkCategoryId) {
 }
 
 function resetForm() {
-	document.querySelector('dialog.form-dialog h3').textContent = 'Edit Category';
+	document.querySelector('dialog.form-dialog h2').textContent = 'Edit Category';
 	document.querySelector('dialog.form-dialog input#name').value = '';
 	document.querySelector('dialog.form-dialog input#colorCode').value = '';
 	document.querySelector('dialog.form-dialog input#linkCategoryId').value = 0;
