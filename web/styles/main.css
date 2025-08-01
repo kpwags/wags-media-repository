@@ -406,6 +406,19 @@ dialog.form-dialog {
 	border: 1px solid var(--blue-1);
 	border-radius: 4px;
 	width: 300px;
+	padding: 24px;
+}
+
+dialog.form-dialog:has(h2.modal-title) {
+	padding: 0;
+}
+
+dialog.form-dialog:has(h2.modal-title) .container {
+	padding: 24px;
+}
+
+dialog.form-dialog:has(h2.modal-title) .container .form-field:first-of-type {
+	margin-top: 0;
 }
 
 @media (min-width: 501px) {
@@ -424,6 +437,13 @@ dialog.form-dialog .actions {
 	justify-content: flex-end;
 	column-gap: 16px;
 	margin-top: 24px;
+}
+
+dialog.form-dialog h2.modal-title {
+	background: var(--blue-1);
+	color: var(--grey-1);
+	margin: 0;
+	padding: 8px;
 }
 /* END FORM DIALOG */
 

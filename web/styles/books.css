@@ -46,3 +46,9 @@ th.name-col {
 th.genre-actions-col {
 	min-width: 175px;
 }
+
+@media (min-height: 1000px) {
+	dialog#add-book {
+		max-height: 80vh;
+	}
+}

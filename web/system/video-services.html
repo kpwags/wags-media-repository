@@ -62,34 +62,35 @@
 		</div>
 
 		<dialog class="form-dialog">
-			<h3>Edit Video Service</h3>
+			<h2 class="modal-title">Edit Video Service</h2>
+			<div class="container">
+				<div id="modal-error" class="alert error hidden"></div>
 
-			<div id="modal-error" class="alert error hidden"></div>
+				<form>
+					<fieldset>
+						<input type="hidden" id="videoServiceId" name="videoServiceId" value="0" />
 
-			<form>
-				<fieldset>
-					<input type="hidden" id="videoServiceId" name="videoServiceId" value="0" />
+						<div class="form-field">
+							<label for="name">
+								<span class="required">*</span>Name
+								<input type="text" name="name" id="name" required />
+							</label>
+						</div>
 
-					<div class="form-field">
-						<label for="name">
-							<span class="required">*</span>Name
-							<input type="text" name="name" id="name" required />
-						</label>
-					</div>
+						<div class="form-field">
+							<label for="colorCode">
+								<span class="required">*</span>Color
+								<input type="color" name="colorCode" id="colorCode" required />
+							</label>
+						</div>
 
-					<div class="form-field">
-						<label for="colorCode">
-							<span class="required">*</span>Color
-							<input type="color" name="colorCode" id="colorCode" required />
-						</label>
-					</div>
-
-					<div class="actions">
-	                    <button type="button" class="btn-ghost" id="form-dialog-cancel">Cancel</button>
-	                    <button type="submit" class="btn-primary">Save</button>
-	                </div>
-	            </fieldset>
-			</form>    
+						<div class="actions">
+		                    <button type="button" class="btn-ghost" id="form-dialog-cancel">Cancel</button>
+		                    <button type="submit" class="btn-primary">Save</button>
+		                </div>
+		            </fieldset>
+				</form> 
+			</div>   
 		</dialog>
 
 		<input type="hidden" id="delete-video-service-id" value="0" />

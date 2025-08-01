@@ -20,6 +20,8 @@
 		<script src="/components/confirm-dialog.js"></script>
 		<script src="/components/star-rating.js"></script>
 		<script src="/components/rating-display.js"></script>
+		<script src="/components/video-game-form.js"></script>
+		<script src="/components/video-game-filter-form.js"></script>
 
 		<script src="/scripts/main.js"></script>
 		<script src="/scripts/api.js"></script>
@@ -85,149 +87,8 @@
 			</main>
 		</div>
 
-		<dialog id="add-video-game" class="standard-modal">
-			<div class="container">
-				<h2>Add Game</h2>
-
-				<div id="add-video-game-modal-error" class="alert error hidden"></div>
-
-				<form name="add-video-game">
-					<input type="hidden" id="videoGameId" name="videoGameId" value="0" />
-
-					<div class="form-field">
-						<label for="video-game-title">
-							<span class="required">*</span>Title
-							<input type="text" name="video-game-title" id="video-game-title" required />
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="video-game-status">
-							<span class="required">*</span>Status
-							<select name="video-game-status" id="video-game-status" required>
-								<option value="1">Backlog</option>
-								<option value="2">Currently Playing</option>
-								<option value="3" selected>Finished</option>
-							</select>
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="video-game-completion-status">
-							<span class="required">*</span>Completion Status
-							<select name="video-game-completion-status" id="video-game-completion-status" required>
-								<option value="1">N/A</option>
-								<option value="2">Yes</option>
-								<option value="3">No</option>
-							</select>
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="video-game-link">
-							<span class="required">*</span>Link
-							<input type="url" name="video-game-link" id="video-game-link" required />
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="video-game-cover-url">
-							Cover
-							<input type="url" name="video-game-cover-url" id="video-game-cover-url" />
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="video-game-sort">
-							Sort Order
-							<input type="text" name="video-game-sort" id="video-game-sort" />
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="video-game-genre">
-							Genre(s)
-							<select id="video-game-genre" name="video-game-genre" multiple></select>
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="video-game-system">
-							System(s)
-							<select id="video-game-system" name="video-game-system" multiple></select>
-						</label>
-					</div>
-
-					<div class="form-field dual">
-						<label for="video-game-date-started">
-							Date Started
-							<input type="date" name="video-game-date-started" id="video-game-date-started" />
-						</label>
-						<label for="video-game-date-completed">
-							Date Completed
-							<input type="date" name="video-game-date-started" id="video-game-date-completed" />
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label>
-							Rating
-							<star-rating id="video-game-rating" fieldid="video-game-rating" rating="0"></star-rating>
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="video-game-thoughts">
-							Thoughts
-							<textarea id="video-game-thoughts" name="video-game-thoughts"></textarea>
-						</label>
-					</div>
-
-					<div class="actions">
-						<button type="submit" class="btn-primary">Save</button>
-						<button type="button" class="btn-ghost" id="video-game-form-dialog-cancel">Cancel</button>
-					</div>
-				</form>
-			</div>
-		</dialog>
-
-		<dialog id="filter-video-game" class="standard-modal">
-			<div class="container">
-				<h2>Filter Games</h2>
-
-				<form name="filter-video-game">
-					<div class="form-field">
-						<label for="filter-video-game-title">
-							Title
-							<input type="text" name="video-game-title" id="filter-video-game-title" />
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="filter-video-game-genre">
-							Genre
-							<select name="video-game-genre" id="filter-video-game-genre">
-								<option value="0">All</option>
-							</select>
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="filter-video-game-system">
-							System
-							<select name="video-game-system" id="filter-video-game-system">
-								<option value="0">All</option>
-							</select>
-						</label>
-					</div>
-
-					<div class="actions">
-						<button type="submit" class="btn-primary">Filter</button>
-						<button type="button" class="btn-ghost" id="video-game-filter-cancel">Cancel</button>
-					</div>
-				</form>
-			</div>
-		</dialog>
+		<video-game-form status="3"></video-game-form>
+		<video-game-filter-form></video-game-filter-form>
 
 		<input type="hidden" id="delete-video-game-id" value="0" />
 		<confirm-dialog></confirm-dialog>

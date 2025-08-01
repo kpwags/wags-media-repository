@@ -1,10 +1,22 @@
 class BookForm extends HTMLElement {
+	static observedAttributes = ['status'];
+
+	constructor() {
+		super();
+
+		this.status = 1;
+	}
+
+	attributeChangedCallback(property, _, newValue) {
+		this[property] = parseInt(newValue);
+	}
+
 	connectedCallback() {
 		this.innerHTML = `
-			<dialog id="add-book" class="standard-modal">
+			<dialog id="add-book" class="form-dialog">
+				<h2 class="modal-title">Add Book</h2>
+			
 				<div class="container">
-					<h2>Add Book</h2>
-
 					<div id="add-book-modal-error" class="alert error hidden"></div>
 
 					<form name="add-book">
@@ -35,10 +47,10 @@ class BookForm extends HTMLElement {
 							<label for="book-status">
 								<span class="required">*</span>Status
 								<select name="book-status" id="book-status" required>
-									<option value="1" selected>Backlog</option>
-									<option value="2">Currently Reading</option>
-									<option value="3">Finished</option>
-									<option value="4">Abandoned</option>
+									<option value="1" ${this.status === 1 ? 'selected' : ''}>Backlog</option>
+									<option value="2" ${this.status === 2 ? 'selected' : ''}>Currently Reading</option>
+									<option value="3" ${this.status === 3 ? 'selected' : ''}>Finished</option>
+									<option value="4" ${this.status === 4 ? 'selected' : ''}>Abandoned</option>
 								</select>
 							</label>
 						</div>

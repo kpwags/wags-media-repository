@@ -62,7 +62,7 @@ async function loadSeries() {
 		editButton.classList.add('btn-link');
 
 		editButton.addEventListener('click', function () {
-			editGenre(s);
+			editSeries(s);
 		});
 
 		const deleteButton = document.createElement('button');
@@ -95,11 +95,13 @@ function openAddDialog() {
 	document.querySelector('dialog#add-book-series').showModal();
 }
 
-function editGenre(bookSeries) {
+function editSeries(bookSeries) {
+	const colorCode = bookSeries.colorCode.includes('rgb') ? rgbToHex(bookSeries.colorCode) : bookSeries.colorCode;
+
 	document.querySelector('dialog#add-book-series h2').textContent = 'Edit Series';
 	document.querySelector('dialog#add-book-series input#bookSeriesId').value = bookSeries.bookSeriesId;
 	document.querySelector('dialog#add-book-series input#name').value = bookSeries.name;
-	document.querySelector('dialog#add-book-series input#colorCode').value = bookSeries.colorCode;
+	document.querySelector('dialog#add-book-series input#colorCode').value = colorCode;
 
 	document.querySelector('dialog#add-book-series').showModal();
 }

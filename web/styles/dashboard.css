@@ -58,6 +58,7 @@
 	display: flex;
 	column-gap: 24px;
 	border-bottom: 1px solid var(--border-color);
+	container-type: inline-size;
 }
 
 .dashboard-card ul.cover-list li.current-item:last-of-type {
@@ -83,6 +84,17 @@
 	padding: 0;
 	font-weight: 500;
 	font-size: 1.15rem;
+}
+
+.dashboard-card ul.cover-list li.current-item div.actions {
+	display: flex;
+	gap: 16px;
+}
+
+@container (max-width: 450px) {
+    .dashboard-card ul.cover-list li.current-item div.actions {
+		flex-direction: column;
+    }
 }
 
 @media (max-width: 500px) {
@@ -171,7 +183,7 @@
 	width: 100%;
 }
 
-.progress-updater {
+.form-dialog.progress-updater {
 	width: 280px;
 	padding: 24px;
 }
@@ -204,12 +216,83 @@
 	margin: 32px 0 0;
 }
 
-.add-link-modal {
+.progress-updater.finish-book .container .form-field {
+	margin: 16px 0;
+}
+
+.finish-book-modal {
+	width: 600px;
+}
+
+.finish-book-modal .book-information {
+	display: flex;
+	gap: 32px;
+	padding-bottom: 32px;
+}
+
+.finish-book-modal .book-information img {
+	min-width: 200px;
+}
+
+.finish-book-modal .book-information h2 {
+	margin-top: 0;
+	margin-bottom: 16px;
+}
+
+.finish-book-modal .book-information h3 {
+	font-weight: 400;
+}
+
+.finish-book-modal .book-information dl div {
+	margin-bottom: 8px;
+}
+
+.finish-book-modal .book-information dl div:last-of-type {
+	margin-bottom: 0;
+}
+
+.finish-book-modal .book-information dl dt {
+	font-weight: 600;
+	display: inline-block;
+	min-width: 72px;
+}
+
+.finish-book-modal .book-information dl dt::after {
+	content: ':';
+}
+
+.finish-book-modal .book-information dl dd {
+	display: inline;
+	margin: 0 0 0 16px;
+}	
+
+@media (max-width: 650px) {
+	.finish-book-modal {
+		width: 390px;
+		padding: 24px;
+	}
+
+	.finish-book-modal .book-information {
+		flex-direction: column;
+		gap: 24px;
+		padding-bottom: 16px;
+		margin-bottom: 16px;
+		border-bottom: 1px solid var(--border-color);
+	}
+
+	.finish-book-modal .book-information img {
+		width: 200px;
+		display: block;
+		margin: 0 auto;
+	}
+}
+
+.form-dialog.add-link-modal {
 	width: 500px;
 }
 
 @media (max-width: 500px) {
-	.add-link-modal {
+	.form-dialog.add-link-modal {
 		width: 390px;
 	}
 }

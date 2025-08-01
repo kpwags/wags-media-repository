@@ -17,6 +17,7 @@
 		<script src="/components/header.js"></script>
 		<script src="/components/sidebar.js"></script>
 		<script src="/components/loading-spinner.js"></script>
+		<script src="/components/star-rating.js"></script>
 		<script src="/components/progress-bar.js"></script>
 		<script src="/components/rating-display.js"></script>
 
@@ -121,13 +122,14 @@
 				</section>
 			</main>
 
-			<dialog id="update-progress" class="progress-updater">
+			<dialog id="update-progress" class="form-dialog progress-updater">
+				<h2 class="modal-title">Update Progress</h2>
 				<div class="container">
 					<div id="modal-error" class="alert error hidden"></div>
 
 					<img src="" alt="" width="200" height="300" />
 
-					<h2></h2>
+					<h2 class="item-title"></h2>
 
 					<progress-bar progress="0"></progress-bar>
 
@@ -151,10 +153,72 @@
 				</div>
 			</dialog>
 
-			<dialog id="add-link" class="add-link-modal">
+			<dialog id="mark-book-finished" class="form-dialog finish-book-modal">
+				<h2 class="modal-title">Mark Book Finished</h2>
 				<div class="container">
-					<h2>Add Link</h2>
 
+					<div id="finish-book-modal-error" class="alert error hidden"></div>
+
+					<div class="book-information">
+						<img src="" alt="" width="200" height="300" />
+
+						<div class="details">
+							<h2></h2>
+							<h3></h3>
+							<dl>
+								<div>
+									<dt>Type</dt>
+									<dd class="book-type"></dd>
+								</div>
+
+								<div>
+									<dt>Format</dt>
+									<dd class="book-format"></dd>
+								</div>
+
+								<div>
+									<dt>Started</dt>
+									<dd class="book-started"></dd>
+								</div>
+							</dl>
+						</div>
+					</div>
+
+					<form class="finish-book-form" name="finish-book">
+						<input type="hidden" name="finish-book-id" id="finish-book-id" />
+
+						<div class="form-field">
+							<label for="book-date-completed">
+								Date Completed
+								<input type="date" name="book-date-completed" id="book-date-completed" />
+							</label>
+						</div>
+
+						<div class="form-field">
+							<label>
+								Rating
+								<star-rating id="book-rating" fieldid="book-rating" rating="0"></star-rating>
+							</label>
+						</div>
+
+						<div class="form-field">
+							<label for="book-thoughts">
+								Thoughts
+								<textarea id="book-thoughts" name="book-thoughts"></textarea>
+							</label>
+						</div>
+
+						<div class="actions">
+							<button type="button" class="btn-ghost" id="mark-finished-dialog-cancel">Cancel</button>
+							<button type="submit" class="btn-primary">Save</button>
+						</div>
+					</form>
+				</div>
+			</dialog>
+
+			<dialog id="add-link" class="form-dialog add-link-modal">
+				<h2 class="modal-title">Add Link</h2>
+				<div class="container">
 					<div id="add-link-modal-error" class="alert error hidden"></div>
 
 					<form name="add-link">
@@ -221,6 +285,34 @@
 					</form>
 				</div>
 			</dialog>
+
+			<template id="current-book-template">
+				<li class="current-item">
+					<img src="" alt="" width="150" height="225" />
+					<div class="details">
+						<h3><a href="" target="_blank" rel="noreferrer nofollow"></a></h3>
+						<h4></h4>
+						<progress-bar progress="46"></progress-bar>
+						<div class="actions">
+							<button class="btn-primary" type="button">Update Progress</button>
+							<button class="btn-ghost" type="button">Finish</button>
+						</div>
+					</div>
+				</li>
+			</template>
+
+			<template id="current-tv-template">
+				<li class="current-item">
+					<img src="" alt="" width="150" height="225" />
+					<div class="details">
+						<h3><a href="" target="_blank" rel="noreferrer nofollow"></a></h3>
+						<progress-bar progress="46"></progress-bar>
+						<div class="actions">
+							<button class="btn-primary" type="button">Update Progress</button>
+						</div>
+					</div>
+				</li>
+			</template>
 		</div>
 	</body>
 </html>

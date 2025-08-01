@@ -34,6 +34,7 @@ import {
 	deleteBookSeries,
 	getCurrentlyReadingBooks,
 	updateBookProgress,
+	updateBookToFinished,
 } from '@queries/book';
 
 import {
@@ -672,6 +673,16 @@ class BookRepository {
 
 	static async UpdateBookProgress(bookId: number, currentPage: number): Promise<string | null> {
 		return await db.Execute(updateBookProgress, [currentPage, bookId]);
+	}
+
+	static async MarkBookAsFinished(bookId: number, rating: number, thoughts: string, dateCompleted: Date): Promise<string | null> {
+		const [error, book] = await this.GetBookById(bookId);
+
+		if (error || !book) {
+			return error ?? 'Unable to mark book as finished, book not found.';
+		}
+
+		return await db.Execute(updateBookToFinished, [book.pageCount, rating, thoughts, dateCompleted, bookId]);
 	}
 };
 

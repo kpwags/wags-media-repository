@@ -19,6 +19,7 @@
 		<script src="/components/loading-spinner.js"></script>
 		<script src="/components/confirm-dialog.js"></script>
 		<script src="/components/star-rating.js"></script>
+		<script src="/components/tv-form.js"></script>
 
 		<script src="/scripts/main.js"></script>
 		<script src="/scripts/api.js"></script>
@@ -59,104 +60,7 @@
 			</main>
 		</div>
 
-		<dialog id="add-tv-show" class="tv-modal">
-			<div class="container">
-				<h2>Add TV Show</h2>
-
-				<div id="add-tv-modal-error" class="alert error hidden"></div>
-
-				<form name="add-tv-show">
-					<input type="hidden" id="televisionShowId" name="televisionShowId" value="0" />
-
-					<div class="form-field">
-						<label for="tv-title">
-							<span class="required">*</span>Title
-							<input type="text" name="tv-title" id="tv-title" required />
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="tv-status">
-							<span class="required">*</span>Status
-							<select name="tv-status" id="tv-status" required>
-								<option></option>
-								<option value="1">Personal Backlog</option>
-								<option value="2">Joint Backlog</option>
-								<option value="3">Watching</option>
-								<option value="4">Between Seasons</option>
-								<option value="5">Finished</option>
-								<option value="6">Abandoned</option>
-							</select>
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="tv-imdblink">
-							<span class="required">*</span>IMDb Link
-							<input type="url" name="tv-imdblink" id="tv-imdblink" required />
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="tv-cover-url">
-							Cover URL
-							<input type="url" name="tv-cover-url" id="tv-cover-url" />
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="tv-sort">
-							Sort Order
-							<input type="text" name="tv-sort" id="tv-sort" />
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="tv-genre">
-							Genre(s)
-							<select id="tv-genre" name="genres" multiple></select>
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="tv-service">
-							Service(s)
-							<select id="tv-service" name="services" multiple></select>
-						</label>
-					</div>
-
-					<div class="form-field dual">
-						<label for="tv-current-episode">
-							Current Episode/Season
-							<input type="text" name="tv-current-episode" id="tv-current-episode" />
-						</label>
-						<label for="tv-episode-count">
-							Episode/Season Count
-							<input type="text" id="tv-episode-count" name="tv-episode-count" />
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label>
-							Rating
-							<star-rating id="tv-rating" fieldid="tv-rating" rating="0"></star-rating>
-						</label>
-					</div>
-
-					<div class="form-field">
-						<label for="tv-thoughts">
-							Thoughts
-							<textarea id="tv-thoughts" name="tv-thoughts"></textarea>
-						</label>
-					</div>
-
-					<div class="actions">
-						<button type="submit" class="btn-primary">Save</button>
-						<button type="button" class="btn-ghost" id="tv-form-dialog-cancel">Cancel</button>
-					</div>
-				</form>
-			</div>
-		</dialog>
+		<tv-form status="6"></tv-form>
 
 		<input type="hidden" id="delete-tv-id" value="0" />
 		<confirm-dialog></confirm-dialog>

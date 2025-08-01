@@ -95,10 +95,12 @@ function openAddDialog() {
 }
 
 function editSystem(system) {
+	const colorCode = system.colorCode.includes('rgb') ? rgbToHex(system.colorCode) : system.colorCode;
+
 	document.querySelector('dialog#add-video-game-system h2').textContent = 'Edit System';
 	document.querySelector('dialog#add-video-game-system input#videoGameSystemId').value = system.videoGameSystemId;
 	document.querySelector('dialog#add-video-game-system input#name').value = system.name;
-	document.querySelector('dialog#add-video-game-system input#colorCode').value = system.colorCode;
+	document.querySelector('dialog#add-video-game-system input#colorCode').value = colorCode;
 
 	document.querySelector('dialog#add-video-game-system').showModal();
 }
