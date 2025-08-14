@@ -19,13 +19,13 @@ window.addEventListener('load', function () {
 		updateProgressBar(newValue);
 	});
 
-	document.querySelector('form[name="update-progress"]').addEventListener('submit', function(e) {
+	document.querySelector('form[name="update-progress"]').addEventListener('submit', function (e) {
 		e.preventDefault();
 
 		updateProgress();
 	});
 
-	document.querySelector('form[name="finish-book"]').addEventListener('submit', function(e) {
+	document.querySelector('form[name="finish-book"]').addEventListener('submit', function (e) {
 		e.preventDefault();
 
 		markBookAsFinished();
@@ -35,7 +35,7 @@ window.addEventListener('load', function () {
 		closeMarkFinishedForm();
 	});
 
-	document.querySelector('form[name="add-link"]').addEventListener('submit', function(e) {
+	document.querySelector('form[name="add-link"]').addEventListener('submit', function (e) {
 		e.preventDefault();
 
 		saveLink();
@@ -89,14 +89,14 @@ async function loadCurrentBooks() {
 
 		li.querySelector('progress-bar').setAttribute('progress', d.progress);
 
-		li.querySelector('button.btn-primary')?.addEventListener('click', function() {
+		li.querySelector('button.btn-primary')?.addEventListener('click', function () {
 			loadUpdateProgressForm('book', d.bookId);
 		});
 
-		li.querySelector('button.btn-ghost')?.addEventListener('click', function() {
+		li.querySelector('button.btn-ghost')?.addEventListener('click', function () {
 			loadFinishBookModal(d.bookId);
 		});
-		
+
 		fragment.appendChild(li);
 	});
 
@@ -184,7 +184,7 @@ async function loadCurrentTv() {
 
 		li.querySelector('progress-bar').setAttribute('progress', tv.progress);
 
-		li.querySelector('button.btn-primary')?.addEventListener('click', function() {
+		li.querySelector('button.btn-primary')?.addEventListener('click', function () {
 			loadUpdateProgressForm('tv', tv.televisionShowId);
 		});
 
@@ -551,7 +551,7 @@ async function updateTvShowProgress(televisionShowId, currentSeasonEpisode) {
 }
 
 async function updateProgress() {
-	document.querySelector('dialog#update-progress button[type="submit"]').setAttribute('disabled', true);
+	setButtonProcessing(true, 'submit-form-button.update-progress', 'Updating...', 'update-progress');
 
 	hideModalError();
 	const objectType = document.querySelector('dialog#update-progress input#object-type').value
@@ -569,6 +569,7 @@ async function updateProgress() {
 		return;
 	}
 
+	setButtonProcessing(false, 'submit-form-button.update-progress', 'Update', 'update-progress');
 	document.querySelector('dialog#update-progress').close();
 }
 
@@ -584,16 +585,16 @@ async function saveLink() {
 	const linkCategory = document.querySelector('#link-category').value;
 
 	const [, error] = await Api.Post('link', {
-        data: {
-            linkTypeId: parseInt(linkType),
-            linkCategoryId: parseInt(linkCategory),
-            title,
-            author,
-            url,
-            linkDate: date,
-            readingLogIssueNumber: issue,
-        }
-    });
+		data: {
+			linkTypeId: parseInt(linkType),
+			linkCategoryId: parseInt(linkCategory),
+			title,
+			author,
+			url,
+			linkDate: date,
+			readingLogIssueNumber: issue,
+		}
+	});
 
 	if (error) {
 		showModalError(error, 'add-link-modal-error');
@@ -616,6 +617,7 @@ function closeMarkFinishedForm() {
 }
 
 async function markBookAsFinished() {
+	setButtonProcessing(true, 'submit-form-button.finish-book', 'Finishing...', 'finish-book');
 	hideModalError('finish-book-modal-error');
 
 	const bookId = parseInt(document.querySelector('#finish-book-id').value);
@@ -639,17 +641,18 @@ async function markBookAsFinished() {
 	await Promise.all([loadCurrentBooks(), loadRecentBooks()]);
 
 	closeMarkFinishedForm();
+	setButtonProcessing(false, 'submit-form-button.finish-book', 'Finish Book', 'finish-book');
 }
 
 async function initializePage() {
 	await Promise.all([
-        loadCurrentBooks(),
-        loadRecentLinks(),
-        loadCurrentTv(),
-        loadRecentBooks(),
-        loadCurrentVideoGames(),
-        loadCurrentMusic(),
-        loadRecentMovies(),
-        loadLinkCategories(),
-    ]);
+		loadCurrentBooks(),
+		loadRecentLinks(),
+		loadCurrentTv(),
+		loadRecentBooks(),
+		loadCurrentVideoGames(),
+		loadCurrentMusic(),
+		loadRecentMovies(),
+		loadLinkCategories(),
+	]);
 }

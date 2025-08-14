@@ -228,3 +228,21 @@ function rgbToHex(rgb) {
 	return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
+function setButtonProcessing(isProcessing, btnQuerySelector, buttonText, formName = undefined) {
+	const btn = document.querySelector(btnQuerySelector);
+
+	if (isProcessing) {
+		btn.setAttribute('processing', 'true');
+		btn.setAttribute('buttontext', buttonText);
+		if (formName) {
+			document.querySelectorAll('form[name="run-form"] button').forEach((b) => b.setAttribute('disabled', 'true'));
+		}
+
+	} else {
+		btn.setAttribute('processing', 'false');
+		btn.setAttribute('buttontext', buttonText);
+		if (formName) {
+			document.querySelectorAll('form[name="run-form"] button').forEach((b) => b.removeAttribute('disabled'));
+		}
+	}
+}

@@ -290,3 +290,13 @@ UPDATE Book SET
 	DateCompleted = ?
 WHERE BookId = ?;
 `;
+
+export const updateBookToStarted = `
+UPDATE Book SET
+	BookStatusId = 2,
+	CurrentPage = 1,
+	PageCount = ?,
+	CoverImageUrl = ?,
+	DateStarted = ?
+WHERE BookId = ?;
+`;

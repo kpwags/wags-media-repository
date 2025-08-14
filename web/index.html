@@ -20,6 +20,7 @@
 		<script src="/components/star-rating.js"></script>
 		<script src="/components/progress-bar.js"></script>
 		<script src="/components/rating-display.js"></script>
+		<script src="/components/submit-form-button.js"></script>
 
 		<script src="/scripts/main.js"></script>
 		<script src="/scripts/api.js"></script>
@@ -147,7 +148,14 @@
 
 						<div class="actions">
 							<button type="button" class="btn-ghost" id="progress-form-dialog-cancel">Cancel</button>
-							<button type="submit" class="btn-primary">Save</button>
+							<submit-form-button class="update-progress">
+								<button type="submit" class="btn-primary">
+									<span class="btn-processing-content">
+										<span class="loader" style="display:none"></span>
+										<span class="button-text">Update</span>
+									</span>
+								</button>
+							</submit-form-button>
 						</div>
 					</form>
 				</div>
@@ -210,7 +218,14 @@
 
 						<div class="actions">
 							<button type="button" class="btn-ghost" id="mark-finished-dialog-cancel">Cancel</button>
-							<button type="submit" class="btn-primary">Save</button>
+							<submit-form-button class="finish-book">
+								<button type="submit" class="btn-primary">
+									<span class="btn-processing-content">
+										<span class="loader" style="display:none"></span>
+										<span class="button-text">Finish Book</span>
+									</span>
+								</button>
+							</submit-form-button>
 						</div>
 					</form>
 				</div>
