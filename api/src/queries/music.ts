@@ -23,7 +23,7 @@ SELECT
 FROM MusicAlbum
 WHERE
     ShowOnNowPage = 1
-ORDER BY Artist;
+ORDER BY Artist, Title;
 `;
 
 export const getMusicAlbumById = `

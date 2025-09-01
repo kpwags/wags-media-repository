@@ -221,43 +221,16 @@ async function loadRecentBooks() {
 	const fragment = document.createDocumentFragment();
 
 	recentBookData.forEach((book) => {
-		const li = document.createElement('li');
-		li.classList.add('current-item');
+		const recentBook = document.createElement('recent-book');
 
-		const bookImage = document.createElement('img');
-		bookImage.setAttribute('src', book.coverImageUrl);
-		bookImage.setAttribute('alt', `${book.fullTitle} by ${book.author}`);
-		bookImage.setAttribute('width', '150');
-		bookImage.setAttribute('height', '225');
+		recentBook.setAttribute('data-cover', book.coverImageUrl);
+		recentBook.setAttribute('data-title', book.fullTitle);
+		recentBook.setAttribute('data-author', book.author);
+		recentBook.setAttribute('data-link', book.link);
+		recentBook.setAttribute('data-rating', book.rating);
+		recentBook.setAttribute('data-datefinished', displayDate(book.dateCompleted, 'MMMM D, YYYY'));
 
-		li.appendChild(bookImage);
-
-		const detailsDiv = document.createElement('div');
-		detailsDiv.classList.add('details');
-
-		const titleHeading = document.createElement('h3');
-		const link = createLinkElement(book.fullTitle, book.link, true);
-		titleHeading.appendChild(link);
-
-		detailsDiv.appendChild(titleHeading);
-
-		const authorHeading = document.createElement('h4');
-		authorHeading.textContent = book.author;
-		detailsDiv.appendChild(authorHeading);
-
-		const dateCompleted = document.createElement('p');
-		dateCompleted.classList.add('metadata');
-		dateCompleted.textContent = displayDate(book.dateCompleted, 'MMMM D, YYYY');
-		detailsDiv.appendChild(dateCompleted);
-
-		const ratingDisplay = document.createElement('rating-display');
-		ratingDisplay.setAttribute('data-rating', book.rating);
-		ratingDisplay.setAttribute('data-size', 'md');
-		detailsDiv.appendChild(ratingDisplay);
-
-		li.appendChild(detailsDiv);
-
-		fragment.appendChild(li);
+		fragment.appendChild(recentBook);
 	});
 
 	document.querySelector('ul#recent-books li.currently-loading')?.classList.add('hidden');
@@ -286,26 +259,13 @@ async function loadCurrentVideoGames() {
 	const fragment = document.createDocumentFragment();
 
 	currentVideoGameData.forEach((game) => {
-		const li = document.createElement('li');
+		const videoGame = document.createElement('current-game');
 
-		const divContent = document.createElement('div');
-		divContent.classList.add('content');
+		videoGame.setAttribute('data-cover-art', game.coverImageUrl);
+		videoGame.setAttribute('data-title', game.title);
+		videoGame.setAttribute('data-link', game.link);
 
-		const coverImage = document.createElement('img');
-		coverImage.setAttribute('src', game.coverImageUrl);
-		coverImage.setAttribute('alt', game.title);
-		coverImage.setAttribute('width', '150');
-		coverImage.setAttribute('height', '225');
-
-		divContent.appendChild(coverImage);
-
-		const titleHeading = document.createElement('h3');
-		titleHeading.appendChild(createLinkElement(game.title, game.link, true));
-		divContent.appendChild(titleHeading);
-
-		li.appendChild(divContent);
-
-		fragment.appendChild(li);
+		fragment.appendChild(videoGame);
 	});
 
 	document.querySelector('ul#currently-playing li.currently-loading')?.classList.add('hidden');
@@ -323,7 +283,7 @@ async function loadCurrentMusic() {
 		return;
 	}
 
-	currentMusic = data.sort((a, b) => sortByTitle(a.title, b.title));
+	currentMusic = data;
 
 	if (data.length === 0) {
 		document.querySelector('ul#currently-listening-to li.currently-loading')?.classList.add('hidden');
@@ -334,26 +294,13 @@ async function loadCurrentMusic() {
 	const fragment = document.createDocumentFragment();
 
 	currentMusic.forEach((album) => {
-		const li = document.createElement('li');
+		const musicAlbum = document.createElement('music-album');
 
-		const divContent = document.createElement('div');
-		divContent.classList.add('content');
+		musicAlbum.setAttribute('data-album-art', album.coverImageUrl);
+		musicAlbum.setAttribute('data-artist', album.artist);
+		musicAlbum.setAttribute('data-title', album.title);
 
-		const coverImage = document.createElement('img');
-		coverImage.setAttribute('src', album.coverImageUrl);
-		coverImage.setAttribute('alt', `${album.artist} - ${album.title}`);
-		coverImage.setAttribute('width', '150');
-		coverImage.setAttribute('height', '225');
-
-		divContent.appendChild(coverImage);
-
-		const titleHeading = document.createElement('h3');
-		titleHeading.textContent = `${album.artist} - ${album.title}`;
-		divContent.appendChild(titleHeading);
-
-		li.appendChild(divContent);
-
-		fragment.appendChild(li);
+		fragment.appendChild(musicAlbum);
 	});
 
 	document.querySelector('ul#currently-listening-to li.currently-loading')?.classList.add('hidden');
@@ -382,37 +329,15 @@ async function loadRecentMovies() {
 	const fragment = document.createDocumentFragment();
 
 	recentMovies.forEach((movie) => {
-		const li = document.createElement('li');
-		li.classList.add('current-item');
+		const recentMovie = document.createElement('recent-movie');
 
-		const movieImage = document.createElement('img');
-		movieImage.setAttribute('src', movie.posterImageUrl);
-		movieImage.setAttribute('alt', movie.title);
-		movieImage.setAttribute('width', '150');
-		movieImage.setAttribute('height', '225');
+		recentMovie.setAttribute('data-cover', movie.posterImageUrl);
+		recentMovie.setAttribute('data-title', movie.title);
+		recentMovie.setAttribute('data-link', movie.imdbLink);
+		recentMovie.setAttribute('data-rating', movie.rating);
+		recentMovie.setAttribute('data-datewatched', displayDate(movie.dateWatched, 'MMMM D, YYYY'));
 
-		li.appendChild(movieImage);
-
-		const detailsDiv = document.createElement('div');
-		detailsDiv.classList.add('details');
-
-		const titleHeading = document.createElement('h3');
-		titleHeading.appendChild(createLinkElement(movie.title, movie.imdbLink, true));
-		detailsDiv.appendChild(titleHeading);
-
-		const dateWatched = document.createElement('p');
-		dateWatched.classList.add('metadata');
-		dateWatched.textContent = displayDate(movie.dateWatched, 'MMMM D, YYYY');
-		detailsDiv.appendChild(dateWatched);
-
-		const ratingDisplay = document.createElement('rating-display');
-		ratingDisplay.setAttribute('data-rating', movie.rating);
-		ratingDisplay.setAttribute('data-size', 'md');
-		detailsDiv.appendChild(ratingDisplay);
-
-		li.appendChild(detailsDiv);
-
-		fragment.appendChild(li);
+		fragment.appendChild(recentMovie);
 	});
 
 	document.querySelector('ul#recent-movies li.currently-loading')?.classList.add('hidden');
