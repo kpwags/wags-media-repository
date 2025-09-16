@@ -20,6 +20,11 @@
 		<script src="/components/star-rating.js"></script>
 		<script src="/components/progress-bar.js"></script>
 		<script src="/components/rating-display.js"></script>
+		<script src="/components/submit-form-button.js"></script>
+		<script src="/components/recent-book.js"></script>
+		<script src="/components/recent-movie.js"></script>
+		<script src="/components/music-album.js"></script>
+		<script src="/components/current-game.js"></script>
 
 		<script src="/scripts/main.js"></script>
 		<script src="/scripts/api.js"></script>
@@ -147,7 +152,14 @@
 
 						<div class="actions">
 							<button type="button" class="btn-ghost" id="progress-form-dialog-cancel">Cancel</button>
-							<button type="submit" class="btn-primary">Save</button>
+							<submit-form-button class="update-progress">
+								<button type="submit" class="btn-primary">
+									<span class="btn-processing-content">
+										<span class="loader" style="display:none"></span>
+										<span class="button-text">Update</span>
+									</span>
+								</button>
+							</submit-form-button>
 						</div>
 					</form>
 				</div>
@@ -210,7 +222,14 @@
 
 						<div class="actions">
 							<button type="button" class="btn-ghost" id="mark-finished-dialog-cancel">Cancel</button>
-							<button type="submit" class="btn-primary">Save</button>
+							<submit-form-button class="finish-book">
+								<button type="submit" class="btn-primary">
+									<span class="btn-processing-content">
+										<span class="loader" style="display:none"></span>
+										<span class="button-text">Finish Book</span>
+									</span>
+								</button>
+							</submit-form-button>
 						</div>
 					</form>
 				</div>
@@ -288,7 +307,7 @@
 
 			<template id="current-book-template">
 				<li class="current-item">
-					<img src="" alt="" width="150" height="225" />
+					<div class="image"><img src="" alt="" width="150" height="225" /></div>
 					<div class="details">
 						<h3><a href="" target="_blank" rel="noreferrer nofollow"></a></h3>
 						<h4></h4>
@@ -303,13 +322,25 @@
 
 			<template id="current-tv-template">
 				<li class="current-item">
-					<img src="" alt="" width="150" height="225" />
+					<div class="image"><img src="" alt="" width="150" height="225" /></div>
 					<div class="details">
 						<h3><a href="" target="_blank" rel="noreferrer nofollow"></a></h3>
 						<progress-bar progress="46"></progress-bar>
 						<div class="actions">
 							<button class="btn-primary" type="button">Update Progress</button>
 						</div>
+					</div>
+				</li>
+			</template>
+
+			<template id="recent-book">
+				<li class="current-item">
+					<div class="image"><img src="" alt="" width="150" height="225" /></div>
+					<div class="details">
+						<h3><a href="" target="_blank" rel="noreferrer nofollow"></a></h3>
+						<h4></h4>
+						<p class="metadata"></p>
+						<rating-display data-rating="4" data-size="md"></rating-display>
 					</div>
 				</li>
 			</template>

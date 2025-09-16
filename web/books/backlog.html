@@ -21,6 +21,8 @@
 		<script src="/components/star-rating.js"></script>
 		<script src="/components/book-form.js"></script>
 		<script src="/components/book-filter-form.js"></script>
+		<script src="/components/mark-book-started-form.js"></script>
+		<script src="/components/submit-form-button.js"></script>
 
 		<script src="/scripts/main.js"></script>
 		<script src="/scripts/api.js"></script>
@@ -90,6 +92,29 @@
 
 		<book-form status="1"></book-form>
 		<book-filter-form></book-filter-form>
+		<mark-book-started-form></mark-book-started-form>
+
+		<template id="book-backlog-row">
+			<tr class="data-row">
+				<td class="center-align backlog-number"></td>
+				<td class="title-link"><a href="" target="_blank" rel="noreferrer nofollow"></a></td>
+				<td class="author"></td>
+				<td class="center-align book-type">
+					<div class="tag"></div>
+				</td>
+				<td class="center-align book-series">
+					<div class="tag"></div>
+				</td>
+				<td class="book-genre">
+					<ul class="tag-list"></ul>
+				</td>
+				<td>
+					<button class="btn-link btn-edit">Edit</button>
+					<button class="btn-link btn-start">Start</button>
+					<button class="btn-link btn-delete">Delete</button>
+				</td>
+			</tr>
+		</template>
 
 		<input type="hidden" id="delete-book-id" value="0" />
 		<confirm-dialog></confirm-dialog>

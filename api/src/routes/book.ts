@@ -222,6 +222,23 @@ bookRouter.put('/mark-finished/:id', (req, res) => {
 		});
 });
 
+bookRouter.put('/mark-started/:id', (req, res) => {
+	const id = parseInt(req.params.id);
+
+	const { formats, pageCount, coverImageUrl, dateStarted } = req.body;
+
+	BookRepository.MarkBookAsStarted(id, formats, pageCount, coverImageUrl, dateStarted)
+		.then((error) => {
+			if (error) {
+				return res.status(400).json({ error });
+			}
+
+			return res.send();
+		}).catch((e) => {
+			return res.status(400).json({ error: e });
+		});
+});
+
 bookRouter.get('/current', (_, res) => {
 	BookRepository.GetCurrentBooks()
 		.then(([error, data]) => {

@@ -35,6 +35,7 @@ import {
 	getCurrentlyReadingBooks,
 	updateBookProgress,
 	updateBookToFinished,
+	updateBookToStarted,
 } from '@queries/book';
 
 import {
@@ -402,7 +403,7 @@ class BookRepository {
 		const [addFormatLinksError, addGenreLinksError] = await Promise.all([
 			this.AddBookFormatLinks(formats),
 			this.AddBookGenreLinks(genres),
-		])
+		]);
 
 		return addFormatLinksError ?? addGenreLinksError ?? null;
 	}
@@ -683,6 +684,30 @@ class BookRepository {
 		}
 
 		return await db.Execute(updateBookToFinished, [book.pageCount, rating, thoughts, dateCompleted, bookId]);
+	}
+
+	static async MarkBookAsStarted(bookId: number, formats: number[], pageCount: number, coverImageUrl: string, dateStarted: Date): Promise<string | null> {
+		const [error, book] = await this.GetBookById(bookId);
+
+		if (error || !book) {
+			return error ?? 'Unable to mark book as started, book not found.';
+		}
+
+		const clearFormatsError = await this.DeleteBookFormatLinks(bookId);
+
+		if (clearFormatsError) {
+			return clearFormatsError;
+		}
+
+		const bookFormats = formats.map((id) => ({ bookId, formatId: id }));
+
+		const addFormatLinksError = await this.AddBookFormatLinks(bookFormats);
+
+		if (addFormatLinksError) {
+			return addFormatLinksError;
+		}
+
+		return await db.Execute(updateBookToStarted, [pageCount, coverImageUrl, dateStarted, bookId]);
 	}
 };
 

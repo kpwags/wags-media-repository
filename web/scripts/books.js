@@ -48,6 +48,16 @@ window.addEventListener('load', function () {
 		applyFilters();
 	});
 
+	document.querySelector('form[name="start-book"]')?.addEventListener('submit', function (e) {
+		e.preventDefault();
+
+		startBook();
+	});
+
+	document.querySelector('#mark-started-dialog-cancel')?.addEventListener('click', function () {
+		closeStartBookForm();
+	});
+
 	loadBooks();
 	loadGenres();
 	loadSeries();
@@ -83,58 +93,25 @@ async function loadSeries() {
 
 function loadBacklogBookRows(data) {
 	const fragment = document.createDocumentFragment();
+	const template = document.querySelector('template#book-backlog-row');
 
 	data.forEach((book) => {
-		const tr = document.createElement('tr');
-		tr.classList.add('data-row');
+		const tr = template.content.cloneNode(true);
 
-		const sortCell = document.createElement('td');
-		sortCell.classList.add('center-align');
-		sortCell.textContent = book.sortOrder ?? '';
-
-		tr.appendChild(sortCell);
-
-		const titleCell = document.createElement('td');
-
-		titleCell.appendChild(createLinkElement(book.fullTitle, book.link, true));
-
-		tr.appendChild(titleCell);
-
-		const authorCell = document.createElement('td');
-		authorCell.textContent = book.author;
-
-		tr.appendChild(authorCell);
-
-		const typeCell = document.createElement('td');
-		typeCell.classList.add('center-align');
-
-		const typeTag = document.createElement('div');
-		typeTag.classList.add('tag');
-		typeTag.setAttribute('style', `background: ${book.type.colorCode};`);
-		typeTag.textContent = book.type.name;
-
-		typeCell.appendChild(typeTag);
-
-		tr.appendChild(typeCell);
-
-		const seriesCell = document.createElement('td');
+		tr.querySelector('td.backlog-number').textContent = book.sortOrder ?? '';
+		tr.querySelector('td.title-link a').textContent = book.fullTitle;
+		tr.querySelector('td.title-link a').setAttribute('href', book.link);
+		tr.querySelector('td.author').textContent = book.author;
+		tr.querySelector('td.book-type .tag').textContent = book.type.name;
+		tr.querySelector('td.book-type .tag').style.background = book.type.colorCode;
 
 		if (book.series) {
-			seriesCell.classList.add('center-align');
-
-			const seriesTag = document.createElement('div');
-			seriesTag.classList.add('tag');
-			seriesTag.setAttribute('style', `background: ${book.series.colorCode};`);
-			seriesTag.textContent = book.series.name;
-
-			seriesCell.appendChild(seriesTag);
+			tr.querySelector('td.book-series .tag').textContent = book.series.name;
+			tr.querySelector('td.book-series .tag').style.background = book.series.colorCode;
 		} else {
-			seriesCell.textContent = '';
+			tr.querySelector('td.book-series .tag').remove();
+			tr.querySelector('td.book-series').textContent = '';
 		}
-
-		tr.appendChild(seriesCell);
-
-		const genreCell = document.createElement('td');
 
 		if (book.genres.length > 0) {
 			const genreList = buildTagList();
@@ -143,33 +120,23 @@ function loadBacklogBookRows(data) {
 				genreList.appendChild(buildTagListItem(genre.name, genre.colorCode));
 			}
 
-			genreCell.appendChild(genreList);
+			tr.querySelector('td.book-genre .tag-list').appendChild(genreList);
 		} else {
-			genreCell.textContent = '';
+			tr.querySelector('td.book-genre .tag-list').remove();
+			tr.querySelector('td.book-genre').textContent = '';
 		}
 
-		tr.appendChild(genreCell);
-
-		const actionsCell = document.createElement('td');
-
-		const editButton = document.createElement('button');
-		editButton.textContent = 'Edit';
-		editButton.classList.add('btn-link');
-		editButton.addEventListener('click', function () {
+		tr.querySelector('.btn-edit').addEventListener('click', function () {
 			editBook(book);
 		});
 
-		const deleteButton = document.createElement('button');
-		deleteButton.textContent = 'Delete';
-		deleteButton.classList.add('btn-link');
-		deleteButton.addEventListener('click', function () {
+		tr.querySelector('.btn-delete').addEventListener('click', function () {
 			openDeleteConfirmation(book);
 		});
 
-		actionsCell.appendChild(editButton);
-		actionsCell.appendChild(deleteButton);
-
-		tr.appendChild(actionsCell);
+		tr.querySelector('.btn-start').addEventListener('click', function () {
+			openStartBookForm(book);
+		});
 
 		fragment.appendChild(tr);
 	});
@@ -708,4 +675,63 @@ async function deleteBook() {
 
 	document.getElementById('delete-book-id').value = '0';
 	document.querySelector('dialog.confirm-dialog').close();
+}
+
+async function openStartBookForm(book) {
+	document.querySelector('dialog#mark-book-started input#start-book-id').value = book.bookId;
+
+	if (book.coverImageUrl !== null && book.coverImageUrl !== '') {
+		document.querySelector('dialog#mark-book-started img').setAttribute('src', book.coverImageUrl);
+		document.querySelector('dialog#mark-book-started img').setAttribute('alt', book.fullTitle);
+		document.querySelector('dialog#mark-book-started div.cover-placeholder').style.display = 'none';
+		document.querySelector('dialog#mark-book-started img').style.display = 'block';
+	} else {
+		document.querySelector('dialog#mark-book-started div.cover-placeholder').style.display = 'block';
+		document.querySelector('dialog#mark-book-started img').style.display = 'none';
+	}
+
+	document.querySelector('dialog#mark-book-started .book-information h2').textContent = book.fullTitle;
+	document.querySelector('dialog#mark-book-started .book-information h3').textContent = `by ${book.author}`;
+	document.querySelector('dialog#mark-book-started .book-information dd.book-type').textContent = book.type?.name ?? 'Unspecified';
+	setMultiselectValues('dialog#mark-book-started select#book-format', book.formats.map((s) => s.bookFormatId));
+	document.querySelector('dialog#mark-book-started input#book-date-started').value = dayjs().format('YYYY-MM-DD');
+	document.querySelector('dialog#mark-book-started input#book-page-count').value = book.pageCount;
+	document.querySelector('dialog#mark-book-started input#book-cover-url').value = book.coverImageUrl;
+
+	document.querySelector('dialog#mark-book-started').showModal();
+}
+
+function closeStartBookForm() {
+	document.querySelector('form[name="start-book"]').reset();
+
+	resetMultiselect('dialog#mark-book-started select#book-format');
+
+	document.querySelector('dialog#mark-book-started').close();
+	setButtonProcessing(true, 'submit-form-button.start-book-save', 'Start Book', 'start-book');
+}
+
+async function startBook() {
+	hideModalError('start-book-modal-error');
+	setButtonProcessing(true, 'submit-form-button.start-book-save', 'Starting', 'start-book');
+
+	const bookId = document.querySelector('dialog#mark-book-started input#start-book-id').value;
+
+	const [, error] = await Api.Put(`book/mark-started/${bookId}`, {
+		data: {
+			formats: getValuesFromMultiSelect('dialog#mark-book-started select#book-format'),
+			pageCount: getNumericValueFromInput('dialog#mark-book-started input#book-page-count', 1),
+			coverImageUrl: document.querySelector('dialog#mark-book-started input#book-cover-url').value,
+			dateStarted: document.querySelector('dialog#mark-book-started input#book-date-started').value,
+		},
+	});
+	if (error) {
+		showModalError(error, 'start-book-modal-error');
+		return;
+	}
+
+	await loadBooks();
+
+	setButtonProcessing(true, 'submit-form-button.start-book-save', 'Start Book', 'start-book');
+
+	closeStartBookForm();
 }
